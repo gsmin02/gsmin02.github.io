@@ -2,12 +2,23 @@ body {
     font-family: 'Noto Sans KR', sans-serif;
     background-color: #f8f9fa;
 }
+
+@media (max-width: 768px) {
+    .navbar-nav {
+        display: none; /* 모바일에서는 숨김 */
+    }
+
+    .navbar-toggler {
+        display: block; /* 삼선 버튼 표시 */
+    }
+}
+
 .question-card {
     margin-bottom: 20px;
     max-width: 600px;
     margin-left: auto;
     margin-right: auto;
-    background-color: #f0f0f0; /* 옅은 회색 배경 */
+    background-color: #f0f0f0;
     padding: 20px;
     border-radius: 8px;
 }
@@ -25,16 +36,16 @@ body {
 }
 .answer {
     display: none;
-    margin-left: auto; /* 오른쪽 끝으로 이동 */
+    margin-left: auto;
     font-weight: bold;
-    white-space: nowrap; /* 한 줄로 표시 */
+    white-space: nowrap;
 }
 .explanation {
     display: none;
     font-weight: bold;
 }
 .navbar {
-    background-color: #343a40; /* 어두운 회색 */
+    background-color: #343a40;
 }
 .navbar-brand {
     color: #ffffff !important;
@@ -42,11 +53,11 @@ body {
 }
 .nav-link {
     color: #ffffff !important;
-    margin: 0 15px; /* 좌우 간격 */
+    margin: 0 15px;
     transition: color 0.3s;
 }
 .nav-link:hover {
-    color: #ffc107 !important; /* hover 시 색상 변경 */
+    color: #ffc107 !important;
 }
 .navbar-nav {
     margin: 0 auto;
