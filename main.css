@@ -3,16 +3,6 @@ body {
     background-color: #f8f9fa;
 }
 
-@media (max-width: 768px) {
-    .navbar-nav {
-        display: none; /* 모바일에서는 숨김 */
-    }
-
-    .navbar-toggler {
-        display: block; /* 삼선 버튼 표시 */
-    }
-}
-
 .question-card {
     margin-bottom: 20px;
     max-width: 600px;
