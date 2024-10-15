@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>문제집</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR&display=swap" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="main.css">
+</head>
+<body>
+	<nav class="navbar navbar-expand-lg">
+		<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+			<span class="navbar-toggler-icon"></span>
+		</button>
+		<div class="collapse navbar-collapse" id="navbarNav">
+			<ul class="navbar-nav">
+				<li class="nav-item active">
+					<a class="nav-link" href="Chapter1.html">1장</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link" href="Chapter2.html">2장</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link" href="Chapter3.html">3장</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link" href="Chapter4.html">4장</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link" href="Chapter5.html">5장</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link" href="Chapter6.html">6장</a>
+				</li>
+			</ul>
+		</div>
+	</nav>
+	<br>
+    <div class="container">
+        <h1 class="text-center">4장 문제집</h1>
+        <div id="progress" class="text-center progress-text"></div>
+
+        <div id="question-container"></div>
+
+        <div class="text-center mt-4">
+            <button id="prev-btn" class="btn btn-secondary" onclick="prevQuestion()" style="display: none;">이전 문제</button>
+            <button id="next-btn" class="btn btn-custom" onclick="nextQuestion()">다음 문제</button>
+        </div>
+    </div>
+
+    <script>
+        const data = `
+          index,question,A,B,C,D,E,answer,explanation
+          1,"Amazon S3의 스토리지 클래스 중, 객체에 대한 액세스 빈도가 일정하지 않은 데이터에 사용하는 클래스는 무엇입니까?","S3 Standard","S3 Standard-IA","S3 Intelligent-Tiering","Glacier","C","S3 Intelligent-Tiering은 데이터에 대한 액세스 빈도가 일정하지 않은 경우에 사용하는 스토리지 클래스로, 자동으로 데이터를 S3 Standard, S3 Standard-IA 및 S3 One Zone-IA 클래스 중 최적의 클래스로 이동시킨다. 이 클래스를 사용하면 데이터의 액세스 패턴에 따라 비용을 최소화할 수 있다."
+          2,"Linux 기반 Amazon EC2 인스턴스 및 온프레미스 서버에서 사용할 간단하고 확장 가능한 공유 파일 스토리지 솔루션을 제공하는 AWS 서비스는 무엇입니까?","AWS Managed Services(AMS)","Amazon S3 Glacier","Amazon Elastic Block Store(Amazon EBS)","Amazon Elastic File System(Amazon EFS)","D","Linux 기반 Amazon EC2 인스턴스 및 온프레미스 서버에서 사용하기 간단하고 확장 가능한 공유 파일 스토리지 시스템은 Amazon EFS이다."
+          3,"Amazon S3에서 버전 관리(Versioning)를 활성화하면 어떤 기능을 사용할 수 있습니까?","파일 삭제 방지","파일 수정 이력 관리","파일 복원","모두 맞다","D","Amazon S3에서 버전 관리(Versioning)를 활성화하면 파일 삭제 방지, 파일 수정 이력 관리, 파일 복원 등의 기능을 사용할 수 있다."
+          4,"Amazon S3에서 객체(Object)의 최대 크기는 얼마입니까?","5GB","50GB","500GB","5TB","D","Amazon S3에서 객체(Object)의 최대 크기는 5TB이다. 이는 업로드할 수 있는 최대 용량으로, 이보다 큰 용량의 객체를 업로드하려면 Amazon S3의 멀티파트 업로드 기능을 사용해야 한다."
+          5,"Amazon S3의 스토리지 클래스 중 객체에 대한 액세스 빈도수가 낮은 데이터에 사용하는 클래스는 무엇입니까?","S3 Standard","S3 Standard-IA","S3 One Zone-Infrequent Access","Glacier","C","S3 One Zone-IA는 S3 Standard-IA보다 더 저렴하게 제공되는 스토리지 클래스이다. 데이터가 단일 가용 영역에 저장되고, 다른 가용 영역에서 복제되지 않는다. 액세스 빈도가 낮은 데이터를 저장하는 데 사용된다."
+          6,"Amazon S3에서 데이터를 저장할 때, 어떤 단위로 요금을 지불합니까?","데이터의 용량","데이터의 접근 빈도","데이터의 암호화 여부","데이터의 유효 기간","A","Amazon S3에서는 데이터의 용량에 따라 요금을 지불한다. 저장된 데이터의 용량, 전송된 데이터의 용량, 버킷 내 객체의 수, 데이터 전송 요청의 수 등이 요금 산정의 기준이 된다."
+          7,"Amazon S3의 스토리지 클래스 중, 객체에 대한 액세스 빈도가 높은 데이터에 사용하는 클래스는 무엇입니까?","S3 Standard","S3 Standard-IA","S3 One Zone-Infrequent Access","Glacier","A","S3 Standard는 가장 일반적으로 사용되는 스토리지 클래스이며, 객체에 대한 액세스 빈도가 높은 데이터에 사용된다. 높은 내구성과 성능을 제공하며, 빠른 액세스 속도를 보장한다. 이 스토리지 클래스는 비용이 다른 스토리지 클래스보다 높지만, 높은 액세스 빈도에 대한 요구 사항을 충족시킬 수 있다."
+          8,"S3 버킷에서 파일을 삭제할 때, 삭제된 파일을 복원할 수 있는 기능을 제공하는 것은 무엇입니까?","S3 Transfer Acceleration","S3 Object Lock","S3 Lifecycle","S3 Versioning","D","S3 버전 관리 기능을 사용하면 버킷에 저장된 객체의 모든 버전을 보존하고, 삭제된 객체도 복원할 수 있다."
+          9,"AWS Storage Gateway에서 로컬 디스크 저장소 게이트웨이는 어떤 작업을 수행할 수 있습니까?","로컬 머신에서 스토리지를 사용할 수 있도록 한다.","Amazon S3 버킷을 로컬 디스크로 마운트한다.","2개의 AWS 리전 간에 파일을 전송한다.","로컬 파일 시스템과 Amazon EBS 스냅숏 간에 데이터를 복사한다.","A","로컬 디스크 저장소 게이트웨이는 로컬 어플라이언스에서 실행되며, 이를 통해 사용자는 Amazon S3와 같은 AWS 스토리지 서비스에 액세스하지 않고도 로컬 디스크에서 파일을 저장, 백업 및 검색할 수 있다."
+          10,"S3 버킷에 대한 액세스 권한을 특정 AWS 계정에게만 부여하기 위해서 사용하는 것은 무엇입니까?","S3 Transfer Acceleration","S3 Object Lock","S3 Bucket Policies","S3 Access Points","D","S3 액세스 포인트는 S3 버킷에 대한 액세스를 특정 AWS 계정, VPC, AWS Organization 또는 다른 AWS 계정의 Amazon EC2 인스턴스로 제한하는 가상 엔드포인트이다."
+          11,"Amazon Glacier에서 데이터를 안전하게 저장하기 위해 사용되는 기술은 무엇입니까?","S3 Transfer Acceleration","S3 Object Lock","S3 Bucket Policies","Glacier Vault Lock","D","Glacier Vault Lock은 Vault에서 데이터를 더 이상 수정하거나 삭제할 수 없도록 설정하는 보안 기술이며, 이를 사용해 데이터를 안전하게 보호할 수 있다."
+          12,"Amazon EFS에서 어떤 유형의 확장성을 제공합니까?","수직적 확장성","수평적 확장성","기하급수적 확장성","선형적 확장성","D","Amazon EFS는 선형 확장성을 제공한다. 여러 가용 영역에서 자동으로 파일 시스템 용량을 확장하므로 애플리케이션 요구 사항에 따라 파일 시스템을 조정할 필요가 없다."
+          13,"S3 버킷에서 공개적으로 접근 가능한 파일에 대한 접근 권한을 제어할 수 있는 기능은 무엇입니까?","S3 Transfer Acceleration","S3 Object Lock","S3 Bucket Policies","S3 Encryption","C","S3 버킷 정책을 사용하면 버킷 내의 객체에 대한 액세스 권한을 정의할 수 있다. 이를 사용해 특정 IP 주소, IAM 사용자 또는 특정 AWS 계정 등에 대한 액세스를 제한할 수 있다."
+          14,"AWS Storage Gateway에서 블록 스토리지 게이트웨이는 어떤 유형의 애플리케이션에 가장 적합합니까?","대용량 파일 공유","데이터 분석 및 처리","데이터 백업 및 복원","데이터 스트리밍 및 스트리밍 미디어 처리","D","블록 스토리지 게이트웨이는 네트워크를 통해 액세스할 수 있는 SCSI 디바이스로서, 다양한 데이터에 고성능 디스크로 스트리밍할 수 있다. 이는 영상 스트리밍, 미디어 프로덕션 및 게임 서버 등과 같은 데이터 스트리밍 및 스트리밍 미디어 처리 애플리케이션에 가장 적합하다."
+          15,"AWS 리전 간 데이터 복제를 지원하는 AWS 서비스 또는 기능은 무엇입니까? (2개)","Amazon S3","Amazon Elastic Block Store(Amazon EBS)","Amazon EC2 인스턴스 스토어","Amazon Storage Gateway","Amazon RDS","A,E","Amazon S3는 객체 복제를 통해 데이터를 다양한 리전에 자동으로 복제할 수 있다. 이를 통해 고가용성 및 내구성을 제공하고 지리적으로 분산된 사용자 또는 애플리케이션에 대한 접근성을 개선할 수 있다. Amazon RDS는 Multi-AZ 배포를 통해 데이터베이스 인스턴스의 스탠바이 복제본을 다른 가용 영역에 자동으로 생성하고 업데이트한다."
+          16,"단일 Amazon S3 버킷에서 정적 웹사이트를 호스팅 중인 한 회사가 있다. 대기 시간을 줄이고 전송 속도를 높일 수 있는 AWS 서비스는 무엇입니까?","AWS Elastic Beanstalk","Amazon DynamoDB Accelerator(DAX)","Amazon Route 53","Amazon CloudFront","D","Amazon CloudFront는 글로벌 캐싱 및 전송 네트워크를 사용해 정적 및 동적 콘텐츠를 빠르게 전송하고 사용자 지연 시간을 최소화할 수 있는 콘텐츠 전송 네트워크(CDN) 서비스이다."
+          17,"Amazon S3에서 버킷(bucket)의 이름은 어떤 제한 사항이 있습니까?","중복이 허용되지 않는다.","3~63자 사이여야 한다.","영문자와 숫자만 사용할 수 있다.","모두 맞다.","D","Amazon S3에서 버킷의 이름은 중복이 허용되지 않으며, 3~63자 사이이며, 영문자와 숫자를 사용할 수 있다."
+          18,"다음 중 AWS 클라우드에서 제공하는 스토리지 서비스는 무엇입니까? (2개)","EFS","EC2","S3","SNS","SQS","A,C","보기 중 AWS 클라우드에서 제공하는 스토리지는 EFS이다."
+          19,"다음 S3 스토리지 클래스 중 데이터를 검색하는 데 가장 많은 시간이 걸리는 것은 무엇입니까?","S3 Glacier","S3 Intelligent-tiering","S3 Standard","S3 Glacier Deep Archive","D","S3 스토리지 클래스 중 데이터를 검색하는 데 시간이 가장 많이 걸리는 것은 S3 Glacier Deep Archive이며, 데이터 인출에 최대 12시간이 소요된다."
+          20,"회사는 데이터에 자주 액세스하지는 않지만, 필요할 때 신속하게 액세스할 수 있는 스토리지 솔루션을 필요로 합니다. 다음 중 가장 비용 효율적인 S3 스토리지 클래스는 무엇입니까?","S3 Standard-AI","S3 Intelligent-Tiering","S3 Standard","S3 Glacier","A","보기 중 액세스할 때 신속하게 액세스할 수 있으면서 가장 비용 효율적인 S3 스토리지 클래스는 S3 Standard-IA이다."
+        `;
+    </script>
+    <script src="main.js" defer></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
