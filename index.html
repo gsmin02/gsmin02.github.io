@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>경로 이동</title>
+    <title>gsmin02</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR&display=swap" rel="stylesheet">
     <style>
@@ -17,16 +17,16 @@
 </head>
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-        <nav class="navbar-brand">경로 이동</nav>
+        <nav class="navbar-brand">gsmin02</nav>
     </nav>
 
     <div class="container">
-        <h1 class="text-center">경로 이동</h1>
+        <h1 class="text-center">값 입력</h1>
         <div class="text-center mt-4">
-            <input type="text" id="folderPath" class="form-control" placeholder="경로를 입력하세요" style="max-width: 400px; display: inline-block;">
+            <input type="text" id="folderPath" class="form-control" placeholder="값을 입력하세요" style="max-width: 400px; display: inline-block;">
         </div>
         <div class="text-center mt-4">
-            <button class="btn btn-primary" onclick="goToFolder()">이동</button>
+            <button class="btn btn-primary" onclick="goToFolder()">Enter</button>
         </div>
     </div>
 
@@ -37,7 +37,7 @@
             if (folderPath) {
                 window.location.href = folderPath;
             } else {
-                alert('경로를 입력하세요.');
+                alert('값을 입력하세요');
             }
         }
     </script>
