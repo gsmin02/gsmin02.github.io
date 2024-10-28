@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AWS_Quiz Chapter6</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR&display=swap" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="main.css">
+</head>
+<body>
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav">
+        <li class="nav-item active">
+          <a class="nav-link" href="Chapter1.html">1장</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="Chapter2.html">2장</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="Chapter3.html">3장</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="Chapter4.html">4장</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="Chapter5.html">5장</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="Chapter6.html">6장</a>
+        </li>
+      </ul>
+    </div>
+  </nav>
+	<br>
+    <div class="container">
+        <h1 class="text-center">6장 문제집</h1>
+        <div id="progress" class="text-center progress-text"></div>
+
+        <div id="question-container"></div>
+
+        <div class="text-center mt-4">
+            <button id="prev-btn" class="btn btn-secondary" onclick="prevQuestion()" style="display: none;">이전 문제</button>
+            <button id="next-btn" class="btn btn-custom" onclick="nextQuestion()">다음 문제</button>
+        </div>
+    </div>
+
+    <script>
+        const data = `
+          index,question,A,B,C,D,E,answer,explanation
+          1,"Amazon VPC에서 다음 중 VPC의 IP 주소 범위를 정의하는 데 사용되는 것은 무엇입니까?","VPC 보안 그룹","VPC 엔드포인트","VPC 네트워크 ACL","VPC 가상 라우터","VPC 서브넷","E","VPC는 가상 네트워크를 생성하며, IP 주소 범위는 VPC에서 사용 가능한 IP 주소 목록이다. 이 때 IP 주소 범위를 정의하는 것은 VPC 내의 서브넷이다."
+          2,"Amazon VPC에서 다음 중 인터넷에서 직접 액세스할 수 있는 서브넷은 무엇입니까?","퍼블릭 서브넷","프라이빗 서브넷","가상 서브넷","NAT 서브넷","라우팅 서브넷","A","퍼블릭 서브넷이란 인터넷에서 직접 액세스할 수 있는 서브넷을 의미한다."
+          3,"AWS Route 53에서 다음 중 라우팅 정책에 포함되지 않는 것은 무엇입니까?","Simple Routing","Weighted Routing","Failover Routing","Location-based Routing","Traffic Flow","E","Traffic Flow는 Route 53의 라우팅 정책과 관련이 있다."
+          4,"미디어 콘텐츠 서비스 기업인 I사는 AWS가 제공하는 기업 전용 네트워크 환경인 VPC를 사용하려 합니다. 다음 VPC 및 네트워크 보안에 대한 설명 중 옳은 것은 무엇입니까? (2개)","보안 그룹과 NACL은 VPC의 보안 규칙을 정의한다.","NAT 게이트웨이로도 보안 규칙을 정의할 수 있다.","보안 그룹은 허용 및 거부 규칙을 모두 지닐 수 있다.","NACL은 허용 및 거부 규칙을 모두 지닐 수 있다.","EC2 인스턴스에서 전송한 트래픽은 NACL을 거쳐 보안 그룹을 통해 외부로 전달된다.","A,D","VPC의 보안 규칙은 보안 그룹과 NACL로 정의할 수 있고, NACL은 허용 및 거부 규칙을 모두 지닐 수 있다."
+          5,"Amazon VPC에서 EC2 인스턴스에서 사용하는 보안 그룹의 특징은 무엇입니까?","인바운드 및 아웃바운드 트래픽에 대한 허용 규칙을 정의할 수 있다.","VPC 내의 서로 다른 서브넷 간에 트래픽을 전달한다.","NAT 게이트웨이와 함께 사용해 인터넷에 연결된 리소스에 액세스할 수 있다.","퍼블릭 및 프라이빗 IP 주소를 제공한다.","VPC 엔드포인트와 함께 사용해 특정 서비스에 대한 보안 액세스를 허용할 수 있다.","A","보안 그룹은 EC2 인스턴스에 대한 인바운드 및 아웃바운드 트래픽에 대한 허용 규칙을 정의한다."
+          6,"회사가 AWS 내에서 가상 네트워크를 생성할 수 있도록 하는 AWS 네트워킹 서비스는 무엇입니까?","AWS Config","Amazon Route 53","AWS Direct Connect","Amazon Virtual Private Cloud(VPC)","D","VPC는 기업 전용 가상 네트워크 생성 서비스다."
+          7,"AWS Route 53에서 다음 중 TTL(Time To Live)이란 무엇입니까?","Route 53 레코드의 유효 기간을 정의하는 것","DNS 서버에서 캐시된 레코드를 삭제하는 시간","Route 53 레코드에 대한 공식적인 인증 기관의 서명","Route 53에서 사용하는 DNS 서버의 대역폭","B","Route 53에서 TTL을 이용해 DNS 서버에서 캐시 레코드의 삭제 시간을 조정할 수 있다."
+          8,"라스트마일 스타트업인 J사는 VPC 서브넷에 EC2 인스턴스를 생성했으며, VPC 외부에 존재하는 서비스에 연결하기 위해서 VPC 엔드포인트를 이용할 수 있다는 사실을 알게 됐습니다. 다음 중 VPC 엔드포인트 게이트웨이로 연결할 수 있는 AWS 스토리지 또는 데이터베이스 서비스는 무엇입니까? (2개)","S3","EFS","EBS","RDS","DynamoDB","A,E","VPC 엔드포인트 게이트웨이로 연결할 수 있는 AWS 스토리지는 S3, 데이터베이스 서비스는 DynamoDB이다."
+          9,"온프레미스 운영에서 AWS 클라우드로의 전용 프라이빗 연결을 원하는 한 회사가 있습니다. 이 연결을 제공할 AWS 서비스 또는 기능은 무엇입니까?","AWS VPN","AWS PrivateLink","VPC EndPoint","AWS Direct Connect","D","온프레미스와 AWS 클라우드를 프라이빗 전용선으로 연결하는 서비스는 Direct Connect다."
+          10,"AWS CloudFront에서 에지 로케이션이란 무엇입니까?","사용자와 CloudFront 엔드포인트 간의 경로","CloudFront 엔드포인트와 원본 서버 간의 경로","CloudFront 엔드포인트가 배포되는 지리적 위치","CloudFront 엔드포인트에서 캐시되는 데이터의 크기","CloudFront 엔드포인트의 대역폭","C","에지 로케이션이란 CloudFront 엔드포인트가 배포되는 지리적 위치다."
+          11,"다음 중 프라이빗 서브넷에서 인터넷에 액세스하기 위해 사용되는 것은 무엇입니까?","가용 영역","인터넷 게이트웨이","퍼블릭 IP 주소","프라이빗 IP 주소","NAT 게이트웨이","E","NAT 게이트웨이는 프라이빗 서브넷에서 인터넷에 액세스하기 위해 사용된다."
+          12,"단일 Amazon S3 버킷에서 정적 웹사이트를 호스팅 중인 한 회사가 있습니다. 대기 시간을 줄이고 전송 속도를 높일 수 있는 AWS 서비스는 무엇입니까?","AWS Elastic Beanstalk","Amazon DynamoDB Accelerator(DAX)","Amazon Route 53","Amazon CloudFront","D","CloudFront는 S3 버킷 기반 정적 웹사이트의 전송 속도를 높여준다."
+          13,"AWS CloudFront에서 다음 중 “Invalidation”이란 무엇입니까?","캐시된 데이터의 유효기간을 조정하는 작업","특정 파일 또는 디렉터리를 캐시에서 제거하는 작업","CloudFront 배포를 시작하는 작업","CloudFront의 에지 로케이션을 추가하는 작업","CloudFront 배포에 대한 보안 인증서를 구성하는 작업","B","CloudFront는 캐시 기반 서비스이며, invalidation이란 특정 파일 또는 디렉터리를 캐시에서 제거하는 작업을 의미한다."
+          14,"Amazon VPC에서 다음 중 Network Access Control(NACL)의 주요 기능은 무엇입니까?","서브넷의 IP 주소 범위를 정의하는 것","서브넷 간의 트래픽을 제어하는 것","보안 그룹에서 수행할 수 없는 보안 기능을 제공하는 것","인터넷 연결을 설정하는 것","B","NACL은 서브넷 간의 트래픽을 제어하는 데 사용된다."
+          15,"Amazon VPC에서 NACL 규칙에 대한 올바른 정의는 무엇입니까? (2개)","규칙은 우선순위 번호 순으로 적용된다.","하나의 VPC 내에 여러 개의 NACL이 존재할 수 있다.","기본 NACL은 모든 인바운드 및 아웃바운드 IPv4 트래픽을 거부한다.","규칙은 보안 그룹에서 작성한 규칙과 동일하게 작성된다.","A,B","NACL 규칙은 우선순위 번호 순으로 적용되며, 하나의 VPC 내에 여러 개의 서브넷이 존재할 수 있으므로, 이에 대응해 여러 개의 NACL이 존재할 수 있다. 기본 NACL은 모든 인바운드 및 아웃바운드 IPv4 트래픽을 허용한다."
+          16,"다음 중 AWS와 온프레미스 네트워크를 연결하기 위한 서비스는 무엇입니까? (2개)","Amazon VPC","AWS Direct Connect","Amazon EC2","Amazon VPN","AWS Lambda","B,D","VPN과 Direct Connect는 AWS와 온프레미스 네트워크를 연결하기 위한 서비스다."
+          17,"다음 중 AWS Direct Connect를 사용해 온프레미스 데이터 센터와 AWS를 연결할 때 필요한 것은 무엇입니까?","인터넷 연결","가상 프라이빗 게이트웨이","가상 프라이빗 클라우드","가상 프라이빗 서버","전용 연결","E","Direct Connect를 사용해 온프레미스 데이터 센터와 AWS를 연결할 때 전용 연결(Direct Connection)을 생성한다."
+          18,"다음 중 AWS VPC 서비스에 대한 올바른 설명은 무엇입니까? (2개)","보안 그룹은 허용 규칙만 지닐 수 있다.","NAT 게이트웨이는 AWS에서 관리한다.","보안 그룹은 허용 및 거부 규칙을 모두 지닐 수 있다.","NACL은 허용 규칙만 지닐 수 있다.","NAT 인스턴스는 AWS에서 관리한다.","A,B","보안 그룹은 허용 규칙만 지닐 수 있고, NAT 게이트웨이는 AWS에서 관리된다."
+          19,"미디어 콘텐츠 서비스 기업인 I사는 AWS가 제공하는 기업 전용 네트워크 환경인 VPC를 사용하려 합니다. 다음 VPC 및 네트워크 보안에 대한 설명 중 옳은 것은 무엇입니까? (2개)","보안 그룹과 NACL은 VPC의 보안 규칙을 정의한다.","NAT 게이트웨이로도 보안 규칙을 정의할 수 있다.","보안 그룹은 허용 및 거부 규칙을 모두 지닐 수 있다.","NACL은 허용 및 거부 규칙을 모두 지닐 수 있다.","EC2 인스턴스에서 전송한 트래픽은 NACL을 거쳐 보안 그룹을 통해 외부로 전달된다.","A,D","보안 그룹과 NACL을 이용해 VPC의 보안 규칙을 정의한다. NACL은 허용 및 거부 규칙을 모두 지닐 수 있다."
+          20,"트래픽을 여러 리소스로 라우팅하고 각 리소스로 라우팅되는 트래픽의 양을 선택하는 데 사용하는 AWS Route 53 라우팅 정책은 무엇입니까?","대기 시간 라우팅 정책","단순 라우팅 정책","장애 조치 라우팅 정책","가중치 라우팅 정책","지리 위치 라우팅 정책","D","각 리소스로 라우팅되는 트래픽의 양을 선택하는 라우팅 정책은 가중치 라우팅 정책이다."
+        `;
+    </script>
+    <script src="main.js" defer></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

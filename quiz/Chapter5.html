@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AWS_Quiz Chapter5</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR&display=swap" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="main.css">
+</head>
+<body>
+	<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+		<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+			<span class="navbar-toggler-icon"></span>
+		</button>
+		<div class="collapse navbar-collapse" id="navbarNav">
+			<ul class="navbar-nav">
+				<li class="nav-item active">
+					<a class="nav-link" href="Chapter1.html">1장</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link" href="Chapter2.html">2장</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link" href="Chapter3.html">3장</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link" href="Chapter4.html">4장</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link" href="Chapter5.html">5장</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link" href="Chapter6.html">6장</a>
+				</li>
+			</ul>
+		</div>
+	</nav>
+	<br>
+    <div class="container">
+        <h1 class="text-center">5장 문제집</h1>
+        <div id="progress" class="text-center progress-text"></div>
+
+        <div id="question-container"></div>
+
+        <div class="text-center mt-4">
+            <button id="prev-btn" class="btn btn-secondary" onclick="prevQuestion()" style="display: none;">이전 문제</button>
+            <button id="next-btn" class="btn btn-custom" onclick="nextQuestion()">다음 문제</button>
+        </div>
+    </div>
+
+    <script>
+        const data = `
+          index,question,A,B,C,D,E,answer,explanation
+          1,"EC2 인스턴스에서 실행되는 애플리케이션 서버를 보유한 한 회사가 있습니다. 이 앱 서버는 프라이빗 S3 버킷 내의 콘텐츠에 액세스해야 합니다. 이 요구 사항을 충족하기 위해 권장되는 접근 방식은 무엇입니까?","적절한 권한의 IAM 역할을 생성한다. 역할을 EC2 인스턴스와 연결한다.","EC2 인스턴스와 S3 간 프라이빗 통신을 위해 VPC 피어링 연결을 구성한다.","공유 액세스 키를 생성한다. 하드코딩된 키를 사용하도록 EC2 인스턴스를 구성한다.","보안 소스에서 액세스 키를 읽도록 애플리케이션을 구성한다.","A","앱 서버가 S3 버킷에 접근하기 위한 IAM 역할을 생성하고, 이를 EC2 인스턴스에 연결해야 한다."
+          2,"AWS IAM에서 그룹의 역할은 무엇입니까?","사용자의 권한을 상속받아 간단히 관리할 수 있다.","다른 AWS 계정과의 권한 공유를 허용한다.","AWS 리소스를 보호하기 위한 추가적인 계층으로 사용된다.","IAM 정책을 작성할 때 사용자 대신 그룹을 지정할 수 있다.","A","AWS IAM에서 그룹을 이용해 사용자의 권한을 상속받아 관리할 수 있다."
+          3,"AWS Organizations에서 계정을 그룹화하는 기능을 무엇이라고 합니까?","Organization Units","Service Control Policies","AWS Accounts","Resource Groups","A","AWS Organizations에서 계정을 그룹화하는 기능은 Organizational Units(OU)이다. OU를 사용해 계정을 분류하고, 계층 간 권한을 관리하며, 서비스 제어 정책을 적용할 수 있다."
+          4,"Amazon Cognito에서 사용자를 인증하기 위한 방법이 아닌 것은 무엇입니까?","AWS STS","OAuth 2.0","OpenID Connect","SAML","A","OAuth 2.0, SAML, OpenID 등은 Cognito를 통해 사용자 인증을 위한 방법이며, AWS STS는 임시 보안 자격 증명을 발급하는 보안 토큰 서비스이다."
+          5,"Amazon Cognito를 사용해 앱을 개발할 때 사용자 데이터를 저장하기 위해 사용하는 서비스가 아닌 것은 무엇입니까?","Amazon S3","Amazon DynamoDB","Amazon EBS","Amazon RDS","C","Cognito 사용자 데이터를 저장하기 위해 S3, RDS, DynamoDB를 사용할 수 있지만 EBS는 사용할 수 없다."
+          6,"다음 중 AWS Identity and Access Management(IAM)를 사용해 구현할 수 있는 보안 모범 사례는 무엇입니까?","모든 사용자에 대한 AWS 관리 콘솔 액세스를 해제한다.","모든 IAM 사용자에 대한 비밀 키를 생성한다.","사용자에게 특정 태스크에 대한 수행 권한만을 부여한다.","AWS 자격 증명을 Amazon EC2 인스턴스 내에 저장한다.","C","IAM 보안 원칙 중 하나는 ‘최소 권한 부여’이며, 이는 사용자에게 특정 작업에 대한 수행 권한만을 부여하는 것을 의미한다."
+          7,"AWS IAM에서 역할은 무엇입니까?","AWS 리소스에 대한 액세스를 허용하는 사용자와 그룹의 권한 모음이다.","다른 AWS 계정과의 권한 공유를 위한 AWS 정책이다.","인스턴스, 컨테이너, Lambda 함수 등과 같은 AWS 리소스에 연결할 수 있는 IAM 신뢰 개체다.","외부 서비스 또는 애플리케이션에게 AWS 자원에 대한 액세스 권한을 부여하는 방법이다.","C,D","AWS IAM에서 역할(role)은 인스턴스, 컨테이너, Lambda 함수 등과 연결할 수 있는 IAM 신뢰 엔티티(entity)이며 일시적인 보안 자격 증명을 생성하고 이를 사용해 AWS 리소스에 대한 액세스를 제어할 수 있다."
+          8,"IAM 사용자의 액세스 키 관리에 대한 설명으로 옳지 않은 것은 무엇입니까?","보안 액세스 키를 분실한 경우 해당 액세스 키를 삭제하고 새 키를 생성해야 한다.","액세스 키는 IAM 사용자에 대한 장기 보안 인증이다.","AWS CLI 또는 AWS API에 대한 프로그래밍 요청에 서명할 수 있다.","액세스 키는 액세스 키 ID와 보안 액세스 키로 구성된다.","계정당 하나의 액세스 키를 생성할 수 있고, 교체 가능하다.","E","장기적으로 액세스 키를 사용해야 하는 경우, 액세스 키를 생성, 수정, 교체할 수 있으며, 최대 2개의 액세스 키를 생성할 수 있다."
+          9,"시스템 관리자는 어떻게 사용자의 AWS Management Console에 로그인 보안 계층을 추가합니까?","Amazon Cloud Directory 사용","AWS Identity and Access Management(IAM) 역할 감사","Multi-Factor Authentication 활성화","AWS CloudTrail 활성화","C","사용자의 AWS Management Console에 로그인 시 보안 계층을 추가하기 위해 Multi-Factor Authentication(MFA)을 활성화할 수 있다."
+          10,"다음 중 AWS 통합 결제(Consolidated Billing)의 이점은 무엇입니까?","대량 구매 요금 할인","공유 액세스 권한","각 계정에 대한 여러 청구서","리소스를 태깅할 필요가 없어짐","A","AWS 통합 결제의 장점 중 하나는 조직 차원에서 대량으로 AWS 서비스 및 리소스를 사용하는 경우에 대한 요금 할인 혜택이 제공된다는 것이다."
+          11,"Amazon Cognito Identity Pool을 사용하는 이유가 아닌 것은 무엇입니까?","사용자 관리 용이성 증대","회원 가입 및 로그인 기능 제공","사용자 인증과 권한 부여 통합","애플리케이션에서 사용자 데이터를 안전하게 저장","B","회원 가입 및 로그인 기능은 Amazon Cognito User Pool을 이용해 구현할 수 있다."
+          12,"Amazon Cognito에서 제공하는 기능 중에서 다음 중 어떤 것이 포함되지 않는 기능입니까?","사용자 인증 및 권한 부여","사용자 그룹 관리","메시징 서비스","사용자 데이터 동기화","C","메시징은 Cognito의 기능이 아니며, AWS의 메시징 서비스로는 SQS, SNS 등이 있다."
+          13,"AWS Organizations에서 구성원 계정을 생성하기 위해 필요한 요소는 무엇입니까?","구성원 계정 이름과 이메일 주소","구성원 계정 이름과 비밀번호","구성원 계정 이름, 이메일 주소, 비밀번호, 결제정보","구성원 계정 이름, 이메일 주소, 비밀번호, 조직 담당자의 승인","D","AWS Organizations에서 구성원 계정을 생성할 때는 구성원 계정의 이름과 이메일 주소, 비밀번호를 설정해야 하고, 조직 담당자가 이를 승인하면 구성원 계정이 조직에 추가된다."
+          14,"AWS IAM에서 인라인 정책과 관리형 정책의 차이점은 무엇입니까?","인라인 정책은 한 번에 하나의 사용자나 그룹에 대해서만 적용된다.","인라인 정책은 IAM에서 미리 작성된 정책 중에서 선택할 수 있다.","관리형 정책은 한 번 작성하면 여러 사용자와 그룹에 적용할 수 있다.","관리형 정책은 IAM에서 직접 작성할 수 있으며, 인라인 정책은 불가능하다.","A,C","AWS IAM에서 관리형 정책은 한 번 작성하면 여러 사용자와 그룹에 적용할 수 있고, 인라인 정책은 특정 사용자나 그룹에 대해서만 적용된다."
+          15,"금융 서비스 회사는 AWS 계정 활동이 거버넌스, 규정 준수 및 감사 규범을 충족하는지 확인하려고 합니다. 클라우드 실무자로서 이 사용 사례에 대해 어떤 AWS 서비스를 추천하시겠습니까?","Inspector","CloudTrail","Config","CloudWatch","Trusted Advisor","B","각종 이벤트를 일일히 추적하는 CloudTrail은 AWS 계정 활동의 감사 업무에 주로 사용된다."
+          16,"다음 중 AWS 리소스에 대한 프로그래밍 방식 액세스를 제공하기 위해 권장되는 방법은 무엇입니까?","Multi-factor Authentication(MFA)을 사용해 프로그래밍 방식으로 AWS 리소스에 액세스","액세스 키 ID, 보안 액세스 키를 사용해 프로그래밍 방식으로 AWS 리소스에 액세스","새 IAM 사용자를 생성하고 사용자 이름과 암호 공유","IAM 그룹을 사용해 프로그래밍 방식으로 AWS 리소스에 액세스","B","AWS 리소스에 대한 프로그래밍 방식 액세스를 위해서는 액세스 키 ID와 비밀 액세스 키를 사용한다."
+          17,"회사는 자체 AWS 계정이 있는 각 장치가 있는 여러 장치에서 예약된 EC2 인스턴스를 사용합니다. 그러나 일부 유닛은 예약 인스턴스를 충분히 활용하지 못하는 반면, 다른 유닛은 더 많은 예약 인스턴스를 필요로 합니다. 클라우드 실무자로서 다음 중 가장 비용 최적화된 솔루션으로 추천하는 것은 무엇입니까?","Trusted Advisor를 이용해 모든 유닛을 포함한 AWS 계정을 관리할 수 있도록 한 뒤, 모든 유닛이 예약 인스턴스를 공유하도록 한다.","Systems Manager를 이용해 모든 유닛을 포함한 AWS 계정을 관리할 수 있도록 한 뒤, 모든 유닛이 예약 인스턴스를 공유하도록 한다.","Cost Explorer를 이용해 모든 유닛을 포함한 AWS 계정을 관리할 수 있도록 한 뒤, 모든 유닛이 예약 인스턴스를 공유하도록 한다.","Organizations를 이용해 모든 유닛을 포함한 AWS 계정을 관리할 수 있도록 한 뒤, 모든 유닛이 예약 인스턴스를 공유하도록 한다.","D","Organizations를 이용해 모든 유닛을 모은 AWS 계정을 관리할 수 있고, 모든 유닛이 EC2 인스턴스를 공유하도록 하는 방식이 가장 비용 효율적이다."
+          18,"다음 중 AWS Organizations에서 조직 생성 및 삭제에 대한 설명 중 옳지 않은 것은 무엇입니까?","삭제한 조직은 정책 여부에 상관없이 복구할 수 없다.","조직을 생성할 때 조직이 통합 결제 기능만 지원하는 옵션을 선택할 수 있다.","관리 계정은 SCP에 어떤 영향도 받지 않으며, SCP는 멤버 계정에만 영향을 준다.","조직을 삭제하면 조직에서 관리 계정이 제거되고 조직 자체가 삭제된다.","조직을 삭제하면 모든 멤버 계정이 자동으로 제거된다.","E","조직의 모든 멤버 계정을 삭제한 후에만 조직을 삭제할 수 있다."
+          19,"EC2 인스턴스 그룹에서 S3 버킷의 데이터를 검색해야 하는 경우, IAM에서 생성해야 하는 것은 무엇입니까? (2개)","IAM 그룹","IAM 사용자","IAM 정책","IAM 역할","AdminAccess","C,D","EC2 인스턴스가 S3 버킷에 액세스하려면 이에 맞는 IAM 역할 및 정책을 생성해서 연결해야 한다."
+          20,"다음 중 IAM이 애플리케이션 배포의 확장성을 제공하는 방법은 무엇입니까? (2개)","하나의 IAM 사용자에게 다수의 권한을 부여해 자율적으로 업무를 수행하도록 할 수 있다.","IAM 그룹을 통해 한 번에 다수의 사용자에게 권한을 할당할 수 있다.","다수의 내외부 사용자가 일시에 호스트 애플리케이션에 접속하도록 할 수 있다.","IAM 역할 및 정책을 통해 리소스 접근 권한을 제공하는 방식을 통해 다수의 인스턴스에 일관된 리소스 접근 방식을 제공할 수 있다.","IAM 기반 권한 제한을 통해 S3 버킷에서 의도치 않은 삭제를 방지할 수 있다.","B,D","IAM 그룹을 통해 한 번에 다수의 사용자에게 권한을 부여하거나, 역할 및 정책을 통해 리소스 접근 권한을 제공하는 방식으로 애플리케이션 배포의 효율성을 제공할 수 있다. 단, IAM 사용자에게 다수의 권한을 부여해 자율적으로 업무를 수행하도록 하는 것은 IAM 보안 모범 사례에 어긋난다."
+        `;
+    </script>
+    <script src="main.js" defer></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AWS_Quiz Chapter2</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR&display=swap" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="main.css">
+</head>
+<body>
+	<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+		<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+			<span class="navbar-toggler-icon"></span>
+		</button>
+		<div class="collapse navbar-collapse" id="navbarNav">
+			<ul class="navbar-nav">
+				<li class="nav-item active">
+					<a class="nav-link" href="Chapter1.html">1장</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link" href="Chapter2.html">2장</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link" href="Chapter3.html">3장</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link" href="Chapter4.html">4장</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link" href="Chapter5.html">5장</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link" href="Chapter6.html">6장</a>
+				</li>
+			</ul>
+		</div>
+	</nav>
+	<br>
+    <div class="container">
+        <h1 class="text-center">2장 문제집</h1>
+        <div id="progress" class="text-center progress-text"></div>
+
+        <div id="question-container"></div>
+
+        <div class="text-center mt-4">
+            <button id="prev-btn" class="btn btn-secondary" onclick="prevQuestion()" style="display: none;">이전 문제</button>
+            <button id="next-btn" class="btn btn-custom" onclick="nextQuestion()">다음 문제</button>
+        </div>
+    </div>
+
+    <script>
+        const data = `
+          index,question,A,B,C,D,E,answer,explanation
+          1,"AWS의 가용영역에 대한 설명 중 옳은 것은 무엇입니까?","각 가용 영역은 지리적으로 분리된 하나 이상의 데이터센터로 구성된다.","각 가용 영역은 모든 AWS 서비스에 대해 동일한 사용 가능성을 보장한다.","AWS에서 제공하는 서비스 중 가용 영역과 관련된 것은 Elastic Beanstalk이다.","가용 영역은 장애 발생 시 복구 및 격리에 유용한 AWS의 백업 및 복구 서비스이다.",,"A","각 가용 영역은 지리적으로 분리된 하나 이상의 데이터 센터로 구성된다. 가용 영역 간에는 고유한 전원, 네트워크 및 연결성을 보장하며, 서로 다른 가용 영역에서 실행되는 애플리케이션은 서로 완전히 분리된다."
+          2,"AWS 공동 책임 모델에서 고객의 책임에 해당하는 것은 무엇입니까?","AWS 서비스의 물리적 보안, 하드웨어 및 네트워크 인프라 관리","AWS 서비스 이용에 대한 모든 보안 책임","애플리케이션 코드의 보안, 데이터 보안 및 액세스 관리","AWS에서 제공하는 모든 보안 패치와 업데이트 적용",,"C","애플리케이션 코드의 보안, 데이터 보안 및 액세스 관리는 고객의 책임이다."
+          3,"AWS 에지 로케이션에 대한 설명으로 옳은 것은 무엇입니까?","AWS 서비스의 일부가 위치한 지역으로 사용자와 물리적으로 가까운 곳에서 콘텐츠를 제공한다.","AWS의 복제본 데이터베이스가 위치한 지역으로 백업 및 복구를 지원한다.","AWS에서 제공하는 데이터 분석 및 머신러닝 서비스를 지원하는 지역이다.","AWS의 물리적인 하드웨어를 관리하는 지역으로 보안 및 물리적인 관리를 담당한다.",,"A","AWS 에지 로케이션은 전 세계의 사용자들이 빠른 속도로 콘텐츠에 액세스할 수 있도록 지역적으로 위치해 있는 장소다. 에지 로케이션은 원래 AWS 지역과 별개의 물리적 위치이지만, AWS 서비스와 함께 구성할 수 있다. 에지 로케이션은 사용자와 물리적으로 가까운 지역에 배치되며, 이를 통해 빠른 속도로 콘텐츠를 제공할 수 있다."
+          4,"AWS 에지 로케이션의 주요 기능은 무엇입니까?","클라우드에서 호스팅되는 웹사이트 및 애플리케이션의 데이터베이스 및 스토리지 관리","애플리케이션을 더 빠르게 전송하고 배포하기 위한 콘텐츠 전송 네트워크(CDN) 서비스","머신러닝 및 인공지능 서비스를 위한 고성능 컴퓨팅 인프라 자원","다양한 빅데이터 처리 및 분석 서비스 제공",,"B","에지 로케이션은 콘텐츠 전송 네트워크(CDN) 서비스를 위한 인프라로서, AWS의 주요 서비스인 Amazon CloudFront, AWS Lambda@Edge, Amazon Route 53, AWS WAF 및 AWS Shield와 같은 서비스를 실행하는 데 사용된다."
+          5,"AWS Trust Advisor에 대한 설명으로 옳은 것은 무엇입니까?","애플리케이션에 따라 컨설팅 형태의 아키텍처 검토 및 조건을 제공한다.","예상치 못한 비용을 줄이고 시스템 성능을 최적화하는 데 도움을 준다.","AWS의 고객 지원 센터에서 제공하는 서비스로 실시간 지원을 제공한다.","AWS에서 제공하는 백업 및 복원 서비스로 데이터 복원 시 유용하다.",,"B","AWS Trusted Advisor는 AWS에서 제공하는 지능형 자동화 도구로, AWS 리소스의 최적화, 보안, 성능 개선 등 다양한 측면에서 조언을 제공한다. AWS Trusted Advisor를 사용하면 예상치 못한 비용을 줄이고 시스템 성능을 최적화해 비즈니스를 더욱 효율적으로 운영할 수 있다. Trusted Advisor는 AWS Management Console, API 및 AWS CLI를 통해 액세스할 수 있으며, 다양한 카테고리에서 권장 사항 및 최적화 권장 사항을 제공한다."
+          6,"AWS Trusted Advisor에서 성능을 개선하기 위해 권장하는 방법은 무엇입니까?","리소스 크기를 일정하게 유지한다.","임시 파일을 S3에 저장한다.","로그 파일을 정기적으로 삭제한다.","Elastic Load Balancer를 사용해 트래픽을 분산시킨다.",,"D","Trusted Advisor는 AWS의 사용 모범 사례를 기준으로 계정에 대한 권장 사항을 제공한다. Elastic Load Balancer를 사용해 트래픽을 분산하면 네트워크와 인프라의 부하를 줄일 수 있어 성능 개선에 도움이 된다."
+          7,"AWS Marketplace에서 사용가능한 솔루션 유형은 무엇입니까?","AMI, SaaS, PaaS","AMI, BYOL, SaaS","PaaS, IaaS, BYOL","SaaS, BYOL, IaaS",,"B","AWS Marketplace에서 사용 가능한 솔루션 유형은 AMI(Amazon Machine Image), BYOL(Bring Your Own License), SaaS(Software as a Service)이다. AMI는 가상 머신 이미지로 제공되는 소프트웨어 패키지이며, BYOL은 사용자가 소유한 라이선스를 사용해 소프트웨어를 설치하는 방식이고, SaaS는 웹 브라우저를 통해 접근할 수 있는 클라우드 기반 소프트웨어다."
+          8,"AWS Marketplace에서 AMI를 사용하는 이유는 무엇입니까?","빠른 배포를 위해 기존 인프라를 사용할 수 있다.","데이터베이스를 관리하기 위한 별도의 인프라 구성이 필요하지 않다.","오픈 소스 라이브러리를 쉽게 배포할 수 있다.","특정 애플리케이션을 테스트하기 위해 필요한 기능을 제공한다.",,"A","AWS Marketplace에서는 다양한 소프트웨어 및 서비스 제공업체가 제공하는 AMI를 사용할 수 있다. 이를 사용하면 기존 인프라를 활용해 빠르게 새로운 인스턴스를 배포할 수 있어, 시간과 비용을 절약할 수 있다. 특히 개발 및 테스트 환경에서 빠른 프로토타이핑을 위해 매우 유용하다."
+          9,"AWS Marketplace에서 AMI를 고를 때 가장 중요하게 고려해야 하는 사항은 무엇입니까?","AMI의 크기와 다운로드 시간","AMI의 용도와 사용 가능한 인스턴스 유형","AMI의 데이터베이스와 인프라 관리 기능","AMI의 보안 및 네트워크 구성",,"B","AWS Marketplace에서 AMI를 선택할 때 고려해야 할 가장 중요한 사항은 AMI의 용도와 사용 가능한 인스턴스 유형이다. AMI는 EC2 인스턴스에 설치된 운영체제, 미들웨어 및 애플리케이션을 포함하므로, 사용자가 선택하는 인스턴스 유형과 호환되는 AMI를 선택해야 한다."
+          10,"AWS 관리 콘솔에 접속하기 위해 필요한 것은 무엇입니까?","AWS 계정 정보","보안 그룹 ID","인스턴스 ID","AMI ID",,"A","AWS 관리 콘솔에 접속하기 위해서는 AWS 계정 정보가 필요하다. AWS 계정 정보는 AWS Management Console에 로그인하기 위한 이메일 주소와 암호로 구성된다. 따라서 AWS 서비스를 이용하기 위해서는 먼저 AWS 계정을 생성해야 한다."
+          11,"AWS 인프라의 어느 측면에서 컴퓨팅 및 스토리지의 글로벌 배포를 제공합니까?","AWS 리전의 여러 가용 영역","여러 AWS 리전","태그","리소스 그룹",,"B","컴퓨팅 및 스토리지의 글로벌 배포를 제공하는 AWS 인프라는 리전(Region)이다."
+          12,"사용자는 AWS 인프라에서 금지된 작업에 대한 정보를 어디에서 찾을 수 있습니까?","AWS Trusted Advisor","AWS Identity and Access Management(IAM)","AWS 결제 콘솔","AWS 이용 정책",,"D","AWS 이용 정책은 AWS 인프라에서 금지된 작업에 대한 정보를 제공한다."
+          13,"사용자가 AWS 환경에서 소프트웨어 솔루션을 찾고, 구입하며, 즉시 사용할 수 있도록 하는 AWS 제품은 무엇입니까?","AWS Config","AWS OpsWorks","AWS SDK","AWS Marketplace",,"D","AWS Marketplace는 AWS에서 실행되는 소프트웨어를 쉽게 검색, 테스트, 구매 및 배포할 수 있도록 수천 개의 Independent Software Vendor(ISV) 소프트웨어 제품 목록을 제공하는 디지털 카탈로그다."
+          14,"Amazon CloudFront는 지연 시간이 짧은 전송을 보장하기 위해 어떤 AWS 글로벌 인프라 구성 요소를 사용합니까?","AWS 리전","에지 로케이션","가용 영역","Virtual Private Cloud(VPC)",,"D","사용자에게 더 빠르게 콘텐츠를 전송하기 위해 Amazon CloudFront는 전 세계적으로 위치한 지점(에지 로케이션, 리전 에지 캐시)의 글로벌 네트워크를 사용하고 있다."
+          15,"다음 중 AWS 공동 책임 모델에 따른 AWS의 책임 사항은 무엇입니까?","고객의 애플리케이션을 재해 복구에 적합하도록 설계한다.","배포된 EC2 인스턴스의 게스트 운영체제를 업데이트한다.","AWS 계정 내에서 새 리소스를 구성한다.","물리적 인프라를 보호한다.",,"D","물리적 인프라 보호는 AWS의 책임 사항이다."
+        `;
+    </script>
+    <script src="main.js" defer></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
