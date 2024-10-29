@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AWS_Quiz ChapterPractice</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR&display=swap" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="../main.css">
+</head>
+<body>
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav">
+        <li class="nav-item active">
+          <a class="nav-link" href="Chapter1.html">1장</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="Chapter2.html">2장</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="Chapter3.html">3장</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="Chapter4.html">4장</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="Chapter5.html">5장</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="Chapter6.html">6장</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="Chapter7.html">7장</a>
+        </li>
+		<li class="nav-item">
+          <a class="nav-link" href="ChapterPractice.html">Practice장</a>
+        </li>
+      </ul>
+    </div>
+  </nav>
+	<br>
+    <div class="container">
+        <h1 class="text-center">7장 문제집</h1>
+        <div id="progress" class="text-center progress-text"></div>
+
+        <div id="question-container"></div>
+
+        <div class="text-center mt-4">
+            <button id="prev-btn" class="btn btn-secondary" onclick="prevQuestion()" style="display: none;">이전 문제</button>
+            <button id="next-btn" class="btn btn-custom" onclick="nextQuestion()">다음 문제</button>
+        </div>
+    </div>
+    <br><br><br>
+
+    <script>
+        const data = `
+			index,question,A,B,C,D,E,F,answer,explanation
+			1,"특정 사용 사례에 맞는 아키텍처 지침을 제공하는 AWS 지원 플랜은 무엇인가요?","AWS 엔터프라이즈 온-램프 지원","AWS 엔터프라이즈 지원","AWS 개발자 지원","AWS 비즈니스 지원",,,"B","AWS 엔터프라이즈 지원은 아키텍처 지침을 포함한 포괄적인 지원을 제공합니다."
+			2,"Amazon Elastic Compute Cloud(EC2)는 어떤 유형의 클라우드 컴퓨팅을 의미하나요?","서비스형 소프트웨어(SaaS)","서비스형 플랫폼(PaaS)","서비스형 네트워크(NaaS)","서비스형 인프라(IaaS)",,,"D","EC2는 AWS에서 제공하는 서비스형 인프라(IaaS)로, 사용자가 서버를 필요에 따라 프로비저닝할 수 있도록 합니다."
+			3,"한 스타트업이 AWS 클라우드에 IT 인프라를 설정하려고 합니다. CTO는 스타트업이 사용하고자 하는 AWS 서비스를 기준으로 월별 AWS 청구서 견적을 받고자 합니다. 클라우드 실무자로 이 사용 사례에 어떤 AWS 서비스를 제안하시겠습니까?","AWS 비용 및 사용량 보고서 (AWS CUR)","AWS 비용 탐색기","AWS 가격 계산기","AWS 예산",,,"C","AWS 가격 계산기는 사용자가 필요로 하는 서비스의 비용을 쉽게 계산할 수 있도록 도와줍니다."
+			4,"다음 중 AWS 글로벌 인프라에 관한 올바른 설명은 무엇입니까? (두 개 선택)","각 AWS 리전은 최소 2개의 가용 영역(AZ)으로 구성됩니다.","각 가용 영역(AZ)은 하나 이상의 개별 데이터 센터로 구성됩니다.","각 가용 영역(AZ)은 두 개 이상의 개별 데이터 센터로 구성됩니다.","각 AWS 리전은 최소 3개의 가용 영역(AZ)으로 구성됩니다.","각 AWS 리전은 두 개 이상의 엣지 위치로 구성됩니다.",,"A,B","각 AWS 리전은 최소 2개의 가용 영역으로 구성되며, 각 가용 영역은 하나 이상의 개별 데이터 센터로 이루어져 있습니다."
+			5,"한 데이터 분석 회사가 AWS에서 독점적인 배치 분석 애플리케이션을 실행 중이며, 수백 개의 EC2 인스턴스가 동시에 액세스하여 기존 파일에 데이터를 추가하는 스토리지 서비스를 사용하려고 합니다. 클라우드 실무자로서 이 사용 사례에 어떤 AWS 서비스를 제안하시겠습니까?","Amazon Elastic 파일 시스템(Amazon EFS)","Amazon Elastic Block Store(Amazon EBS)","인스턴스 스토어","아마존 심플 스토리지 서비스(S3)",,,"A","Amazon EFS는 여러 EC2 인스턴스가 동시에 액세스할 수 있는 파일 스토리지 서비스를 제공합니다."
+			6,"한 스타트업이 온프레미스 데이터 센터에서 AWS 클라우드로 데이터와 애플리케이션을 마이그레이션하려고 합니다. 이 마이그레이션을 위해 스타트업이 사용할 수 있는 옵션은 다음 중 어느 것입니까? (두 가지 선택)","AWS 트러스티드 어드바이저를 사용하여 인프라 마이그레이션 자동화하기","AWS 파트너 네트워크(APN)를 활용하여 인프라 마이그레이션을 위한 맞춤형 솔루션을 구축하세요.","AWS 프로페셔널 서비스를 활용하여 인프라 마이그레이션 가속화","AWS 개발자 포럼의 진행자에게 문의","추가 지원 받으려면 AWS 지원팀에 지원 티켓을 올리세요.",,"B,C","AWS 파트너 네트워크(APN)와 AWS 프로페셔널 서비스는 마이그레이션을 위한 맞춤형 솔루션 및 가속화를 지원합니다."
+			7,"한 금융 서비스 회사는 AWS 계정 활동이 거버넌스, 규정 준수 및 감사 규범을 충족하는지 확인하고자 합니다. 클라우드 실무자로서 이 사용 사례에 어떤 AWS 서비스를 추천하시겠습니까?","AWS 구성","AWS 클라우드 트레일","AWS 트러스티드 어드바이저","Amazon CloudWatch",,,"B","AWS 클라우드 트레일은 AWS 계정의 API 호출 및 활동을 기록하여 감사 및 규정 준수를 지원합니다."
+			8,"다음 중 AWS 트러스티드 어드바이저 베스트 프랙티스 점검의 핵심 점검만 이용할 수 있는 AWS 지원 플랜은 무엇입니까? (2개 선택)","AWS 엔터프라이즈 온-램프 지원","AWS 엔터프라이즈 지원","AWS 비즈니스 지원","AWS 개발자 지원","AWS 기본 지원",,"B,C","AWS 엔터프라이즈 지원과 AWS 비즈니스 지원은 트러스티드 어드바이저의 핵심 점검 기능을 제공합니다."
+			9,"다음 중 어느 리소스에서 실행되는 웹 애플리케이션에 대해 확장된 DDoS 공격 보호 기능을 제공하는 AWS Shield Advanced는 무엇입니까? (두 개 선택)","Amazon API 게이트웨이","AWS 글로벌 엑셀러레이터","아마존 루트 53","AWS Elastic Beanstalk","AWS 클라우드포메이션",,"A,C","AWS Shield Advanced는 Amazon API 게이트웨이와 아마존 루트 53에서 실행되는 웹 애플리케이션에 대해 DDoS 공격 보호 기능을 제공합니다."
+			10,"한 회사가 여러 EC2 인스턴스에서 애플리케이션을 실행합니다. 이 회사는 적시에 평가를 실행하고 OS 취약성을 확인하는 기존의 유지 관리 작업을 자동화하고자 합니다. 클라우드 실무자로서 이 사용 사례에 어떤 서비스를 제안하시겠습니까?","아마존 가드듀티","아마존 마키","AWS Shield","아마존 인스펙터",,,"D","아마존 인스펙터는 애플리케이션의 보안 및 취약성 평가를 자동화하는 서비스입니다."
+			11,"한 다국적 기업이 인프라를 온프레미스 데이터 센터에서 AWS 클라우드로 막 이전했습니다. 공유 책임 모델의 일환으로 AWS는 다음 중 어느 것에 대한 책임을 집니까?","고객 애플리케이션 구성","서비스 및 통신 보호 또는 영역 보안","물리적 및 환경 제어","게스트 OS 패치 적용",,,"C","AWS는 물리적 및 환경 제어에 대한 책임을 집니다."
+			12,"한 IT 회사가 온프레미스 환경에서 AWS 클라우드로 마이그레이션할 계획입니다. 다음 중 AWS 클라우드로 이전할 경우 비용 절감 효과가 있는 비용 영역은 무엇인가요? (두 개 선택)","SaaS 애플리케이션 라이선스 수수료","개발자 급여","프로젝트 관리자 급여","데이터 센터 물리적 보안 지출","데이터 센터 하드웨어 인프라 지출",,"D,E","AWS 클라우드로 이전하면 데이터 센터 물리적 보안 지출과 하드웨어 인프라 지출을 줄일 수 있습니다."
+			13,"한 회사에서 여러 단위에서 예약된 EC2 인스턴스를 사용하며 각 단위마다 자체 AWS 계정이 있습니다. 그러나 일부 부서에서는 예약 인스턴스를 제대로 활용하지 못하고 다른 부서에서는 더 많은 예약 인스턴스가 필요합니다. 클라우드 실무자로서 다음 중 가장 비용 최적화된 솔루션으로 추천하고 싶은 것은 무엇인가요?","AWS 비용 탐색기를 사용하여 모든 유닛의 AWS 계정을 관리한 다음 예약된 EC2 인스턴스를 모든 유닛 간에 공유하세요.","AWS 시스템 관리자를 사용하여 모든 유닛의 AWS 계정을 관리한 다음 예약된 EC2 인스턴스를 모든 유닛 간에 공유하세요.","AWS 조직을 사용하여 모든 단위의 AWS 계정을 관리한 다음 예약된 EC2 인스턴스를 모든 단위 간에 공유하세요.","AWS 트러스티드 어드바이저를 사용하여 모든 유닛의 AWS 계정을 관리한 다음 예약된 EC2 인스턴스를 모든 유닛 간에 공유하세요.",,,"C","AWS 조직을 통해 여러 AWS 계정을 효율적으로 관리하고 예약된 인스턴스를 공유할 수 있습니다."
+			14,"IT 회사의 DevOps 팀이 500GB의 데이터를 EC2 인스턴스에서 같은 리전에 있는 S3 버킷으로 이동하고 있습니다. 다음 중 이 데이터 전송에 대한 올바른 요금을 나타내는 시나리오는 무엇인가요?","EC2 인스턴스에서의 아웃바운드 데이터 전송과 S3 버킷으로의 인바운드 데이터 전송 모두에 대해 요금이 부과됩니다.","회사는 S3 버킷으로의 인바운드 데이터 전송에 대해서만 요금이 부과됩니다.","EC2 인스턴스에서 아웃바운드 데이터 전송에 대해서만 요금이 청구됩니다.","회사는 이 데이터 전송에 대해 비용을 청구하지 않습니다.",,,"A","EC2에서 S3로의 데이터 전송은 아웃바운드 및 인바운드 모두에 대해 요금이 부과됩니다."
+			15,"한 회사가 비용을 절감하고 워크로드 성능을 향상시킬 수 있도록 워크로드에 대한 최적의 AWS 리소스 구성을 파악하고자 합니다. 다음 중 이 요구 사항을 충족하기 위해 사용할 수 있는 서비스는 무엇인가요?","AWS 시스템 관리자","AWS 예산","AWS 컴퓨팅 옵티마이저","AWS 비용 탐색기",,,"C","AWS 컴퓨팅 옵티마이저는 워크로드에 대한 최적의 리소스 구성을 제안하여 비용 절감과 성능 향상을 지원합니다."
+			16,"온디맨드 인스턴스 가격과 비교하여 스팟 인스턴스에 대해 제공되는 최대 할인율은 얼마인가요?","90","75","10","50",,,"A","스팟 인스턴스는 온디맨드 인스턴스 가격 대비 최대 90% 할인된 가격으로 제공됩니다."
+			17,"AWS 클라우드 도입 프레임워크(AWS CAF)에 따르면, 조직 혁신의 일환으로 AWS 클라우드로 마이그레이션을 계획하고 고객 문의 및 피드백에 더 잘 대응하기 위해 기업이 수행해야 하는 두 가지 작업은 무엇인가요? (두 가지 선택)","기존 제품 및 서비스로 새로운 분석 인사이트 창출","애자일 방법을 활용하여 빠르게 반복하고 진화하기","관료적인 디자인 원칙을 중심으로 팀을 구성하세요","비용 효율성을 위한 레거시 인프라 활용","제품 및 가치 흐름을 중심으로 팀을 구성하세요",,"A,B","조직 혁신을 위해 새로운 분석 인사이트를 창출하고 애자일 방법론을 활용하여 진화하는 것이 중요합니다."
+			18,"한 회사가 주력 애플리케이션의 복원력을 개선하기 위해 기존 데이터베이스 시스템에서 관리형 AWS 데이터베이스 서비스로 전환하여 미국 동부 및 서부 AWS 지역 모두에서 액티브-액티브 구성을 지원하고자 합니다. 지역 간 지원을 통한 액티브-액티브 구성은 이 회사가 고려하는 모든 데이터베이스 솔루션의 주요 기준입니다. 이 요구 사항에 가장 적합한 AWS 데이터베이스 서비스는 무엇일까요?","Amazon DynamoDB와 DynamoDB 액셀러레이터","멀티 마스터 클러스터가 있는 Amazon Aurora","MySQL용 Amazon 관계형 데이터베이스 서비스 (Amazon RDS)","글로벌 테이블이 포함된 Amazon DynamoDB",,,"B","멀티 마스터 클러스터가 있는 Amazon Aurora는 액티브-액티브 구성을 지원합니다."
+			19,"AWS에서 처음 작업하는 프로젝트 관리자가 AWS에서 크레딧이 어떻게 사용되는지 혼란스러워합니다. 관리자의 계정에는 두 개의 크레딧이 있습니다. 크레딧 1은 $100이며 2022년 7월에 만료되며 Amazon S3 또는 Amazon EC2에 사용할 수 있습니다. 크레딧 2는 $50이며 2022년 12월에 만료되며, Amazon EC2에만 사용할 수 있습니다. 관리자의 AWS 계정에는 Amazon EC2에 대해 $1000, Amazon S3에 대해 $500의 두 가지 요금이 부과되었습니다. 크레딧을 사용한 후 전체 청구서에는 어떤 결과가 표시되나요? (두 개 선택)","그런 다음 Amazon S3 사용에 대해 $500에 크레딧 2가 적용됩니다.","그런 다음 크레딧 2가 나머지 Amazon EC2 사용량 $900에 적용됩니다.","7월에 만료되는 크레딧 1은 Amazon S3 사용량에 적용되며, 이 크레딧을 사용하면 Amazon EC2 요금 1000달러와 Amazon S3 요금 400달러가 남습니다.","7월에 만료되는 크레딧 1은 Amazon EC2 요금에 적용되며, 900달러의 Amazon EC2 요금과 500달러의 Amazon S3 요금이 남습니다.","한 청구 주기에는 하나의 크레딧만 사용할 수 있으며 고객은 사용 가능한 크레딧 중에서 선택할 수 있습니다.",,"D,E","크레딧 1이 Amazon EC2 요금에 적용되어 $900의 잔여 요금과 $500의 Amazon S3 요금이 남고, 한 청구 주기에는 하나의 크레딧만 사용할 수 있습니다."
+			20,"한 전자상거래 회사가 단일 가용 영역(AZ)에 RDS 데이터베이스를 배포했습니다. 엔지니어링 팀은 AZ가 중단되는 경우에도 데이터베이스가 수동 관리 개입 없이 동일한 엔드포인트에서 계속 작동하기를 원합니다. 다음 중 이 사용 사례를 해결할 수 있는 솔루션은 무엇인가요?","대기 상태로의 자동 페일오버를 사용하여 RDS Multi-AZ 배포에서 데이터베이스 구성","AWS Elastic Beanstalk를 통해 데이터베이스 배포","대기 모드로 자동 페일오버를 사용하여 RDS 읽기 복제본 모드에서 데이터베이스를 구성합니다.","AWS CloudFormation을 통한 데이터베이스 프로비저닝",,,"A","RDS Multi-AZ 배포는 자동으로 페일오버를 제공하여 가용성을 보장합니다."
+			21,"다음 중 기본적으로 암호화가 활성화되어 있는 AWS 서비스는 무엇인가요?","Amazon Elastic Block Store (Amazon EBS)","Amazon 관계형 데이터베이스 서비스 (Amazon RDS)","Amazon Elastic 파일 시스템 (Amazon EFS)","AWS CloudTrail 로그",,,"C","Amazon Elastic 파일 시스템 (Amazon EFS)은 기본적으로 암호화가 활성화되어 있습니다."
+			22,"데이터 액세스 빈도는 낮지만 필요할 때 빠르게 액세스해야 하는 프로젝트를 위한 스토리지 솔루션이 필요합니다. 주어진 사용 사례에 가장 비용 효율적인 S3 스토리지 클래스는 무엇인가요?","Amazon S3 인텔리전트 계층화 (S3 인텔리전트 계층화)","Amazon S3 표준","아마존 S3 글레이셔 (S3 글레이셔)","Amazon S3 표준-빈번한 액세스 (S3 표준 IA)",,,"C","아마존 S3 글레이셔 (S3 글레이셔)는 데이터 액세스 빈도가 낮지만 필요할 때 빠르게 접근할 수 있는 비용 효율적인 옵션입니다."
+			23,"다음 중 자기 주도형 실습이 포함된 온라인 교육에 액세스할 수 있는 AWS 지원 플랜은 무엇인가요?","AWS 비즈니스 지원","AWS 개발자 지원","AWS 엔터프라이즈 온-램프 지원","AWS 엔터프라이즈 지원",,,"B","AWS 개발자 지원 플랜은 자기 주도형 실습을 포함한 온라인 교육에 액세스할 수 있습니다."
+			24,"AWS 클라우드에서 마이크로서비스 기반 애플리케이션의 구성 요소를 분리하는 데 사용할 수 있는 AWS 서비스는 무엇입니까? (2개 선택)","아마존 간편 알림 서비스 (SNS)","AWS 람다","아마존 단순 대기열 서비스 (SQS)","AWS 단계 함수","Amazon Elastic Compute Cloud (Amazon EC2)",,"A,B","아마존 간편 알림 서비스 (SNS)와 AWS Lambda는 마이크로서비스 아키텍처에서 구성 요소를 분리하는 데 사용될 수 있습니다."
+			25,"수신 트래픽을 여러 타깃에 자동으로 분산하려면 다음 중 어떤 AWS 서비스를 사용해야 하나요?","AWS 탄력적 로드 밸런싱 (ELB)","아마존 오픈서치 서비스","AWS Elastic Beanstalk","AWS 자동 확장",,,"A","AWS 탄력적 로드 밸런싱 (ELB)은 수신 트래픽을 여러 타깃에 자동으로 분산시킵니다."
+			26,"다음 중 VPC에서 프라이빗 연결을 위해 VPC 엔드포인트 게이트웨이를 지원하는 AWS 서비스는 무엇인가요? (2개 선택)","Amazon Elastic Compute Cloud (Amazon EC2)","아마존 단순 대기열 서비스 (SQS)","Amazon DynamoDB","아마존 심플 스토리지 서비스 (Amazon S3)","아마존 간편 알림 서비스 (SNS)",,"C,D","Amazon DynamoDB와 아마존 심플 스토리지 서비스 (Amazon S3)는 VPC 엔드포인트 게이트웨이를 지원합니다."
+			27,"한 다국적 기업이 AWS로 마이그레이션하고 AWS 클라우드에서 애플리케이션을 관리하는 데 대한 전문가의 조언을 받고자 합니다. 다음 중 어떤 기관을 이 계약에 추천하시겠습니까?","컨시어지 지원 팀","APN 컨설팅 파트너","APN 기술 파트너","AWS 트러스티드 어드바이저",,,"B","APN 컨설팅 파트너는 AWS 클라우드에서 애플리케이션을 관리하는 데 전문가의 조언을 제공합니다."
+			28,"다음 중 Amazon Aurora의 기본 OS에 패치를 적용하는 엔터티는 무엇인가요?","고객으로부터 요청을 받은 후 AWS 지원팀은 다음을 수행합니다.","AWS 시스템 관리자를 사용하는 AWS 고객","AWS 제품 팀이 자동으로","인스턴스에서 SSH를 통한 AWS 고객",,,"C","Amazon Aurora의 기본 OS에 패치를 적용하는 것은 AWS 제품 팀이 자동으로 수행합니다."
+			29,"다음 중 EBS (Amazon Elastic Block Store) 및 Amazon EFS (Amazon Elastic File System) 스토리지 유형의 가용 영역(AZ) 특정 특성과 관련하여 올바른 설명은 어느 것입니까?","EBS 볼륨은 여러 가용 영역(AZ)에 있는 하나 이상의 인스턴스에 연결할 수 있으며, EFS 파일 시스템은 여러 가용 영역(AZ)에 있는 인스턴스에 마운트할 수 있습니다.","EBS 볼륨은 동일한 가용 영역(AZ)에 있는 단일 인스턴스에 연결할 수 있으며, EFS 파일 시스템은 동일한 가용 영역(AZ)에 있는 인스턴스에만 마운트할 수 있습니다.","EBS 볼륨은 여러 가용 영역(AZ)에 있는 하나 이상의 인스턴스에 연결할 수 있으며, EFS 파일 시스템은 동일한 가용 영역(AZ)에 있는 인스턴스에 마운트할 수 있습니다.","EBS 볼륨은 동일한 가용 영역(AZ)에 있는 단일 인스턴스에 연결할 수 있는 반면, EFS 파일 시스템은 여러 가용 영역(AZ)에 걸쳐 있는 인스턴스에 마운트할 수 있습니다.",,,"D","EBS 볼륨은 동일한 AZ에 있는 단일 인스턴스에 연결되고, EFS는 여러 AZ에 걸쳐 있는 인스턴스에 마운트될 수 있습니다."
+			30,"한 빅데이터 분석 회사가 온프레미스 데이터센터에서 AWS 클라우드로 IT 인프라를 옮기고 있습니다. 이 회사는 AWS에서 사용하고자 하는 일부 서버 바운드 소프트웨어 라이선스를 보유하고 있습니다. 클라우드 실무자로서 이 회사에 다음 중 어떤 EC2 인스턴스 유형을 추천하시겠습니까?","전용 호스트","온디맨드 인스턴스","전용 인스턴스","예약 인스턴스 (RI)",,,"A","전용 호스트는 서버 바운드 소프트웨어 라이선스의 요구 사항을 충족하는 데 적합합니다."
+			31,"프로그래밍 언어별 API를 사용하여 AWS 서비스에 액세스하는 데 도움이 되는 도구/서비스는 무엇인가요?","AWS 관리 콘솔","통합 개발 환경 (IDE)","AWS 소프트웨어 개발자 키트 (SDK)","AWS 명령줄 인터페이스 (CLI)",,,"C","AWS 소프트웨어 개발자 키트 (SDK)는 프로그래밍 언어별 API를 사용하여 AWS 서비스에 액세스할 수 있도록 도와줍니다."
+			32,"사이버 포렌식 팀이 AWS 소유의 IP 주소가 악의적인 공격을 수행하는 데 사용되고 있는 것을 발견했습니다. 이는 AWS 서비스 사용 금지에 해당하므로 다음 중 이 문제를 해결하기 위한 올바른 해결책은 무엇인가요?","AWS 개발자 포럼 운영자에게 문의","AWS 어뷰징 팀에 문의","AWS 지원 팀에 문의","아마존의 창립자인 제프 베조스에게 사건의 세부 사항을 담은 이메일을 작성합니다.",,,"B","이 문제는 AWS 어뷰징 팀에 문의하여 해결해야 합니다."
+			33,"다음 중 AWS Well-Architected Framework의 신뢰성 기둥의 설계 원칙인 확장에 대한 올바른 설명은 어느 것입니까?","스케일 아웃 작업은 기존 리소스 풀에 인스턴스를 더 추가하여 확장하는 것을 의미합니다.","스케일 업 작업은 기존 머신/노드에 더 많은 성능 (CPU, RAM)을 추가하여 확장하는 것을 의미합니다.","확장 작업을 통해 내결함성을 달성합니다.","스케일 아웃 작업으로 내결함성 달성.",,,"A","스케일 아웃 작업은 기존 리소스 풀에 인스턴스를 추가하여 확장하는 것입니다."
+			34,"분산 서비스 거부 (DDoS) 공격을 완화하는 데 사용할 수 있는 AWS 서비스는 무엇인가요?","AWS Shield","Amazon CloudWatch","AWS 키 관리 서비스 (AWS KMS)","AWS 시스템 관리자",,,"A","AWS Shield는 DDoS 공격을 완화하는 데 사용되는 서비스입니다."
+			35,"AWS 클라우드에서 제공하는 스토리지 서비스는 다음 중 어느 것인가요? (2가지 선택)","아마존 심플 스토리지 서비스 (Amazon S3)","Amazon Elastic Compute Cloud (Amazon EC2)","Amazon Elastic 파일 시스템 (Amazon EFS)","아마존 간편 알림 서비스 (SNS)","아마존 단순 대기열 서비스 (SQS)",,"A,C","아마존 심플 스토리지 서비스 (Amazon S3)와 Amazon Elastic 파일 시스템 (Amazon EFS)는 AWS의 스토리지 서비스입니다."
+			36,"여러 리소스로 트래픽을 라우팅하고 각 리소스로 라우팅되는 트래픽의 양을 선택하려면 어떤 AWS Route 53 라우팅 정책을 사용하시겠습니까?","가중 라우팅","장애 조치 라우팅","간단한 라우팅","지연 시간 기반 라우팅",,,"A","가중 라우팅 정책은 여러 리소스로 트래픽을 분산하고 각 리소스에 대한 트래픽의 비율을 조정할 수 있습니다."
+			37,"다음 중 AWS VPC 서비스와 관련하여 올바른 설명은 무엇인가요? (두 개 선택)","네트워크 주소 변환 인스턴스(NAT 인스턴스)는 AWS에서 관리합니다.","보안 그룹은 허용 규칙만 가질 수 있습니다.","네트워크 주소 변환 게이트웨이(NAT 게이트웨이)는 AWS에서 관리합니다.","네트워크 ACL(네트워크 액세스 제어 목록)에는 허용 규칙만 있을 수 있습니다.","보안 그룹은 허용 및 거부 규칙을 모두 가질 수 있습니다.",,"C,E","네트워크 주소 변환 게이트웨이(NAT 게이트웨이)는 AWS에서 관리되며, 보안 그룹은 허용 및 거부 규칙을 모두 가질 수 있습니다."
+			38,"다음 중 공용 인터넷을 사용하지 않고 회사의 온프레미스 환경을 VPC에 연결하는 데 사용할 수 있는 AWS 서비스는 무엇인가요?","VPC 엔드포인트","인터넷 게이트웨이","AWS 다이렉트 커넥트","AWS 사이트 간 VPN",,,"C","AWS Direct Connect는 공용 인터넷을 사용하지 않고 온프레미스 환경을 VPC에 연결하는 데 사용됩니다."
+			39,"한 유니콘 스타트업이 음성 기반 인터페이스를 지원하는 분석 애플리케이션을 개발하고 있습니다. 이 애플리케이션은 사용자의 음성 기반 입력을 받은 다음 음성을 통해 결과를 전달합니다. 클라우드 실무자로서 주어진 사용 사례에 어떤 솔루션을 추천하시겠습니까?","Amazon 번역을 사용하여 음성을 텍스트로 변환하여 다운스트림 분석에 활용하세요. 그런 다음 Amazon Polly를 사용하여 음성을 통해 텍스트 결과를 전달합니다.","Amazon Polly를 사용하여 음성을 텍스트로 변환하여 다운스트림 분석에 활용하세요. 그런 다음 Amazon 트랜스크라이브를 사용하여 음성을 통해 텍스트 결과를 전달합니다.","Amazon Polly를 사용하여 음성을 텍스트로 변환하여 다운스트림 분석에 활용하세요. 그런 다음 Amazon 번역을 사용하여 음성으로 텍스트 결과를 전달합니다.","Amazon 트랜스크라이브를 사용하여 음성을 텍스트로 변환하여 다운스트림 분석에 활용하세요. 그런 다음 Amazon Polly를 사용하여 음성을 통해 텍스트 결과를 전달하세요.",,,"D","Amazon 트랜스크라이브를 사용하여 음성을 텍스트로 변환하고, 이후 Amazon Polly를 사용하여 결과를 음성으로 전달하는 것이 적합합니다."
+			40,"모든 AWS 고객에게 추가 비용 없이 기본적으로 제공되는 AWS의 어떤 보안 서비스가 있나요?","AWS 시크릿 매니저","AWS 웹 애플리케이션 방화벽 (AWS WAF)","AWS 쉴드 표준","AWS 쉴드 어드밴스드",,,"C","AWS 쉴드 표준은 모든 AWS 고객에게 추가 비용 없이 기본적으로 제공되는 DDoS 방어 서비스입니다."
+			41,"다음 중 타사 소프트웨어와의 AWS 상호 운용성에 대한 지침, 구성 및 문제 해결에 대한 액세스를 제공하는 AWS 지원 플랜은 무엇인가요? (두 가지 선택)","AWS 기본 지원","AWS 비즈니스 지원","AWS 개발자 지원","AWS 기업 지원","AWS 엔터프라이즈 지원",,"B,D","AWS 비즈니스 지원과 AWS 기업 지원은 타사 소프트웨어와의 상호 운용성 관련 지원을 제공합니다."
+			42,"다음 중 클라우드 컴퓨팅의 장점은 무엇인가요? (세 가지 선택)","변동 비용에 대한 무역 자본 비용","단 몇 번의 클릭만으로 전 세계 여러 지역에 애플리케이션을 배포하고 몇 분 만에 글로벌로 진출하세요.","자본 비용에 대한 변동 비용 거래","데이터 센터 구축 및 유지 관리에 비용 지출","인프라 용량 요구 사항을 위해 몇 달 동안 계획을 세우세요.","대규모 규모의 경제를 통한 이점",,"A,B,F","변동 비용 거래, 글로벌 배포 용이성, 대규모 경제는 클라우드의 주요 장점입니다."
+			43,"웹 애플리케이션은 모든 데이터를 Amazon S3 버킷에 저장합니다. 클라이언트가 데이터를 Amazon S3로 전송하기 전에 암호화하도록 요구했습니다. 다음 중 고객의 필요에 따라 데이터를 암호화하는 데 적합한 기술은 무엇인가요?","Amazon S3 관리형 키 (SSE-S3)로 서버 측 암호화 사용","AWS 키 관리 서비스 (AWS KMS) 키 (SSE-KMS)를 사용하여 서버 측 암호화 사용","AWS 암호화 SDK를 사용하여 클라이언트 측 암호화 활성화","Amazon S3에 기록되는 모든 개체에 대해 기본적으로 암호화가 활성화되어 있습니다. 추가 구성이 필요하지 않습니다.",,,"C","AWS 암호화 SDK를 사용하면 클라이언트 측에서 데이터를 암호화할 수 있습니다."
+			44,"기존 온프레미스 IT 인프라에 비해 AWS 클라우드가 제공하는 장점은 무엇인가요? (두 가지 선택)","온프레미스 서버를 유지 관리하여 애플리케이션에 더 짧은 지연 시간 제공","인프라 용량 요구 사항에 대한 추측 불필요","애플리케이션을 배포하기 전에 용량 결정을 내려 비용을 절감하세요.","데이터 센터에서 서버 및 기타 필요한 리소스를 제시간에 준비하여 속도와 민첩성 향상","변동 비용에 대한 무역 자본 비용",,"B,E","AWS 클라우드는 용량 계획의 필요성을 줄이고 변동 비용 모델을 제공합니다."
+			45,"전자상거래 회사의 DevOps 팀은 마이크로서비스 아키텍처를 사용하여 구축된 서버리스 애플리케이션의 성능 문제를 디버깅하려고 합니다. 클라우드 실무자로서 이 사용 사례를 해결하기 위해 어떤 AWS 서비스를 추천하시겠습니까?","아마존 핀포인트","AWS 클라우드포메이션","AWS X-Ray","AWS 트러스티드 어드바이저",,,"C","AWS X-Ray는 애플리케이션의 성능을 분석하고 문제를 디버깅하는 데 적합한 서비스입니다."
+			46,"AWS Well-Architected Framework의 신뢰성 요소 중 하나인 조직의 변경 관리를 용이하게 하는데 사용할 수 있는 AWS 서비스는 무엇입니까? (3개 선택)","AWS 트러스티드 어드바이저","아마존 인스펙터","Amazon CloudWatch","AWS 클라우드 트레일","아마존 가드 듀티","AWS 구성",,"C,D,F","Amazon CloudWatch, AWS 클라우드 트레일, AWS 구성은 변경 관리를 지원합니다."
+			47,"한 회사가 AWS 클라우드로 이전하여 필요할 때마다 관련 AWS 서비스를 활용하여 빠른 반복으로 새로운 기능을 출시하고자 합니다. 다음 중 AWS 클라우드의 어떤 특성을 활용하고 싶으신가요?","민첩성","탄력성","신뢰성","확장성",,,"A","민첩성은 새로운 기능을 빠르게 반복하고 출시하는 데 중요한 특성입니다."
+			48,"AWS 웹 애플리케이션 방화벽(WAF)은 어느 계층에서 일반적인 웹 익스플로잇에 대한 보호 기능을 제공하나요?","레이어 4 및 7","레이어 3","레이어 7","레이어 4",,,"A","AWS WAF는 레이어 4 및 레이어 7에서 웹 애플리케이션을 보호합니다."
+			49,"한 의료 연구 스타트업이 HIPAA 가이드라인과 관련된 AWS 서비스의 규정 준수 여부를 파악하고자 합니다. AWS에서 HIPAA 규정 준수 및 거버넌스 관련 문서를 검토하는데 어떤 AWS 서비스를 사용할 수 있나요?","AWS 시스템 관리자","AWS 아티팩트","AWS 트러스티드 어드바이저","AWS 시크릿 매니저",,,"B","AWS 아티팩트는 HIPAA 규정 준수 관련 문서를 검토할 수 있는 서비스입니다."
+			50,"AWS 공유 책임 모델에 따라 AWS와 고객이 공동으로 책임을 지는 것은 다음 중 어느 것인가요?","다양한 AWS 고객 간의 데이터 분리 보장","Amazon S3(Amazon Simple Storage Service) 스토리지 서버의 인프라 유지 관리","가용 영역(AZ) 인프라 유지 관리","구성 관리",,,"D","구성 관리는 AWS와 고객이 공동으로 책임을 지는 영역입니다."
+			51,"다음 중 EC2 예약 인스턴스(RI)를 구매하는데 가장 비용 효율적인 옵션은 무엇인가요?","표준 3년 기간의 부분 선불 결제 옵션","표준 1년 기간의 선불 결제 옵션 없음","표준 1년 기간의 모든 선불 결제 옵션","표준 3년 기간의 선불 결제 옵션 없음",,,"A","표준 3년 기간의 부분 선불 결제 옵션이 가장 비용 효율적입니다."
+			52,"다음 중 비용 최적화를 위한 예약을 지원하는 AWS 서비스는 무엇인가요? (3개 선택)","Amazon 관계형 데이터베이스 서비스(Amazon RDS)","아마존 심플 스토리지 서비스(Amazon S3)","Amazon DynamoDB","Amazon Elastic Compute Cloud(Amazon EC2)","AWS 람다","Amazon 문서DB",,"A,C,D","Amazon RDS, DynamoDB, EC2는 예약을 통한 비용 최적화를 지원합니다."
+			53,"AWS 공유 책임 모델에 따르면 AWS의 책임은 다음 중 어느 것인가요? (2가지 선택)","적절한 사용자 액세스를 위한 S3 버킷 정책 만들기","Amazon EC2 인스턴스에 액세스하기 위한 IAM 역할 만들기","조직의 AWS 계정에서 다단계 인증 사용 설정하기","Amazon EC2 인스턴스의 결함이 있는 하드웨어 교체하기","Amazon S3 데이터를 다양한 가용성 영역에서 유지하여 내구성 유지",,"D,E","AWS는 하드웨어 교체와 데이터 내구성 유지에 책임이 있습니다."
+			54,"다음 중 서버리스 AWS 서비스란 무엇인가요?","AWS 람다","Amazon Elastic Compute Cloud(Amazon EC2)","AWS Elastic Beanstalk","Amazon EMR",,,"A","AWS Lambda는 서버리스 컴퓨팅을 제공하는 서비스입니다."
+			55,"예약 사용률이 정의된 임계값 아래로 떨어질 때 알림을 수신하는 데 도움이 되는 AWS 서비스는 무엇인가요?","AWS 예산","AWS 트러스티드 어드바이저","AWS 가격 계산기","AWS 클라우드 트레일",,,"A","AWS 예산은 사용량과 비용을 모니터링하고 알림을 제공합니다."
+			56,"스타트업은 장기간 동안 가능한 한 최저 비용으로 EC2 인스턴스를 프로비저닝하고 싶지만 인스턴스가 중단되지 않도록 해야합니다. 클라우드 실무자로서 다음 중 어떤 옵션을 추천하시겠습니까?","EC2 전용 호스트","EC2 스팟 인스턴스","EC2 온디맨드 인스턴스","EC2 예약 인스턴스 (RI)",,,"D","EC2 예약 인스턴스는 장기간 동안 인스턴스를 저렴하게 사용할 수 있게 해줍니다."
+			57,"다음 중 데이터를 검색하는 데 가장 많은 시간(첫 바이트 대기 시간이라고도 함)이 걸리는 Amazon S3 스토리지 클래스는 무엇인가요?","Amazon S3 글레이셔 유연한 검색","아마존 S3 글래시어 딥 아카이브","Amazon S3 표준","Amazon S3 인텔리전트 계층화",,,"B","아마존 S3 글래시어 딥 아카이브는 데이터 검색 시 가장 오랜 시간이 걸립니다."
+			58,"다음 중 AWS 조직에서 AWS 계정을 제거하는 것과 관련하여 올바른 것은 무엇인가요?","AWS 지원팀에 지원 티켓을 제출하여 계정을 제거하세요","AWS 계정은 AWS 시스템 관리자에서 제거할 수 있습니다","AWS 계정에 SCP(서비스 제어 정책)가 연결되어 있지 않아야 합니다. 그래야만 AWS 조직에서 제거할 수 있습니다","AWS 계정은 독립 실행형 계정으로 작동할 수 있어야 합니다. 그래야만 AWS 조직에서 제거할 수 있습니다.",,,"C","AWS 계정은 SCP가 없을 때만 조직에서 제거할 수 있습니다."
+			59,"다음 중 AWS 리소스에 대한 프로그래밍 방식의 액세스를 제공하는 데 권장되는 방법은 무엇인가요?","액세스 키 ID와 비밀 액세스 키를 사용하여 프로그래밍 방식으로 AWS 리소스에 액세스하기","AWS 멀티팩터 인증(AWS MFA)을 사용하여 프로그래밍 방식으로 AWS 리소스에 액세스하기","새 IAM 사용자를 만들고 사용자 이름과 비밀번호를 공유합니다.","IAM 사용자 그룹을 사용하여 프로그래밍 방식으로 AWS 리소스에 액세스하기",,,"A","액세스 키 ID와 비밀 액세스 키를 사용하는 것이 권장됩니다."
+			60,"한 연구 그룹이 EC2 인스턴스를 사용하여 내결함성 아키텍처를 갖춘 과학 계산 애플리케이션을 실행하려고 합니다. 이 애플리케이션에는 빠른 I/O 성능을 제공하는 고성능 하드웨어 디스크가 필요합니다. 클라우드 실무자로서 가장 비용 효율적인 솔루션으로 다음 중 어떤 스토리지 옵션을 추천하시겠습니까?","아마존 엘라스틱 블록 스토어(EBS)","인스턴스 스토어","아마존 심플 스토리지 서비스(Amazon S3)","Amazon Elastic 파일 시스템(Amazon EFS)",,,"B","인스턴스 스토어는 높은 성능을 제공하며 비용 효율적입니다."
+			61,"다음 중 AWS 데이터베이스 서비스는 무엇인가요?","AWS 스토리지 게이트웨이","아마존 레드시프트","AWS 데이터베이스 마이그레이션 서비스(AWS DMS)","AWS 글루",,,"B","아마존 레드시프트는 AWS의 데이터베이스 서비스입니다."
+			62,"IT 회사의 인턴이 초당 과금 방식으로 Linux 기반 주문형 EC2 인스턴스를 프로비저닝했지만 다른 인스턴스 유형을 프로비저닝하기 위해 30초 이내에 인스턴스를 종료했습니다. 인스턴스 요금이 청구되는 기간은 어떻게 되나요?","600초","30초","300초","60초",,,"D","EC2 인스턴스는 최소 60초 요금이 청구됩니다."
+			63,"한 회사에서 AWS 서비스에서 암호화를 위한 자체 키를 생성하고 사용하는 것을 제어하고자 합니다. 다음 중 이 사용 사례에 사용할 수 있는 것은 무엇인가요?","AWS 관리형 키","고객 관리 키(CMK)","AWS 소유 키","AWS 시크릿 매니저",,,"B","고객 관리 키(CMK)는 고객이 생성하고 관리하는 키입니다."
+			64,"다음 중 Amazon RDS(Amazon 관계형 데이터베이스 서비스)와 같은 AWS 관리형 서비스를 사용하면 얻을 수 있는 이점은 무엇인가요?","AWS 관리형 Amazon 관계형 데이터베이스 서비스(Amazon RDS) 인스턴스의 성능이 고객 관리형 데이터베이스 인스턴스보다 우수합니다","고객이 기본 OS에 패치를 적용해야 합니다","데이터베이스 인스턴스 유형 및 크기를 최적화할 필요가 없습니다.","고객이 데이터베이스 백업을 관리해야 하는 경우",,,"C","AWS 관리형 서비스는 고객이 DB 관리의 복잡성을 줄일 수 있도록 도와줍니다."
+			65,"실리콘밸리에 기반을 둔 한 의료 스타트업은 익명화된 환자 건강 데이터를 Amazon S3에 저장합니다. CTO는 민감한 데이터 유출을 방지하기 위해 S3의 모든 민감한 데이터를 검색하고 식별하기를 원합니다. 클라우드 실무자로서 이 사용 사례를 해결하기 위해 어떤 AWS 서비스를 추천하시겠습니까?","AWS 시크릿 매니저","아마존 마키","아마존 폴리","AWS 글루",,,"B","아마존 마키는 민감한 데이터를 식별하는 데 유용합니다."
+		`;
+
+
+	const parseCSV = (csv) => {
+		const rows = csv.trim().split('\n').slice(1);
+		return rows.map(row => {
+			const regex = /(".*?"|[^,]+)/g;
+			return row.match(regex).map(item => item.replace(/(^"|"$)/g, ''));
+		});
+	};
+
+	const parsedData = parseCSV(data);
+	let currentIndex = 0;
+
+	function showQuestion(index) {
+		const questionContainer = document.getElementById('question-container');
+		questionContainer.innerHTML = `
+			<div class="card question-card">
+				<div class="card-body">
+					<h5 class="card-title">${parsedData[index][0]}. ${parsedData[index][1]}</h5>
+					<ul class="list-group list-group-flush">
+						<li class="list-group-item">A) ${parsedData[index][2]}</li>
+						<li class="list-group-item">B) ${parsedData[index][3]}</li>
+						<li class="list-group-item">C) ${parsedData[index][4]}</li>
+						<li class="list-group-item">D) ${parsedData[index][5]}</li>
+						${parsedData[index][8] ? `<li class="list-group-item">E) ${parsedData[index][6]}</li>` : ''}
+						${parsedData[index][9] ? `<li class="list-group-item">F) ${parsedData[index][7]}</li>` : ''}
+					</ul>
+					<div class="d-flex align-items-center mt-2">
+						<button class="btn btn-custom mt-3" onclick="toggleAnswer(this, '${parsedData[index][9] ? parsedData[index][8] : (parsedData[index][8] ? parsedData[index][7] : parsedData[index][6])}')">정답 보기</button>
+						<span class="answer ml-auto"></span> <!-- 오른쪽 끝으로 이동 -->
+					</div>
+					<div class="d-flex align-items-center mt-2">
+						<button class="btn btn-custom mt-3" onclick="toggleExplanation(this, '${parsedData[index][9] ? parsedData[index][9] : (parsedData[index][8] ? parsedData[index][8] : parsedData[index][7])}')">해설 보기</button>
+					</div>
+					<br>
+					<div id="explanation" class="explanation ml-auto"></div> <!-- 해설 표시 -->
+				</div>
+			</div>
+		`;
+
+		// 버튼 표시 여부
+		document.getElementById('prev-btn').style.display = index === 0 ? 'none' : 'inline-block';
+		document.getElementById('next-btn').style.display = index === parsedData.length - 1 ? 'none' : 'inline-block';
+
+		// 진행 상태 업데이트
+		updateProgress(index);
+	}
+
+	function updateProgress(index) {
+		const progress = document.getElementById('progress');
+		progress.innerHTML = `문제 ${index + 1} / ${parsedData.length}`;
+	}
+
+	function toggleAnswer(button, answer) {
+		const answerElement = button.nextElementSibling;
+		if (answerElement.style.display === "none" || answerElement.style.display === "") {
+			answerElement.style.display = "inline";
+			answerElement.textContent = `정답: ${answer}`;
+			button.textContent = "정답 숨기기";
+		} else {
+			answerElement.style.display = "none";
+			button.textContent = "정답 보기";
+		}
+	}
+
+	function toggleExplanation(button, explanation) {
+		const explanationElement = document.getElementById('explanation');
+		if (explanationElement.style.display === "none" || explanationElement.style.display === "") {
+			explanationElement.style.display = "inline";
+			explanationElement.textContent = `해설: ${explanation}`;
+			button.textContent = "해설 숨기기";
+		} else {
+			explanationElement.style.display = "none";
+			button.textContent = "해설 보기";
+		}
+	}
+
+	function nextQuestion() {
+		if (currentIndex < parsedData.length - 1) {
+			currentIndex++;
+			showQuestion(currentIndex);
+		}
+	}
+
+	function prevQuestion() {
+		if (currentIndex > 0) {
+			currentIndex--;
+			showQuestion(currentIndex);
+		}
+	}
+
+	// 첫 번째 질문 표시
+	showQuestion(currentIndex);
+
+    </script>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
