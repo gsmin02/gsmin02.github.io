@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AWS_Quiz ChapterPractice2</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR&display=swap" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="../main.css">
+</head>
+<body>
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav">
+        <li class="nav-item active">
+          <a class="nav-link" href="Chapter8.html">8장</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="Chapter9.html">9장</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="Chapter10.html">10장</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="Chapter11.html">11장</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="Chapter12.html">12장</a>
+        </li>
+		<li class="nav-item">
+		  <a class="nav-link" href="ChapterPractice2.html">Practice2장</a>
+		</li>
+      </ul>
+    </div>
+  </nav>
+	<br>
+    <div class="container">
+        <h1 class="text-center">ChapterPractice2장 문제집</h1>
+        <div id="progress" class="text-center progress-text"></div>
+
+        <div id="question-container"></div>
+
+        <div class="text-center mt-4">
+            <button id="prev-btn" class="btn btn-secondary" onclick="prevQuestion()" style="display: none;">이전 문제</button>
+            <button id="next-btn" class="btn btn-custom" onclick="nextQuestion()">다음 문제</button>
+        </div>
+		<div class="text-center mt-4">
+			<input type="number" id="questionInput" onkeydown="selectQuestion(event);" placeholder="바로이동">
+		</div>
+    </div>
+    <br><br><br>
+
+    <script>
+        const data = `
+			index,question,A,B,C,D,E,F,answer,explanation
+			1,"AWS 서비스에 문제가 발생했을 때 비즈니스에 미치는 영향을 신속하게 평가할 수 있도록 클라우드 아키텍처 의 일부인 AWS 서비스의 상태에 대한 개인화된 보기를 제공하는 서비스는 무엇인가요?","AWS 상태- 서비스 상태 대시보드","아마존 인스펙터","AWS 상태-계정 상태 대시보드","Amazon CloudWatch",,,"C","없음"
+			2,"다음 중 AWS 루트 사용자 계정에 대한 올바른 설명은 무엇인가요? (두 개 선택)","루트 사용자 계정에 대해 다단계 인증(MFA)을 사용하도록 설정하는 것이 좋습니다","루트 사용자 계정은 계정을 만들 때 무제한 권한을 얻지만 IAM 정책을 사용하여 이러한 권한을 제한 할 수 있습니다","루트 사용자 액세스 자격 증명은 AWS 계정을 만드는 데 사용되는 이메일 주소와 비밀번호입니다","루트 사용자 자격 증명은 업무를 완료하기 위해 관리 책임이 필요한 관리자와만 공유해야 합니다","루트 사용자 계정 비밀번호는 한 번 설정하면 변경할 수 없습니다",,"A,C","없음"
+			3,"AWS 클라우드 비용의 근본적인 동인은 무엇인가요?","컴퓨팅, 스토리지 및 아웃바운드 데이터 전송","컴퓨팅, 데이터베이스 및 아웃바운드 데이터 전송","컴퓨팅, 데이터베이스 및 인바운드 데이터 전송","컴퓨팅, 스토리지 및 인바운드 데이터 전송",,,"A","없음"
+			4,"다음 중 AWS 클라우드에서 리소스 보안을 구현하는 데 필수적인 AWS 서비스는 무엇인가요?","AWS ID 및 액세스 관리(IAM)","Amazon CloudWatch","AWS Shield","AWS 웹 애플리케이션 방화벽(AWS WAF)",,,"A","없음"
+			5,"한 스타트업이 AWS 계정에 대한 연중무휴 전화 기반 기술 지원을 찾고 있습니다. 다음 중 이 사용 사례에 가장 비용 효율적인 AWS 지원 플랜은 무엇인가요?","AWS 비즈니스 지원","AWS 엔터프라이즈 지원","AWS 엔터프라이즈 온-램프 지원","AWS 개발자 지원",,,"A","없음"
+			6,"다음 중 AWS 클라우드에서 잘 설계된 프레임워크의 신뢰성 기둥을 위한 AWS 재단 서비스의 일부인 AWS 서 비스는 무엇입니까? (2가지 선택)?","AWS 클라우드 트레일","AWS 클라우드포메이션","Amazon CloudWatch","AWS 트러스티드 어드바이저","서비스 할당량",,"D,E","없음"
+			7,"Hadoop 클러스터에서 빅 데이터 워크로드를 실행하기 위해 리소스를 프로비저닝하는 데 사용할 수 있는 AWS 서비스는 무엇인가요?","Amazon EMR","AWS 단계 함수","AWS 배치","Amazon Elastic Compute Cloud(Amazon EC2)",,,"A","없음"
+			8,"한 조직이 온프레미스 데이터 센터에서 AWS 클라우드로 인프라를 이전할 계획입니다. 클라우드 프랙셔너로 서 조직이 AWS 클라우드에서 솔루션을 구축하는 데 적합한 AWS 서비스를 식별할 수 있도록 어떤 옵션을 추 천하시겠습니까(두 가지 선택)?","AWS 파트너 네트워크(APN)","AWS 서비스 카탈로그","Amazon CloudWatch","AWS 조직","AWS 클라우드 트레일",,"A,B","없음"
+			9,"사진 공유 웹 애플리케이션에서 사용자가 업로드한 이미지의 썸네일을 Amazon S3(Amazon Simple Storage Service)에 저장하려고 합니다. 썸네일은 거의 사용되지 않지만 웹 애플리케이션에서 즉시 액세스할 수 있어야 합니다. 썸네일을 분실할 경우 쉽게 다시 생성할 수 있습니다. 이러한 썸네일을 Amazon Simple Storage Service(Amazon S3)에 저하는 가장 비용 효율적인 방법은 무엇인가요?","Amazon S3 One Zone-빈번하지 않은 액세스(S3 One Zone-IA)를 사용하여 썸네일을 저장합니다","Amazon S3 표준을 사용하여 썸네일 저장하기","Amazon S3 표준-빈번 액세스(S3 표준-IA)를 사용하여 썸네일을 저장합니다","Amazon S3 Glacier 유연한 검색을 사용하여 썸네일을 저장하세요",,,"A","없음"
+			10,"조직은 많은 시스템 종속성을 포함하는 복잡한 IT 아키텍처를 가지고 있으며 각 리소스에 대한 변경 이력을 추 적하려고 합니다. 조직이 모든 리소스에 대한 구성 변경 이력을 추적하는 데 도움이 되는 AWS 서비스는 무엇 인가요?","AWS 클라우드포메이션","AWS 구성","AWS 서비스 카탈로그","AWS 클라우드 트레일",,,"B","없음"
+			11,"규제 및 규정 준수상의 이유로 조직은 클라우드에서 모든 데이터 암호화 작업에 하드웨어 장치를 사용해야 합 니다. 이 규정 준수 요건을 충족하기 위해 어떤 AWS 서비스를 사용할 수 있나요?","AWS CloudHSM","AWS 키 관리 서비스(AWS KMS)","AWS 시크릿 매니저","AWS 트러스티드 어드바이저",,,"A","없음"
+			12,"다중 AZ 배포는 다음 중 어느 것의 예시인가요?","고가용성","스케일 아웃","성능 효율성","확장",,,"A","없음"
+			13,"다음 중 AWS 스토리지 서비스에 관한 올바른 설명은 무엇인가요?","Amazon S3(Amazon Simple Storage Service)는 오브젝트 기반 스토리지, Amazon EBS(Amazon Elastic Block Store)는 블록 기반 스토리지, Amazon EFS(Amazon Elastic File System)는 파일 기반 스토리지입니다","Amazon S3(Amazon Simple Storage Service)는 객체 기반 스토리지, Amazon EBS(Amazon Elastic Block Store)는 파일 기반 스토리지, Amazon EFS(Amazon Elastic File System)는 블록 기반 스토리지입니다","Amazon S3(Amazon Simple Storage Service)는 블록 기반 스토리지, Amazon EBS(Amazon Elastic Block store)는 객체 기반 스토리지, Amazon EFS(Amazon Elastic File System)는 파일 기반 스토리지입니다","Amazon S3(Amazon Simple Storage Service)는 파일 기반 스토리지, Amazon EBS(Amazon Elastic Block Store)는 블록 기반 스토리지, Amazon EFS(Amazon Elastic File System)는 객체 기반 스토리지입니다",,,"A","없음"
+			14,"다음 중 글로벌 범위의 AWS 서비스는 무엇인가요? (두 개 선택)","아마존 심플 스토리지 서비스(Amazon S3)","Amazon 관계형 데이터베이스 서비스(Amazon RDS)","Amazon CloudFront","AWS ID 및 액세스 관리(AWS IAM)","Amazon Elastic Compute Cloud Amazon EC2)",,"C,D","없음"
+			15,"다음 중 데이터베이스가 유연한 스키마를 가질 수 있고 문서 데이터 모델을 지원할 수 있는 AWS 서비스는 무 엇인가요?","Amazon 관계형 데이터베이스 서비스(Amazon RDS)","Amazon DynamoDB","아마존 레드시프트","아마존 오로라",,,"B","없음"
+			16,"다음 중 서비스형 소프트웨어(Saas) 클라우드 컴퓨팅 유형에 속하는 AWS 서비스는 무엇인가요?","Amazon Elastic Compute Cloud(Amazon EC2)","AWS Elastic Beanstalk","탄력적 부하 분산(ELB)","아마존 인식",,,"D","없음"
+			17,"Docker 컨테이너 이미지를 저장, 관리 및 배포하는 데 사용할 수 있는 AWS 서비스는 무엇인가요?","Amazon Elastic Compute Cloud(Amazon EC2)","Amazon Elastic 컨테이너 서비스(Amazon ECS)","Amazon Elastic 컨테이너 레지스트리(Amazon ECR)","AWS 람다",,,"C","없음"
+			18,"AWS 계정에 대한 비용이 예산 금액을 초과할 때 알림을 보내는 데 어떤 AWS 서비스를 사용하시겠습니까?","AWS 비용 탐색기","AWS 조직","AWS 가격 계산기","AWS 예산",,,"D","없음"
+			19,"한 IT 회사의 엔지니어링 팀은 Amazon EC2(Amazon Elastic Compute Cloud) 인스턴스의 CPU 사용률을 모니 터링하고 사용률이 80%를 초과할 경우 관리자에게 이메일을 보내려고 합니다. 클라우드 실무자로서 이 솔루 션을 구축하기 위해 어떤 AWS 서비스를 추천하시겠습니까? (두 개 선택)","아마존 단순 대기열 서비스(SOS)","아마존 간편 알림 서비스(SNS)","AWS 클라우드 트레일","Amazon CloudWatch","AWS 람다",,"B,D","없음"
+			20,"장기 리소스 약정이나 선불 결제가 필요하지 않으면서도 인스턴스가 중단되지 않도록 보장하는 가장 비용 효 율적이고 유연한 Amazon EC2(Amazon Elastic Compute Cloud) 요금 모델은 무엇인가요?","예약 인스턴스(RI)","전용 호스트","스팟 인스턴스","온디맨드 인스턴스",,,"D","없음"
+			21,"AWS 잘 설계된 프레임워크는 AWS 모범 사례를 사용하여 클라우드 기반 애플리케이션을 구축하는 데 대한 지 침을 제공합니다. 다음 중 AWS Well-Architected Framework에서 언급하는 기둥은 무엇입니까? (두 가지 선 택)","확장성","비용 최적화","가용성","신뢰성","탄력성","B,D","없음"
+			22,"한 회사에서 온프레미스 애플리케이션에서 메시지 브로커 서비스를 사용 중이며 이 메시징 기능을 AWS 클라 우드로 이전하려고 합니다. 다음 중 기존 기능을 쉽게 이전하는 데 적합한 AWS 서비스는 무엇인가요?","Amazon MQ","아마존 단순 대기열 서비스(Amazon SaS)","아마존 간편 알림 서비스(아마존 SNS)","아마존 키네시스 데이터 스트림",,"A","없음"
+			23,"한 회사에서 Windows 기반 애플리케이션을 위해 지연 시간이 짧고 유연하며 확장 가능한 완전 관리형 파일 스 토리지 시스템을 원합니다. 이 회사에 적합한 AWS 서비스는 무엇일까요?","Amazon Elastic 파일 시스템(Amazon EFS)","Windows 파일 서버용 Amazon FSx","광택을 위한 Amazon FSx","아마존 엘라스틱 블록 스토리지(Amazon EBS)",,"B","없음"
+			24,"다음 중 수평적 확장성(일명 탄력성)의 예는 무엇인가요? (두 개 선택)","데이터베이스 인스턴스를 더 높은 CPU 및 RAM으로 수정합니다","Amazon 관계형 데이터베이스 서비스(Amazon RDS)에서 복제본 읽기","탄력적 부하 분산(ELB)","EC2 인스턴스 유형을 t2.nano에서 u-12tb1.metal로 수정합니다","컴퓨터에 더 큰 CPU 추가","B,C","없음"
+			25,"요청을 가장 빠른 경험을 제공하는 AWS 엔드포인트로 라우팅하여 고객의 성능을 개선하기 위해 어떤 Amazon Route 53 라우팅 정책을 사용하시겠습니까?","지연 시간 기반 라우팅","간단한 라우팅","가중 라우팅","창애 조치 라우팅",,"A","없음"
+			26,"초당 과금 및 기본 OS에 대한 액세스를 지원하여 클라우드에서 크기 조정이 가능한 컴퓨팅 용량에 액세스하는 가장 쉬운 방법을 제공하는 AWS 컴퓨팅 서비스는 무엇인가요?","아마존 라이트세일","Amazon Elastic Compute Cloud(Amazon EC2)","AWS 람다","Amazon Elastic 컨테이너 서비스(Amazon ECS)",,"B","없음"
+			27,"액세스 키 ID와 비밀 액세스 키는 다음 중 어느 AWS IAM(AWS ID 및 액세스 관리) 엔티티에 연결되나요?","IAM 역할","IAM 사용자 그룹","IAM 정책","IAM 사용자",,"D","없음"
+			28,"여러 가용 영역(AZ)에 분산되어 있는 Amazon EC2 인스턴스는 시스템에 중앙에 저장된 파일 기반 데이터에 액 세스하고, 편집하고, 공유해야 합니다. 클라우드 실무자로서 이 사용 사례에 어떤 AWS 서비스를 추천하시겠습니까?","EC2 인스턴스 스토어","Amazon Elastic 파일 시스템(Amazon EFS)","아마존 심플 스토리지 서비스(Amazon S3)","Amazon Elastic Block Store(Amazon EBS)",,"B","없음"
+			29,"다음 중 보안 그룹과 네트워크 ACL(네트워크 액세스 제어 목록)에 대해 올바르게 설명한 것은 무엇인가요?","보안 그룹은 인스턴스 수준에서 방화벽 역할을 하는 반면, 네트워크 ACL(네트워크 액세스 제어 목 록)은 서브넷 수준에서 방화벽 역할을 합니다","보안 그룹은 VPC 수준에서 방화벽 역할을 하는 반면 네트워크 ACL(네트워크 액세스 제어 목록)은 가 용 영역(AZ) 수준에서 방화벽 역할을 합니다","보안 그룹은 가용 영역(AZ) 수준에서 방화벽.역할을 하는 반면, 네트워크 액세스 제어 목록(Network ACL)은 VPC 수준에서 방화벽 역할을 합니다","보안 그룹은 서브넷 수준에서 방화벽 역할을 하는 반면, 네트워크 ACL(네트워크 액세스 제어 목록)은 인스턴스 수준에서 방화벽 역할을 합니다",,"A","없음"
+			30,"한 소셜 미디어 회사가 SQL 인젝션 및 크로스 사이트 스크립팅과 같은 일반적인 웹 익스플로잇으로부터 웹 애 플리케이션을 보호하고자 합니다. 이 사용 사례를 해결하기 위해 다음 중 어떤 AWS 서비스를 사용할 수 있나요?","AWS CloudWatch","아마존 가드듀티","AWS 웹 애플리케이션 방화벽(AWS WAF)","아마존 인스펙터",,"C","없음"
+			31,"고객이 AWS 클라우드 내에서 VPC와 서브넷을 생성했습니다. 다음 중 올바른 설명은 무엇인가요?","서브넷은 리전의 모든 가용 영역(Az)에 걸쳐 있는 반면, Amazon 가상 프라이빗 클라우드(Amazon VPC)는 리전에서 하나의 가용 영역(AZ)에만 걸쳐 있습니다","아마존 가상 프라이빗 클라우드(Amazon VPC)는 리전의 모든 가용 영역(Az)에 걸쳐 있는 반면, 서브 넷은 리전에서 하나의 가용 영역(AZ)에만 걸쳐 있습니다","Amazon 가상 프라이빗 클라우드(Amazon VPC)와 서브넷은 모두 리전에서 하나의 가용 영역(AZ)에만 걸쳐 있습니다","Amazon 가상 프라이빗 클라우드(Amazon VPC)와 서브넷은 모두 리전의 모든 가용 영역(AZ)에 걸 쳐 있습니다",,"B","없음"
+			32,"개발자가 PHP로 간단한 웹 애플리케이션을 작성했으며, 코드를 AWS Cloud에 업로드하고 AWS가 자동으로 배포를 처리하도록 하고 싶지만 추가 개선을 위해 기본 운영 체제에 액세스하기를 원합니다. 클라우드 프랙셔너로서 이 사용 사례에 대해 다음 중 어떤 AWS 서비스를 추천하시겠습니까?","AWS 클라우드포메이션","Amazon Elastic Compute Cloud(Amazon EC2)","AWS Elastic Beanstalk","Amazon Elastic 컨테이너 서비스(Amazon ECS)",,"C","없음"
+			33,"한 데이터 분석 회사가 Amazon Simple Storage Service(Amazon S3)에 데이터를 저장하고 있으며, 이 데이터 에 대해 최소한의 노력으로 SOL 기반 분석을 수행하려고 합니다. 클라우드 실무자로서 이 사용 사례에 다음 중 어떤 AWS 서비스를 제안하시겠습니까?","아마존 오로라","아마존 아테나","Amazon DynamoDB","아마존 레드시프트",,"B","없음"
+			34,"AWS 공유 책임 모델에 따라 보안 및 규정 준수 관점에서 고객의 책임은 다음 중 어느 것인가요?","AWS 인프라 내의 결함 패치/수정","가용 영역(AZ) 인프라 관리","AWS 글로벌 인프라를 위한 구성 관리","Amazon Elastic Compute Cloud(Amazon EC2)에서 게스트 운영 체제의 패치 관리하기",,"D","없음"
+			35,"하나의 스탠바이로 Amazon RDS Multi-AZ 데이터베이스를 배포하면 어떤 주요 이점이 있나요?","지역 장애로부터 데이터베이스를 보호하는 Amazon RDS Multi-AZ","읽기 작업량이 많은 워크로드의 데이터베이스 성능을 개선하는 Amazon RDS Multi-AZ","데이터베이스 가용성을 향상시키는 Amazon RDS Multi-AZ","데이터베이스 사용 비용을 절감하는 Amazon RDS Multi-AZ",,"C","없음"
+			36,"AWS 클라우드의 모든 리전에 있는 모든 AWS 서비스의 일반 상태 및 가용성에 대한 최신 정보를 게시하는 AWS 서비스는 무엇인가요?","AWS 상태 대시보드 - 서비스 상태","Amazon CloudWatch","AWS 클라우드포메이션","AWS 상태 대시보드-계정 상태",,"A","없음"
+			37,"다음 중 모든 AWS 서비스에 액세스하고 관리하는 데 사용할 수 있는 옵션은 무엇인가요(3개 선택)?","AWS 시크릿 매니저","AWS 명령줄 인터페이스(AWS CLI)","AmazonAPI 게이트웨이","AWS 관리 콘솔","AWS 소프트웨어 개발 키트(SDK)","AWS 시스템 관리자","B,D,E","없음"
+			38,"AWS 스토리지 게이트웨이 서비스에서 지원하는 다양한 게이트웨이 유형에는 어떤 것이 있나요?","테이프 게이트웨이, 오브젝트 게이트웨이 및 볼륨 게이트웨이","테이프 게이트웨이, 파일 게이트웨이 및 볼륨 게이트웨이","오브젝트 게이트웨이, 파일 게이트웨이 및 블록 게이트웨이","테이프 게이트웨이, 파일 게이트웨이 및 블록 게이트웨이",,"B","없음"
+			39,"다음 중 AWS 람다에 대한 설명 중 옳은 것은 무엇입니까? (두 개 선택)","서버 프로비저닝이나 관리 없이 코드를 실행할 수 있는 AWS Lambda","AWS Lambda는 코드를 통해 동작을 제어할 수 있도록 기본 운영 체제에 대한 액세스를 제공합니다","Aws Lambda에 소비하는 컴퓨팅 시간에 대한 비용을 지불합니다","AWS Lambda를 사용하면 Docker 컨테이너를 오케스트레이션하고 관리하여 AWS에서 복잡한 컨테이너화된 애플리케이션을 용이하게 할 수 있습니다","Aws Lambda를 사용하면 기본 서버리스 운영 체제에 데이터베이스를 설치할 수 있습니다",,"A,C","없음"
+			40,"한 회사의 주력 애플리케이션은 여러 개의 Amazon Elastic Compute Cloud(Amazon EC2) 인스턴스에서 실행 됩니다. 새로운 정책에 따라 시스템 관리자는 새로운 포트를 열거나 공용 IP 주소를 사용하지 않고도 Amazon EC2(Amazon Elastic Compute Cloud) 인스턴스에 대한 보안 셸 액세스를 제공할 수 있는 가장 좋은 방법을 찾 고 있습니다. 이 요구 사항을 달성하는 데 도움이 되는 도구/서비스는 무엇인가요?","아마존 인스펙터","Amazon EC2(Amazon Elastic Compute Cloud) 인스턴스 연결","AWS 시스템 관리자 세션 관리자","아마존 루트 53",,,"C""없음"
+			41,"AWS 공유 책임 모델에 따라 보안 및 규정 준수 관점에서 AWS의 책임은 다음 중 어느 것인가요?","서버 측 암호화(SSE)","ID 및 액세스 관리","고객 데이터","엣지 위치 관리",,,"D""없음"
+			42,"한 게임 회사는 다양한 지역의 최종 사용자에게 우수한 사용자 경험을 보장하기 위해 일관된 저지연 게임플레 이를 제공할 수 있는 기술/서비스를 찾고 있습니다. 최종 사용자에게 필요한 저지연 액세스를 제공할 수 있는 AWS 기술/서비스는 무엇인가요?","AWS 파장","AWS 다이렉트 커넥트","AWS 로컬 영역","AWS 에지 위치",,,"C""없음"
+			43,"한 온라인 게임 회사가 특정 지역의 사용자가 자사 콘텐츠에 액세스하지 못하도록 차단하려고 합니다. 이 작업 을 수행하기 위해 어떤 AWS 서비스를 사용할 수 있나요?","보안 그룹","Amazon CloudWatch","AWS 웹 애플리케이션 방화벽(AWS WAF)","AWS Shield",,,"C""없음"
+			44,"다음 중 온프레미스 네트워크를 AWS 클라우드와 연결하는 데 사용할 수 있는 솔루션은 무엇인가요(2개 선택)?","인터넷 게이트웨이","Amazon 가상 프라이빗 클라우드(Amazon VPC)","AWS 다이렉트 커넥트","아마존 루트 53","AWS 가상 사설망(VPN)",,"C,E","없음"
+			45,"다음 중 AWS 리전 안팎의 데이터 전송 요금에 대한 AWS 가격 정책과 관련하여 올바른 설명은 무엇인가요?","아웃바운드 데이터 전송만 요금이 부과됩니다","인바운드 데이터 전송만 요금이 부과됩니다","인바운드 및 아웃바운드 데이터 전송 모두 요금이 부과되지 않습니다","인바운드 데이터 전송과 아웃바운드 데이터 전송 모두 요금이 부과됩니다",,,"A","없음"
+			46,"한 조직이 온프레미스 데이터 센터와 AWS 클라우드를 결합하여 IT 인프라를 배포합니다. 이 배포 모델을 어떻 게 분류하시겠습니까?","하이브리드 배포","혼합 배포","비공개 배포","클라우드 배포",,,"A","없음"
+			47,"AWS 글로벌 네트워크를 사용하여 글로벌 애플리케이션 가용성 및 성능에 도움이 되는 AWS 서비스는 무엇인가요?","Amazon CloudFront","아마존 루트 53","AWS 글로벌 액셀러레이터","탄력적 부하 분산(ELB)",,,"C","없음"
+			48,"Amazon Web Services에서 제공하는 웹 서비스의 금지된 사용을 설명하는 정책은 무엇인가요?","AWS 적용 사용 정책","AWS 트러스티드 어드바이저","AWS 공정 사용 정책","AWS 서비스 이용 정책",,,"D","없음"
+			49,"비용 최적화, 보안 및 성능 개선을 위해 현재 AWS 모범 사례와 비교하여 워크로드를 검토하고 더 나은 아키텍 처를 설계하기 위한 조언을 얻는 데 도움이 되는 도구는 무엇인가요?","AWS 트러스티드 어드바이저","아마존 인스펙터","Amazon CloudWatch","AWS 비용 탐색기",,,"A","없음"
+			50,"AWS 컴퓨팅 옵티마이저는 다음 중 어떤 AWS 리소스에 대한 권장 사항을 제공하나요? (두 개 선택)","AWS 람다 함수, 아마존 심플 스토리지 서비스(Amazon S3)","Amazon Elastic 파일 시스템(Amazon EFS), AWS 람다 함수","Amazon EC2(Amazon Elastic Compute Cloud) 인스턴스, Amazon EC2 자동 확장 그룹","Amazon EC2(Amazon Elastic Compute Cloud) 94 E4, Amazon EFS(Amazon Elastic File System)","Amazon EBS(Amazon Elastic Block Store), Aws 람다 함수",,"C,E","없음"
+			51,"다음 중 AWS 개발자 지원 플랜에 대한 설명이 올바른 것은 무엇인가요?","무제한 연락처가 무제한 케이스를 열 수 있습니다","한 명의 연락처가 무제한으로 케이스를 열 수 있습니다","연락처가 한 달에 제한된 수의 케이스를 무제한으로 열 수 있습니다","한 연락처가 한 달에 제한된 수의 케이스를 열 수 있습니다",,,"B","없음"
+			52,"지정된 기술 계정 관리자(TAM)를 이용할 수 있는 AWS 지원 플랜은 무엇인가요?","AWS 비즈니스 지원","AWS 개발자 지원","AWS 엔터프라이즈 온-램프 지원","AWS 엔터프라이즈 지원",,,"C,E","없음"
+			53,"지정된 기술 계정 관리자(TAM)를 이용할 수 있는 AWS 지원 플랜은 무엇인가요?","AWS 비즈니스 지원","AWS 개발자 지원","AWS 엔터프라이즈 온-램프 지원","AWS 엔터프라이즈 지원",,,"D","없음"
+			54,"다음 중 Amazon Rekognition에서 지원하지 않는 사용 사례는 무엇인가요?","사진 속 인물 식별","사진 크기를 빠르게 조정하여 썸네일 만들기","사진에서 텍스트 감지","사진 속 개체에 라벨 지정",,,"B","없음"
+			55,"다음 중 항상 무료로 사용할 수 있는 AWS 서비스는 무엇인가요(2개 선택)?","AWS ID 및 액세스 관리(AWS IAM)","Amazon DynamoDB","AWS 자동 확장","Amazon Elastic Compute Cloud(Amazon EC2)","아마존 심플 스토리지 서비스(Amazon S3)",,"A,C","없음"
+			56,"한 소매 회사에는 각 부서에 대해 여러 개의 AWS 계정이 있습니다. 다음 중 이러한 AWS 계정에 대한 통합 청구 및 단일 결제 방법을 설정하는 데 사용할 수 있는 AWS 서비스는 무엇인가요?","AWS 조직","AWS 예산","AWS 시크릿 매니저","AWS 비용 탐색기",,,"A","없음"
+			57,"컨테이너 애플리케이션을 실행하고 싶지만 서버 확장, 패치, 보안, 관리로 인한 운영 오버헤드를 피하고 싶다 면 어떤 AWS 서비스를 사용해야 할까요?","Amazon Elastic 컨테이너 서비스(Amazon Ecs)- 파게이트 출시 유형","Amazon Elastic 컨테이너 서비스(Amazon ECS)- EC2 실행 유형","Amazon Elastic Compute Cloud(Amazon EC2) ","AWS 람다",,,"A","없음"
+			58,"운영 관점에서 AWS 클라우드 도입 프레임워크(AWS CAF)의 일부인 기본 기능에는 어떤 것이 있나요? ","취약점 관리 ","애플리케이션 포트폴리오 관리 ","성능 및 용량 관리 ","엔지니어링 플랫폼 ",,,"C","없음"
+			59,"클라우드 솔루션의 비용 효율성을 유지하면서 공급과 수요에 맞춰 리소스를 확장하는 데 도움이 되는 AWS 기술/서비스에는 어떤 것이 있나요? ","AWS OpsWorks ","AWS 비용 탐색기 ","AWS 자동 확장 ","AWS 클라우드포메이션 ",,,"C","없음"
+			60,"다음 중 분산 서비스 거부(DDoS) 공격을 방지하는 데 사용할 수 있는 AWS 서비스는 무엇인가요? (세 가지 선 택) ","AWS Shield ","AWS CloudHSM ","Amazon CloudFront와 Amazon Route 53 ","AWS 트러스티드 어드바이저 ","AWS 웹 애플리케이션 방화벽(AWS WAF) ","아마존 인스펙터 ",,"A,C,E","없음"
+			61,"전자 상거래 회사에서 Amazon Elastic Compute Cloud(Amazon EC2) 인스턴스에 배포된 애플리케이션의 취 약성과 AWS 모범 사례에서 벗어난 부분이 있는지 평가하려고 합니다. 이를 위해 어떤 AWS 서비스를 사용할 수 있나요? ","AWS CloudHSM ","AWS 시크릿 매니저 ","아마존 인스펙터 ","AWS 트러스티드 어드바이저 ",,,"C","없음"
+			62,"클라우드 컴퓨팅의 특징 중 필요한 만큼 리소스를 확보하고 더 이상 필요하지 않을 때 해제할 수 있는 기능은 무엇인가요? ","내구성 ","신뢰성 ","복원력 ","탄력성 ",,,"D","없음"
+			63,"AWS 공유 책임 모델에 따르면 다음 중 Amazon RDS에 대한 고객의 책임은 무엇인가요? ","Amazon RDS(Amazon 관계형 데이터베이스 서비스) 데이터베이스에 패치 적용하기 ","Amazon RDS(Amazon 관계형 데이터베이스 서비스)가 실행되는 기본 서버 하드웨어 관리하기 ","데이터베이스 암호화 ","기본 OS에 패치 적용 ",,,"C","없음"
+			64,"다음 중 AWS 자동 확장에 대한 설명 중 올바르지 않은 것은 무엇입니까? ","DDoS 공격이 감지되면 AWS Shield를 자동으로 배포할 수 있습니다 ","수요 증가에 맞춰 Amazon EC2(Amazon Elastic Compute Cloud) 인스턴스를 스케일 아웃 및 추가 할 수 있을 뿐만 아니라, 수요 감소에 맞춰 Amazon EC2 인스턴스를 스케일 인 및 제거할 수도 있습니다 ","비정상적인 인스턴스를 자동으로 제거할 수 있습니다 ","로드 밸런서에 새 인스턴스를 자동으로 등록할 수 있습니다 ",,,"A","없음"
+			65,"사용자가 AWS 환경에서 소프트웨어 솔루션을 찾고, 구매하고, 즉시 사용할 수 있는 AWS 서비스는 무엇인가요?","AWS 시스템 관리자","AWS 구성","AWS 마켓플레이스","AWS OpsWorks",,,"C","없음"
+			`;
+    </script>
+    <script src="../main2.js" defer></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

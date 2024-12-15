@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AWS_Quiz Chapter8</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR&display=swap" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="../main.css">
+</head>
+<body>
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav">
+        <li class="nav-item active">
+          <a class="nav-link" href="Chapter8.html">8장</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="Chapter9.html">9장</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="Chapter10.html">10장</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="Chapter11.html">11장</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="Chapter12.html">12장</a>
+        </li>
+		<li class="nav-item">
+		  <a class="nav-link" href="ChapterPractice2.html">Practice2장</a>
+		</li>
+      </ul>
+    </div>
+  </nav>
+	<br>
+    <div class="container">
+        <h1 class="text-center">8장 문제집</h1>
+        <div id="progress" class="text-center progress-text"></div>
+
+        <div id="question-container"></div>
+
+        <div class="text-center mt-4">
+            <button id="prev-btn" class="btn btn-secondary" onclick="prevQuestion()" style="display: none;">이전 문제</button>
+            <button id="next-btn" class="btn btn-custom" onclick="nextQuestion()">다음 문제</button>
+        </div>
+		<div class="text-center mt-4">
+			<input type="number" id="questionInput" onkeydown="selectQuestion(event);" placeholder="바로이동">
+		</div>
+    </div>
+    <br><br><br>
+
+    <script>
+        const data = `
+			index,question,A,B,C,D,E,F,answer,explanation
+			1,"Amazon RDS와 Amazon DynamoDB 간의 주요 차이점은 무엇입니까?","RDS는 무료로 제공되지 않지만, DynamoDB는 무료로 제공된다.","RDS는 백업 및 복원 기능을 제공하지만, DynamoDB는 제공하지 않는다.","RDS는 완전관리형 서비스이지만, DynamoDB는 구성 관리가 필요하다.","RDS는 관계형 데이터베이스를 지원하며, DynamoDB는 NoSQL 데이터베이스를 지원한다.",,,"D","Amazon RDS는 관계형 데이터베이스를 지원하고, Amazon DynamoDB는 NoSQL 데이터베이 스를 지원한다. 또한 두 서비스 모두 고객에게 요금이 부과된다. RDS는 백업 및 복원 기능을 제공하며, DynamoDB는 NoSQL 데이터베이스를 위한 기본 백업 및 복원 기능을 제공한다. 둘 다 완전관리형 서비스 이므로 구성 관리가 필요하지 않다."
+			2,"Amazon Aurora에서 사용할 수 있는 스토리지 유형에 대한 설명 중 올바르지 않은 것은 무엇입니까?","Aurora는 프로비저닝된 IOPS SSD 및 자동 크기 조정 가능한 스토리지를 사용할 수 있다.","Aurora는 Amazon S3를 사용해 저장소를 관리한다.","Aurora의 저장소는 여러 AZ에 걸쳐 복제돼 고가용성을 제공한다.","Aurora의 자동 크기 조정 가능한 스토리지는 데이터베이스 용량에 따라 자동으로 확장하거나 축소된다.",,,B,"Aurora는 자체적으로 Amazon S3를 사용해 데이터를 백업하고 관리하지 않는다. Amazon Aurora 는 프로비저닝된 IOPS SSD 및 자동 크기 조정 가능한 스토리지를 사용할 수 있다. Aurora의 저장소는 여 러 AZ에 걸쳐 복제돼 고가용성을 제공하며, 자동 크기 조정 가능한 스토리지는 데이터베이스 용량에 따라 자동으로 확장하거나 축소한다."
+			3,"Amazon RDS에서 사용할 수 있는 데이터베이스 엔진이 아닌 것은 무엇입니까?","MySQL","PostgreSQL","Oracle Database","MongoDB","Aurora",,"D","Amazon RDS에서 지원하는 데이터베이스 엔진은 MySQL, PostgresQL, oracle Dalabase, MariaDB. Amazon Aurora 및 SQL Server이다. MongoDB는 Amazon DocumentDB에서 사용할 수 있다."
+			4,"Amazon RDS에서 백업과 복원에 대한 설명 중 올바르지 않은 것은 무엇입니까? (2개)","RDS에서 수동 백업을 설정할 수 있다.","백업은 Amazon S3에 저장된다.","복원은 RDS 콘솔에서 수행할 수 없으며, AWS CLI 또는 API를 사용해야 한다.","복원 중에는 기존 데이터베이스 인스턴스가 온라인 상태여야 한다.","RDS에서 자동 백업을 설정할 수 있다.",,"C,D","Amazon RDS에서는 수동 또는 자동 백업을 설정할 수 있다. 백업 파일은 Amazon S3에 저장된 다. RDS 콘솔, AWS CL. API에서 백업 파일을 복원할 수 있다. 복원 중에는 기존 데이터베이스 인스턴스 가 오프라인 상태여야 한다."
+			5,"ElastiCache에서 지원하는 캐싱 엔진은 무엇입니까? (2개)","MySQL","PostgreSQL","Redis","Cassandra","Memcached",,"C,E","ElastiCache에서 지원하는 캐싱 엔진은 Redis, Memcached이다. Redis는 다양한 데이터 타입을 지원하고, Pub/Sub 메시징, 레디스 클러스터링, Lua 스크립팅 등의 기능을 제공하며, Memcached는 단순 한 캐싱용으로 많이 사용된다."
+			6,"모빌리티 서비스를 제공중인 M사는 전사적인 데이터 역량 극대화를 위해 모든 임직원이 SQL 문법을 학습하고, SQL을 이용해 효율적으로 고객 관계 관리(CRM) 데이터를 조회하려고 합니다. 다음 보기 중 이에 대한 적합성이 가장 낮은 데이터베이스 타입 또는 서비스는 무엇입니까?","RDS","MySQL","DynamoDB","Oracle","Aurora",,"C","전임 직원이 SQL을 이용해 효율적으로 고객 관계 관리(CRM) 데이터를 조회하려고 한다면 RDS, Aurora 등 관계형 데이터베이스가 적합하며, NoSQL 계열의 DynamoDB는 상대적으로 적합성이 떨어진다고 할 수 있다. DynamoDB를 CRM 용도로 사용하기 위해서는 데이터 모델링 및 통합, 비용, 일관성 등을 고려해 설계해야 한다."
+			7,"N 게임은 최근 출시한 게임이 크게 성공해 매출이 급증했지만 RDS 데이터베이스에 대한 일기 요청도 급증해 대응책을 마련해야 합니다. 이와 같은 경우, 데이터베이스의 읽기 부담을 줄일 수 있는 가장 경제적인 방법은 무엇입니까?","멀티 AZ 배포","데이터베이스 오토스케일링","읽기 전용 복제본 추가","글로벌 데이터베이스","데이터베이스의 수직적 확장",,"C","이터베이스의 읽기 부담을 줄일 수 있는 가장 경제적인 방법이자 대표적인 방법은 읽기 전용 복 제본(Read Replica)을 추가해 마스터 데이터베이스의 읽기 부담을 줄여주는 것이다."
+			8,"Amazon Aurora에서 지원하는 데이터베이스 엔진은 무엇입니까?","MySQL","MariaDB","PostgreSQL","Oracle Database","SQL Server",,"A,C","Amazon Aurora에서 지원하는 데이터베이스 엔진은 MySQL, PostgresQL이며, AWS 클라우드 환경에 최적화된 고성능 분산 스토리지 시스템이 내장돼 있다."
+			9,"Amazon Aurora에서 데이터베이스 복제본이 저장되는 곳은 어디입니까?","다른 AWS 리전 내 다른 가용 영역의 DB 인스턴스","다른 AWS 리전 내 동일한 가용 영역의 DB 인스턴스","마스터 DB 클러스터와 동일한 가용 영역의 DB 인스턴스","마스터 DB 클러스터와 동일한 리전 내 다른 가용 영역의 DB 인스턴스",,,C,"Amazon Aurora는 클러스터화된 관계형 데이터베이스 엔진이며, DB 인스턴스를 여러 개 묶어 DB 클러스터를 구성한다. 이 클러스터는 마스터 노드와 하나 이상의 복제본 노드로 구성되고, DB 클러스터의 모든 데이터는 마스터 DB 클러스터와 동일한 가용 영역에 있는 DB 인스턴스에 저장된다."
+			10,"Amazon Aurora에서의 DB 클러스터에 포함된 요소는 무엇입니까?","하나의 마스터 노드와 하나의 복제본 노드","하나의 마스터 노드와 다수의 복제본 노드","다수의 마스터 노드와 하나의 복제본 노드","다수의 마스터 노드와 다수의 복제본 노드",,,"B","Amazon Aurora DB 클러스터는 하나의 마스터 노드와 다수의 복제본 노드로 구성된다. 마스터 노 드는 쓰기 작업을 처리하고, 복제본 노드는 마스터 노드의 데이터를 비동기식으로 읽기 전용 작업에 사용 한다."
+			11,"Amazon DynamoDB에서 데이터 모델링에 사용되는 두 종류의 키는 무엇입니까?","Primary key, secondary key","Partition key, sort key","Primary key, sort key","Partition key, index key","Partition key, secondary key",,"B","Amazon DynamoDB에서는 기본적으로 파티션 키와 정렬 키 두 가지를 사용해 데이터를 저장하고 검색한다. 파티션 키는 DynamoDB 내에서 레코드를 고유하게 식별하는 데 사용되며, 정렬 키는 파티션 키로 지정된 속성의 값에 따라 레코드를 정렬하는 데 사용된다."
+			12,"Amazon DynamoDB에서 Query와 Scan의 차이점은 무엇입니까?","Query는 단일 항목에 대한 일기 작업에 사용되며, Scan은 전체 테이블의 모든 항목을 읽는 작어베 사용된다.","Query는 최대 1MB의 데이터를 읽을 수 있으며, Scan은 최대 2MB의 데이터를 읽을 수 있다.","Query는 파티션 키와 정렬 키를 사용해 데이터를 필터링하고 반환하며, Scan은 조건식을 사용해 데이터를 필터링하고 반환한다.","Query는 일치하는 결과만 반환하며, Scan은 조건식에 따라 일치하는 결과를 반환할 수도 있고, 그렇지 않을 수도 있다.",,,"C","DynamoDB의 Query는 파티션 키와 정렬 키를 사용해 테이블에서 데이터를 읽고, 조건식에 따라 데이터를 필터링하고 반환한다. Scan은 조건식을 사용해 테이블에서 데이터를 필터링하고 반환한다."
+			13,"Amazon DynamoDB의 테이블과 인덱스는 어떤 유형의 데이터 모델에 적합합니까?","그래프 데이터 모델","정규화된 데이터 모델","비정규화된 데이터 모델","객체 지향 데이터 모델","관계형 데이터 모델",,"C","DynamoDB는 비정규화된 데이터 모델에 적합하다. 데이터는 테이블에 저장되며, 각 항목은 자체 스키마를 지닌다. DynamoDB는 유연하고 확장 가능한 스키마를 지원해 데이터 모델을 쉽게 변경하고 확장 할 수 있다. DynamoDB는 또한 테이블과 인덱스의 데이터를 자동으로 분산해 처리량과 스토리지를 확장할 수 있다."
+			14,"ElastiCache 서비스에 대한 설명으로 옳지 않은 것은 무엇입니까?","비교적 저렴한 가격으로 간편하게 고성능 데이터베이스를 구축할 수 있다.","데이터베이스의 부하가 증가하면 필요한 만큼의 클러스터 노드를 추가할 수 있으며, 수요가 감소하면 노드를 제거할 수 있다.","애플리케이션에서 데이터를 캐싱할 수 있도록 하는 인메모리 캐시 서비스다.","노드 장애 시 자동으로 재구성돼 데이터 유실 없이 높은 가용성을 보장한다.","AWs 보안 기능을 사용해 데이터베이스를 보호하며, 암호화와 같은 기능을 지원한다.",,"A","Elasicache는 고확장성, 고가용성, 고보안성을 제공하는 인메모리 캐시 서비스이지만, 다른 데이 터베이스와 비교해 저렴하지 않으며, 활용 방법은 대체로 복잡한 편이다."
+			15,"어떤 AWS 서비스가 AWS의 데이터베이스 마이그레이션을 간소화합니까?","AWS Storage Gateway","AWS Database Migration Service(AWS DMS)","Amazon EC2","Amazon AppStram 2.0",,,B,"데이터베이스 마이그레이션을 간소화하는 서비스는 DMS이다."
+			16,"다음 중 Amazon RDS와 같은 AWS 관리형 서비스를 사용할 때의 이점은 무엇입니까?","고객이 OS 패치 작업을 수행해야 한다.","고객이 데이터베이스 백업을 관리해야 한다.","데이터베이스 인스턴스 유형 및 크기를 최적화할 필요가 없다.","관리형 RDS 인스턴스의 성능이 고객 설치형 데이터베이스 인스턴스보다 우수하다.",,,D,"RDS와 같은 AWS 관리형 데이터베이스는 AWS 클라우드 환경에 최적화돼 고객이 직접 설치한 데 이터베이스 인스턴스보다 성능이 우수한 것이 일반적이다."
+			17,"다음 중 aWS의 데이터베이스 서비스는 무엇입니까?","EBS","Storage Gateway","Glue","Database Migration Service(DMS)","Redshift",,"E","Redshil는 AWS의 데이터베이스이자, 분석 역량에 초점을 맞춘 데이터웨어하우스 서비스다."
+			18,"다음 중 VPC의 프라이빗 연결을 위해 VPC 엔드포인트 게이트웨이를 지원하는 AWS 데이터베이스 서비스는 무엇입니까?","Aurora","SNS","DynamoDB","EC2","RDS",,"C","VPC 엔드포인트 게이트웨이를 지원하는 데이터베이스 서비스는 서버리스 NoSQL 데이터베이스인 DynamoDB이다."
+			19,"다음 중 AWS Aurora의 실행에 사용되는 OS에 패치를 적용할 수 있는 사용자, 팀 또는 신뢰 개체는 무엇입니까?","고객 요청을 받은 AWS Support","AWS Product Team이 자동으로 OS 패치를 적용","Systems Manager를 이용하는 AWS 고객","해당 인스턴스에 SSH로 접속한 AWS 고객",,,"B","AWS Aurora는 AWS 관리형 데이터베이스로서 AWS Product Team이 자동으로 OS 패치를 적용 한다."
+			20,"전자상거래 회사는 단일 가용 영역에 RDS 데이터베이스를 배포했습니다. 엔지니어링 팀은 AZ 중단 시 데이터베이스가 수동 관리 개입 없이 동일한 엔드포인트에서 계속 작동하도록 보장하고자 합니다. 다음 중 이 사용 사례를 해결할 수 있는 솔루션은 무엇입니까?","Elastic Beanstalk를 통해 데이터베이스를 배포한다.","대기로의 자동 장애 조치 설정에서 RDS 일기 전용 복제본 모드에서 데이터베이스 구성","대기로의 자동 장애 조치 설정에서 RDS 멀티 AZ 배포에서 데이터베이스 구성","CloudFormation을 통해 데이터베이스를 프로비저닝한다.",,,"C","싱글 AZ 기반 RDS의 가용성을 높이려면 멀티 AZ 기반 RDS 배포를 구성해야 한다."
+		`;
+
+    </script>
+    <script src="../main2.js" defer></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

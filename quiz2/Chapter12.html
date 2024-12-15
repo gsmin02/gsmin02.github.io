@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AWS_Quiz Chapter12</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR&display=swap" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="../main.css">
+</head>
+<body>
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav">
+        <li class="nav-item active">
+          <a class="nav-link" href="Chapter8.html">8장</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="Chapter9.html">9장</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="Chapter10.html">10장</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="Chapter11.html">11장</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="Chapter12.html">12장</a>
+        </li>
+		<li class="nav-item">
+		  <a class="nav-link" href="ChapterPractice2.html">Practice2장</a>
+		</li>
+      </ul>
+    </div>
+  </nav>
+	<br>
+    <div class="container">
+        <h1 class="text-center">12장 문제집</h1>
+        <div id="progress" class="text-center progress-text"></div>
+
+        <div id="question-container"></div>
+
+        <div class="text-center mt-4">
+            <button id="prev-btn" class="btn btn-secondary" onclick="prevQuestion()" style="display: none;">이전 문제</button>
+            <button id="next-btn" class="btn btn-custom" onclick="nextQuestion()">다음 문제</button>
+        </div>
+		<div class="text-center mt-4">
+			<input type="number" id="questionInput" onkeydown="selectQuestion(event);" placeholder="바로이동">
+		</div>
+    </div>
+    <br><br><br>
+
+    <script>
+        const data = `
+			index,question,A,B,C,D,E,F,answer,explanation
+			1,"다음 중 서버리스 컴퓨팅 서비스인 AWS Lambda에 대한 설명으로 옳지 않은 것은 무엇입니까?","Lambda 함수를 호출하는 리소스 또는 구성을 트리거라 부른다.","처리하려는 Lambda 함수 데이터가 포함된 JSON 형식 문서를 이벤트라 부른다.","Lambda는 함수의 인스턴스를 실행해 이벤트를 처리한다.","Lambda 계층 또는 레이어는 Lambda 함수를 위한 안전하고 격리된 런타임 환경을 제공한다.","런타임은 Lambda와 함수 간의 호출 이벤트, 컨텍스트 정보 및 응답을 전달한다.",,,"D","Lambda 함수를 위한 안전하고 격리된 런타임 환경을 제공하는 것은 실행 환경이다. Lambda 계층은 추가 코드 또는 기타 콘텐츠를 포함할 수 있는 .zip 파일 아카이브다."
+			2,"AWS에서 마이크로서비스 아키텍처를 구현하기 위해 사용되는 서비스는 무엇입니까?","Amazon S3","Amazon EC2","Amazon API Gateway","Amazon RDS","Amazon Storage Gateway",,,"C","Amazon API Gateway는 RESTful API를 만들고 배포할 수 있도록 지원하며, 백엔드 서비스를 여러 개의 마이크로서비스로 분할해 관리할 수 있다."
+			3,"AWS 마이크로서비스 아키텍처에서 서비스 간 통신을 위해 사용되는 AWS 서비스는 무엇입니까?","Amazon Kinesis","AWS Step Functions","AWS Lambda","Amazon SQS(Simple Queue Service)",,,"D","Amazon SQS는 서비스 간 비동기적인 통신을 가능하게 한다. 각 서비스는 메시지를 큐에 보내고 다른 서비스가 이를 읽어서 처리한다."
+			4,"다음 중 서버리스 컴퓨팅 서비스인 AWS Lambda에 대한 설명으로 옳지 않은 것은 무엇입니까?","확장성, 유연성, 안정성을 갖춘 애플리케이션을 개발할 수 있다.","사용자가 코드를 업로드하고 실행할 때만 비용이 발생한다.","장기적, 지속적으로 실행되는 애플리케이션의 경우 EC2 대비 고성능, 저비용의 장점을 제공한다.","다양한 이벤트 소스에 대해 자동화된 응답을 작성할 수 있다.","사용자는 서버를 프로비저닝하거나 관리하지 않아도 된다.",,,"C","서버리스 컴퓨팅 서비스인 AWS Lambda는 단기적이며 불연속적인 애플리케이션 실행 환경에서 좀 더 높은 비용 효율성을 제공하지만 장기적, 지속적으로 실행되는 애플리케이션의 경우, EC2가 AWS Lambda보다 좀 더 나은 선택이 될 수 있고, 고성능 컴퓨팅 리소스가 필요한 경우에도 EC2가 좀 더 적합하다."
+			5,"다음 중 AWS IaC 구현에 활용되는 서비스는 무엇입니까?","AWS CloudFormation","AWS Elastic Beanstalk","AWS Lambda","AWS Amplify","AWS CodeBuild",,,"A","AWS CloudFormation은 IaC 기술 철학을 구현한 것으로, AWS 리소스를 프로비저닝하고 배포하기 위한 서비스이며, JSON 또는 YAML 형식의 템플릿 언어를 사용해 인프라를 배포한다."
+			6,"다음 중 서버리스 컴퓨팅 서비스인 AWS Fargate 시작 유형에 대한 설명으로 옳지 않은 것은 무엇입니까?","가끔 버스트가 발생하는 소규모 워크로드에 적합하다.","사용자가 서버 유형을 선택하거나, 클러스터를 조정하지 않아도 된다.","컴퓨팅 비용 최적화가 중요한 대규모 워크로드에 적합하다.","요금은 컨테이너 실행에 사용된 vCPU, 메모리 용량과 운영체제, CPU 아키텍처에 따라 달라진다.","낮은 운영 오버헤드가 필요한 대규모 워크로드에 적합하다.",,,"C","가격에 최적화되어야 하는 대규모 워크로드에 적합한 것은 EC2 시작 유형이다."
+			7,"다음 중 서버리스 데이터베이스 서비스인 Amazon DynamoDB 및 VPC 통신에 대한 설명으로 옳지 않은 것은 무엇입니까?","VPC 엔드포인트 정책을 사용해 DynamoDB에 대한 액세스를 제어한다.","DynamoDB는 완전관리형 서버리스 NoSQL 데이터베이스 서비스다.","VPC 엔드포인트 사용 시 인터넷 게이트웨이, NAT 또는 VPC가 없어도 된다.","EC2 인스턴스와의 통신을 위해 SSL/TLS 암호화 기반 HTTPS 프로토콜을 사용한다.","VPC 엔드포인트 사용 시 퍼블릭 IP 주소를 사용해 DynamoDB에 액세스한다.",,,"E","VPC 엔드포인트 사용 시 프라이빗 IP 주소를 사용해 DynamoDB에 액세스하게 되며 EC2 인스턴스에 퍼블릭 IP 주소를 지정할 필요가 없다."
+			8,"AWS Lambda 함수를 호출하는 방법으로 잘못된 것은 무엇입니까?","AWS CLI를 사용해 호출한다.","Amazon API Gateway를 사용해 HTTP 요청으로 호출한다.","Amazon S3에서 객체가 생성될 때 자동으로 호출한다.","필요 시 AWS Lambda 함수를 직접 호출한다.",,,,"D","AWS Lambda 함수는 직접 호출할 수 없다. 함수를 호출하려면 이벤트 소스가 필요하다. 이벤트 소스는 AWS 서비스에서 발생한 이벤트를 Lambda 함수에 전달하는 역할을 한다."
+			9,"전자상거래 회사의 DevOps 팀은 마이크로서비스 아키텍처를 사용해 구축된 서버리스 애플리케이션의 성능 문제를 디버깅하려고 합니다. 클라우드 실무자로서 이 사용 사례를 해결하기 위해 어떤 AWS 서비스를 추천하겠습니까?","AWS CloudFormation","Amazon Pinpoint","AWS X-Ray","AWS Trusted Advisor",,,,"C","AWS X-Ray는 분산 애플리케이션 분석 및 디버깅 서비스로서 서버리스 애플리케이션의 성능 문제를 노 코드 및 로우 코드 기반으로 디버깅하는 데 도움을 준다."
+			10,"L커머스는 서비스 개편을 진행 중이며, 완전관리형 컨테이너 오케스트레이션 서비스인 ECS를 이용해 비용을 절감하고 고객 니즈에 좀 더 유연하게 대응하려 합니다. 다음 ECS에 대한 설명으로 옳지 않은 것은 무엇입니까?","서버리스 서비스이므로 EC2 같은 컴퓨팅 리소스는 불필요하다.","호스팅 위치에 관계없이 동일한 방식으로 실행될 수 있다.","AWS가 컨테이너화 앱의 배포, 관리, 크기 조정을 모두 관리한다.","컨테이너 이미지의 저장, 관리, 배포 기능도 제공한다.","온프레미스 컨테이너와 연계할 수 있다.",,,,"A,D","ECS는 관리형 컨테이너 서비스로서 서버리스가 아니고, EC2 같은 컴퓨팅 리소스가 필요하다. 컨테이너 이미지의 저장, 관리, 배포 기능을 제공하는 것은 ECR이다."
+			11,"다음 중 서버리스 기반의 AWS 서비스는 무엇입니까?","Elastic Beanstalk","EMR","Lambda","EC2","ECS",,,,"C","보기 중 서버리스 기반의 AWS 서비스는 Lambda뿐이다."
+			12,"다음 중 AWS Well Architected 프레임워크의 안정성 원칙의 설계 원칙인 ‘확장성(Scaling)’에 관한 잘못된 설명은 무엇입니까?","수평적 확장을 통해 내결함성을 높일 수 있다.","수직적 확장을 통해 내결함성을 높일 수 있다.","기존 머신 또는 노드에 CPU, RAM 등 성능 요소를 추가하는 방식으로 수직적 확장을 할 수 있다.","기존 리소스 풀에 더 많은 인스턴스를 추가하는 방식으로 수평적 확장을 할 수 있다.",,,,"B","다수의 위치에 다량의 복제본을 만드는 수평적 확장을 통해 내결함성 또는 내오류성을 높일 수 있다. 전통적인 데이터베이스 등 비분산화 시스템을 위한 업그레이드 개념인 수직적 확장을 통해서 처리 성능은 높일 수 있지만 내결함성 또는 내오류성을 높일 수는 없다."
+			13,"서버리스 애플리케이션의 빠른 출시 및 배포를 위해 DevOps 팀에서 AWS에서 서버리스 애플리케이션을 프로비저닝하려고 합니다. 이를 위해 추천해야 할 AWS 서비스는 무엇입니까?","AWS X-Ray","Amazon Pinpoint","AWS CloudFormation","AWS Trusted Advisor",,,,"C","서버리스 애플리케이션의 빠른 출시 및 배포를 위한 서비스는 AWS CloudFormation이다."
+			14,"AWS 공동 책임 모델을 기준으로 했을 때, 다음 중 AWS와 고객 모두의 공동 책임은 무엇입니까?","다수의 AWS 고객 간 데이터 분리 보장","가용 영역 인프라 유지 보수","S3 스토리지 서버의 인프라 유지 보수","환경 설정 관리","EC2 게스트 OS 패치",,,,"C","인프라 및 리소스에 대한 환경 설정(Configuration) 관리는 AWS와 고객 모두의 공동 책임 요소다."
+			15,"다음 AWS Well Architected 원칙 중 클라우드 워크로드 실행이 자연 환경에 미치는 영향을 최소화하는 것을 목표로 하는 원칙은 무엇입니까?","안정성","성능 효율성","비용 최적화","운영 우수성","지속 가능성",,,,"E","클라우드 워크로드 실행이 자연 환경에 미치는 영향을 최소화하는 것을 목표로 하는 원칙은 지속 가능성이다."
+		`;
+    </script>
+    <script src="../main2.js" defer></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

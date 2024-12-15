@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AWS_Quiz Chapter9</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR&display=swap" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="../main.css">
+</head>
+<body>
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav">
+        <li class="nav-item active">
+          <a class="nav-link" href="Chapter8.html">8장</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="Chapter9.html">9장</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="Chapter10.html">10장</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="Chapter11.html">11장</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="Chapter12.html">12장</a>
+        </li>
+		<li class="nav-item">
+		  <a class="nav-link" href="ChapterPractice2.html">Practice2장</a>
+		</li>
+      </ul>
+    </div>
+  </nav>
+	<br>
+    <div class="container">
+        <h1 class="text-center">9장 문제집</h1>
+        <div id="progress" class="text-center progress-text"></div>
+
+        <div id="question-container"></div>
+
+        <div class="text-center mt-4">
+            <button id="prev-btn" class="btn btn-secondary" onclick="prevQuestion()" style="display: none;">이전 문제</button>
+            <button id="next-btn" class="btn btn-custom" onclick="nextQuestion()">다음 문제</button>
+        </div>
+		<div class="text-center mt-4">
+			<input type="number" id="questionInput" onkeydown="selectQuestion(event);" placeholder="바로이동">
+		</div>
+    </div>
+    <br><br><br>
+
+    <script>
+        const data = `
+			index,question,A,B,C,D,E,F,answer,explanation
+			1,"AWS WAF에서 사용되는 보안 규칙 유형 중에서 SQL 삽입, XSS, 취약한 파일 업로드와 같은 웹 애플리케이션 공격을 막기 위한 규칙 유형은 무엇입니까","IP 블랙리스트","지역 제한","SQL 쿼리 제한","웹 취약성 공격 차단 규칙","HTTPS 리다이렉션",,"D","AWS WAF에서는 일반적인 웹 취약성 공격을 차단하기 위한 규칙들이 제공되며, 이 중 웹 취약성 공격 차단 규칙은 SQL 삽입, XSS, 취약한 파일 업로드와 같은 웹 애플리케이션 공격을 차단하기 위한 규칙이다."
+			2,"AWS WAF를 사용해 악성 공격으로부터 웹 애플리케이션을 보호하고자 할 때, AWS WAF가 자동으로 수행하는 작업 중 아닌 것은 무엇입니까","AWS WAF 웹 ACL을 생성해 AWS 리소스의 액세스를 제어한다","AWS WAF ACL을 사용해 허용할 IP 주소 범위를 지정할 수 있다","로그 분석을 사용해 요청을 모니터링하고 차단한다","AWS Shield와 통합해 DDoS 공격으로부터 보호한다","SSL/TLS 암호화 연결을 해제한다",,"E","AWS WAF 웹 ACL을 생성해 AWS 리소스의 액세스를 제어하거나, ACL을 사용해 허용할 IP 주소 범위를 지정할 수 있다. 또한 로그 분석을 사용해 요청을 모니터링하고 차단하며, AWS Shield와 통합해 DDoS 공격으로부터 보호한다."
+			3,"AWS Shield가 제공하는 DDoS 방어 기능에 대한 설명 중 올바른 것은 무엇입니까","AWS Shield는 모든 유형의 DDoS 공격을 방어할 수 있다","AWS Shield는 네트워크 레벨의 DDoS 공격만을 방어할 수 있다","AWS Shield는 웹 서비스 또는 API의 무단 액세스와 같은 애플리케이션 레벨의 DDoS 공격을 방어할 수 있다","AWS Shield는 데이터베이스 및 스토리지 서비스를 보호하지 않는다",,,,"C","AWS Shield는 AWS에서 제공하는 DDoS 방어 서비스로, 애플리케이션 레벨의 DDoS 공격을 포함해 다양한 유형의 DDoS 공격을 방어할 수 있다. AWS Shield Standard는 AWS의 모든 고객에게 무료로 제공되며, AWS Shield Advanced는 유료 서비스로 더욱 강력한 DDoS 방어 및 고급 보안 기능을 제공한다."
+			4,"AWS Shield Standard와 AWS WAF의 차이점은 무엇입니까? (2개)","AWS Shield Standard는 모든 유형의 DDoS 공격을 방어할 수 있으며, AWS WAF는 웹 애플리케이션의 보안을 위한 방화벽이다","AWS Shield Standard는 Network Layer DDoS 공격을 방어할 수 있으며, AWS WAF는 Application Layer DDoS 공격과 웹 애플리케이션의 보안을 위한 방화벽이다","AWS Shield Standard는 AWS의 모든 고객에서 제공하는 무료 서비스이고, AWS WAF는 사용자가 필요에 따라 활성화해 사용하는 유료 서비스다","AWS Shield Standard는 자동으로 활성화되며, AWS WAF는 사용자가 직접 활성화해야 한다",,,,"B,C","AWS Shield Standard는 DDoS 공격에 대한 보호를 제공하는 무료 서비스로, Network Layer DDoS 공격을 방어할 수 있다. 반면 AWS WAF는 Application Layer DDoS 공격뿐만 아니라 웹 애플리케이션의 보안을 위한 방화벽으로 사용자가 필요에 따라 활성화해 사용하며, 추가 비용이 발생할 수 있다."
+			5,"Amazon Inspector 서비스에 대한 다음 중 올바른 설명은 무엇입니까","Amazon Inspector는 웹 애플리케이션의 성능을 측정하는 서비스다","Amazon Inspector는 AWS에서 제공하는 로깅 및 모니터링 서비스다.","Amazon Inspector는 애플리케이션 보안 및 컴플라이언스 평가를 제공하는 서비스다","Amazon Inspector는 AWS에서 제공하는 데이터베이스 백업 서비스다",,,"C","Amazon Inspector는 애플리케이션의 보안 취약점을 검출하고, 컴플라이언스 규정을 준수하는지 평가하는 보안 평가 서비스이며, EC2 인스턴스에 에이전트를 설치해 실행된다."
+			6,"Amazon Inspector 서비스의 작동 방식에 대한 다음 중 올바른 설명은 무엇입니까","Amazon Inspector는 네트워크 패킷을 캡처해 보안 취약점을 검출한다","Amazon Inspector는 애플리케이션의 로그를 수집해 보안 취약점을 검출한다","Amazon Inspector는 AWS 계정의 보안 구성을 평가해 보안 취약점을 검출한다","Amazon Inspector는 웹 애플리케이션의 코드를 분석해 보안 취약점을 검출한다",,,"D","Amazon Inspector는 애플리케이션의 코드를 분석해 보안 취약점을 검출한다. Amazon Inspector는 애플리케이션 내부에서 발생하는 취약점과 관련된 자동화된 보안 검사를 시행하며, 취약점 분석 결과 보고서를 제공한다."
+			7,"Amazon GuardDuty 서비스가 제공하는 기능 중 올바른 것은 무엇입니까","보안 그룹 설정 관리","웹 애플리케이션의 보안 취약점 검사","네트워크 트래픽에서 악성 활동 탐지","애플리케이션 로그 분석",,,"C","Amazon GuardDuty는 AWS 계정의 보안 상태를 모니터링하고, AWS 클라우드에서 악성 활동을 감지하기 위한 관리형 보안 탐지 서비스이며, 네트워크 트래픽에서 악성 활동을 탐지하는 것이 GuardDuty의 주요 기능 중 하나다."
+			8,"Amazon GuardDuty 서비스의 가격 책정 방식은 무엇입니까","월별 활성화된 디바이스 수에 따라 비용이 부과된다","탐지된 이벤트의 수에 따라 비용이 부과된다","AWS 계정당 고정 비용이 부과된다","Amazon GuardDuty는 무료 서비스다",,,"B","Amazon GuardDuty의 비용은 탐지된 이벤트의 수에 따라 부과된다. GuardDuty는 무료 평가판을 제공하며, 평가판 기간 동안에는 이벤트 탐지에 대한 비용이 부과되지 않는다."
+			9,"Amazon Detective 서비스에 대한 다음 중 올바르지 않은 설명은 무엇입니까","Amazon Detective는 AWS 계정의 보안 상태를 모니터링 한다","Amazon Detective는 로그 데이터와 자동화된 분석 기능을 사용해 보안 문제를 해결한다","Amazon Detective는 빅데이터 분석 기술을 사용해 보안 이슈를 탐지하고, 관련된 데이터를 시각화한다","Amazon Detective는 모든 AWS 서비스에서 발생하는 로그 데이터를 수집하고 분석한다",,,"D","Detective는 AWS 계정의 보안 상태를 모니터링하고, 로그 데이터와 자동화된 분석 기능을 사용해 보안 문제를 해결하며, 이를 위해 빅데이터 분석 기술을 사용해 보안 이슈를 탐지하고, 관련된 데이터를 시각화하지만 모든 로그 데이터를 수집하고 분석하지는 않는다."
+			10,"Amazon Detective 서비스를 사요해 다음 중 어떤 작업을 수행할 수 있습니까","인스턴스와 보안 그룹의 연결 상태를 모니터링한다","웹 애플리케이션의 코드를 분석해 보안 취약점을 검출한다","AWS 계정에 대한 불법 활동 및 악성 활동을 감지한다","네트워크 트래픽에서 악성 활동을 탐지한다","클라우드 리소스의 보안 설정을 관리한다",,"C","Detective는 AWS 계정에서 불법적으로 로그인하거나 데이터를 삭제하는 등의 악성 활동이 감지되면 해당 활동에 대한 자세한 정보와 추적 정보를 제공한다."
+			11,"다음 중 AWS에서의 암호화에 대한 설명으로 옳지 않은 것은 무엇입니까","S3 스토리지 렌즈 지표를 사용하면 스토리지 바이트의 몇 퍼센트가 암호화됐는지 알 수 있다","Amazon S3 버킷 암호화의 기본 방식은 SSE-KMS이다","데이터 보호란 전송 중 암호화와 저장 중 암호화를 의미한다","SSL/TLS는 전송 중 암호화 방식이다","저장 중 암호화 방식으로는 서버 측 암호화와 클라이언트 측 암호화 방식이 있다",,"B","S3 버킷 암호화의 기본 방식은 SSE-KMS가 아닌, S3 관리형 키를 사용한 서버 측 암호화(SSE-S3)다."
+			12,"다음 중 Amazon KMS 서비스의 주요 기능은 무엇입니까","데이터의 저장과 백업을 제공한다","암호화된 데이터를 복호화할 수 있는 열쇠를 관리한다","웹 응용프로그램을 보호하기 위한 방화벽을 제공한다","사용자 권한을 관리한다",,,"B","Amazon KMS는 사용자의 애플리케이션에서 사용할 수 있는 열쇠를 생성, 관리하고, 데이터를 안전하게 암호화 및 복호화할 수 있게 해주는 서비스이며, 주요 기능은 암호화된 데이터를 복호화할 수 있는 열쇠를 관리하는 것이다."
+			13,"다음 중 Amazon KMS 서비스를 사용할 때 고객이 직접 관리할 수 없는 일은 무엇입니까","암호화된 데이터의 백업과 복원","암호화된 데이터의 저장 위치 선택","암호화된 데이터의 복호화 열쇠 생성","암호화된 데이터의 암호화 방법 선택",,,"C","Amazon KMS는 고객이 직접 암호화 및 복호화를 수행할 수 있도록 암호화된 데이터를 복호화하는 데 필요한 열쇠를 생성하고 관리한다. 고객은 암호화된 데이터의 백업과 복원, 저장 위치 선택, 암호화 방법 선택 등 다양한 작업을 수행할 수 있지만, 열쇠 생성은 AWS KMS가 제어한다."
+			14,"AWS Certificate Manager 서비스에 대한 설명 중 올바른 것은 무엇입니까? (2개)","AWS Certificate Manager는 AWS에서 제공하는 DNS 서비스다","AWS Certificate Manager는 공인 인증 기관으로부터 SSL/TLS 인증서를 발급받을 수 있는 서비스다","AWS Certificate Manager는 EC2 인스턴스에서만 사용 가능한 서비스다","AWS Certificate Manager는 무료로 제공되는 서비스다",,,"B,D","AWS Certificate Manager는 공인 인증 기관으로부터 SSL/TLS 인증서를 발급받을 수 있는 서비스다. SSL/TLS 인증서는 HTTPS 프로토콜을 사용하는 웹사이트에서 데이터를 암호화하고 안전하게 전송하는 데 사용된다. AWS Certificate Manager는 무료로 제공되며, AWS에서 호스팅되는 애플리케이션을 위해 공인 인증서를 발급할 수 있다. AWS Certificate Manager를 사용하면 SSL/TLS 인증서를 쉽게 생성, 발급, 설치 및 관리할 수 있다."
+			15,"AWS Certificate Manager가 제공하는 기능에 대한 설명으로 옳지 않은 것은 무엇입니까","AWS Certificate Manager를 이용해 SSL/TLS 인증서 관련 비용을 절약할 수 있다","AWS Certificate Manager는 SSL/TLS 인증서를 발급하는 데 필요한 복잡한 프로세스를 자동화한다","AWS Certificate Manager는 저장 중 데이터 보안 및 전송 중 데이터 보안 모두를 위해 사용할 수 있다","AWS Certificate Manager는 SSL/TLS 인증서를 발급하고 관리하는 데 필요한 AWS 리소스를 제공한다","AWS Certificate Manager는 SSL/TLS 인증서를 발급하는 데 필요한 정보를 수집하고 검증한다",,"C","AWS Certificate Manager는 HTTPS 프로토콜을 사용하는 웹사이트에서 데이터를 암호화하고 안전하게 전송하기 위해 사용되는 SSL/TLS 인증서 관리 서비스이며, 저장 중 데이터 보안과는 무관하다."
+			16,"AWS Trusted Advisor에 대한 설명으로 옳지 않은 것은 무엇입니까","Trusted Advisor는 사용 중지된 가용 영역 및 사용 중지된 RDS 백업을 검사한다","비용 최적화, 성능, 보안, 내결함성, 서비스 할당량 등 5대 항목에 대한 권장 사항 또는 경고를 제공한다","AWS Baswic Support 고객도 핵심 보안 검사 및 서비스 할당량 검사에 액세스할 수 있다","AWS Developer Support 고객은 비용 최적화, 보안, 내결함성, 성능, 서비스 할당량을 포함한 모든 Trusted Advisor 검사에 액세스할 수 있다","Trusted Advisor는 서비스 할당량의 80%가 초과될 경우 알림을 제공한다",,"D","비용 최적화, 보안, 내결함성, 성능 및 서비스 할당량을 포함한 모든 Trusted Advisor 검사에 액세스할 수 있는 고객은 AWS Business Support 및 AWS Enterprise Support 고객이다."
+			17,"웹 애플리케이션은 모든 데이터를 Amazon S3 버킷에 저장합니다. 클라이언트는 데이터를 Amazon S3로 보내기 전에 데이터를 암호화합니다. 다음 중 고객이 필요로 하는 데이터를 암호화하는 올바른 기술은 무엇입니까","S3 관리형 키로 서버 측 암호화(SSE-S3)","AWS KMS 키로 서버측 암호화(SSE-KMS)","AWS 암호화 SDK를 사용해 클라이언트 측 암호화(CSE)","S3에 저장되는 모든 객체가 자동으로 암호화되므로 별도의 암호화 작업은 필요하지 않음",,,"C","데이터를 Amazon S3로 보내기 전에 클라이언트에서 암호화하는 방식은 클라이언트 측 암호화(CSE)이다."
+			18,"DDoS(분산 서비스 거부) 공격을 차단 또는 완화하는 데 사용할 수 있는 AWS 서비스는 무엇입니까","KMS","Shield","Firewall","CloudWatch","Systems Manager",,"B","DDoS 공격을 차단 또는 완화하는 보안 서비스는 Shield이다."
+			19,"AWS 웹 애플리케이션 방화벽은 어떤 네트워크 레이어에서 일반적인 침해 시도로부터 리소스 보호를 제공합니까","네트워크 레이어 3","네트워크 레이어 4","네트워크 레이어 5","네트워크 레이어 7","위 모든 옵션",,"D","WAF는 네트워크 레이어 7에서 작동하며, SQL 명령어 주입과 교차 사이트 스크립팅 같은 일반적인 웹 취약점 공격을 차단한다."
+			20,"다음 중 AWS Shield Advanced를 통해 확장된 DDoS 공격으로부터 보호받는 대상이 아닌 것은 무엇입니까? (2개)","Elastic Compute Cloud","CloudFront","CloudFormation","Global Accelerator","Route 53","API Gateway","C,F","AWS Shield Advanced는 EC2, ELB, CloudFront 및 Global Accelerator와 Route 53 등 리소스를 기반으로 하는 애플리케이션에 대해 더 높은 수준의 보호를 제공한다."
+		`;
+    </script>
+    <script src="../main2.js" defer></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
