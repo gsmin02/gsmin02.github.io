@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ADsP Chapter1_2</title>
+    <link
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" type="text/css" href="../main.css" />
+  </head>
+  <body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+      <button
+        class="navbar-toggler"
+        type="button"
+        data-toggle="collapse"
+        data-target="#navbarNav"
+        aria-controls="navbarNav"
+        aria-expanded="false"
+        aria-label="Toggle navigation"
+      >
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav">
+          <li class="nav-item active">
+            <a class="nav-link" href="Chapter1_1.html">1과목 1장</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="Chapter1_2.html">1과목 2장</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="Chapter1_P.html">1과목 기출</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="Chapter1_E.html">1과목 예상</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="Chapter2.html">2과목</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="Chapter3.html">3과목</a>
+          </li>
+        </ul>
+      </div>
+    </nav>
+    <br />
+    <div class="container">
+      <h1 class="text-center">1과목 2장 문제집</h1>
+      <div id="progress" class="text-center progress-text"></div>
+
+      <div id="question-container"></div>
+
+      <div class="text-center mt-4">
+        <button
+          id="prev-btn"
+          class="btn btn-secondary"
+          onclick="prevQuestion()"
+          style="display: none"
+        >
+          이전 문제
+        </button>
+        <button id="next-btn" class="btn btn-custom" onclick="nextQuestion()">
+          다음 문제
+        </button>
+      </div>
+      <div class="text-center mt-4">
+        <input
+          type="number"
+          id="questionInput"
+          onkeydown="selectQuestion(event);"
+          placeholder="바로이동"
+        />
+      </div>
+    </div>
+    <br /><br /><br />
+
+    <script>
+      const data = `
+			index,question,A,B,C,D,E,F,answer,explanation
+			1,"다음 중 빅데이터 출현 배경에 대하여 잘못 설명한 것은?","기업의 방대한 양의 고객 데이터 축적","데이터의 정형화를 통한 관리의 용이성","스마트폰 및 인터넷 보급을 통한 기하급수적인 데이터 양의 증가","기술의 발전을 통한 저장 및 분석 비용의 감소",,,"B","데이터 정형화는 빅데이터의 출현 배경과 상관이 없다."
+      2,"빅데이터 출현 배경 중 거대한 데이터의 분석 비용 문제를 해결해준 것은 무엇인가?","하드 드라이브의 발전 및 가격 하락","클라우드 컴퓨팅","아날로그의 디지털화","스마트폰의 보급",,,"B","개인의 컴퓨터 사양이 분석에 적합하지 못할 경우 기업이 제공하는 원격 고사양 컴퓨터를 활용하여 분석할 수 있다. 하드 드라이브의 가격 하락은 데이터 분석이 아닌 데이터 저장 비용 문제를 해결해 주었다."
+      3,"빅데이터의 여러 기능 중 여러 사람이 공동으로 사용 가능한 구조물로서의 역할을 하는 것은 어떤 기능인가?","렌즈","철 또는 석탄","원유","플랫폼",,,"D","유튜브나 카카오톡처럼 여러 사람이 사용하는 구조물은 빅데이터 플랫폼의 역할이다."
+      4,"빅데이터 시대가 도래하면서 발생 가능한 부정적인 측면 중 하나인 '책임 원칙의 훼손'에 대한 사례로 가장 적절한 것은?","빈집털이를 목적으로 SNS를 활용한 탐색","구글의 사용자 행동 예측","알 수 없는 이유로 인한 인공지능으로부터의 피해 발생","인공지능의 범죄 예측으로 범죄 발생 이전에 체포",,,"D","예측된 범행 이전의 체포는 책임 원칙 훼손의 대표적인 예시다. 범하지 않은 죄에 대한 처벌은 정당한 것인지 정당하지 않은 것인지 판단할 수 없기 때문이다."
+      5,"다음 중 빅데이터 시대의 위기 요인 중 사생활 침해 문제를 해결하기 위한 대책으로 올바른 것은 무엇인가?","알고리즈미스트를 통한 사생활 침해 문제 해결","개인정보를 사용하는 사람이 직접 책임지는 책임제의 도입","개인정보 주체로부터 개인정보 사용을 위한 허락 절차 강화","정보주체에게 피해가 예상되는 경우 정보를 사용할 수 없도록 제한",,,"B","사생활 침해에 대한 통제 방안은 사용자가 직접 책임지는 책임제의 도입이다."
+      6,"다음 중 개인정보 비식별화 기법을 설명한 것으로 가장 부적절한 것은?","데이터 마스킹 ― 개인 식별을 위한 데이터를 삭제","총계 처리 ― 데이터의 총합 또는 평균을 나타내어 개별 데이터 값을 숨김","가명 처리 ― 개인 식별을 위한 데이터를 식별할 수 없는 값으로 변경","범주화 ― 데이터의 값을 범주화하여 기존 값을 감춤",,,"A","데이터 바스킹은 데이터의 기존 형식을 유지한 채 식별할 수 없도록 값을 바꾸는 기술이다."
+      7,"다음 중 데이터의 가치 측정이 어려운 이유로 부적절한 것은 무엇인가?","데이터 활용 방식: 일반화로 데이터를 언제 누가 사용했는지 알 수 없기 때문이다.","가치 창출: 무심코 지나칠 수 있는 데이터 속에서 가치가 발견될 수 있기 때문이다.","분석 기술 발전: 과거에 찾지 못했던 가치를 찾을 수 있기 때문이다.","인공지능: 이미지 분석, 음성 분석과 같은 인공지능의 발전에 기여하기 때문이다.",,,"D","인공지능은 데이터 활용 방안의 일종으로 데이터의 가치 측정이 어려운 이유로 부적절하다."
+      8,"다음 중 비즈니스 모델에서 빅데이터 분석 방법과 그에 대한 활용 예시가 부적절한 것은?","회귀분석: 연인들의 거리에 따른 애정도의 변화는 얼마인가?","감정분석: 고객의 만족도가 높을수록 재방문할 가능성은 얼마인가?","유형분석: 같은 패턴의 행동을 보이는 동물은 무엇인가?","연관 규칙학습: 고객의 장바구니를 분석한 결과 어떤 구입 품목들이 연관성을 가지는가?",,,"B","감정분석은 특정 주제에 대한 사용자들의 긍정, 부정의 의견을 분석하는 방법이다. 고객의 만족도에 따른 재방문 가능성은 회귀분석이 적절하다."
+      9,"다음 중 감정분석에 대한 설명으로 가장 적절한 것은?","물품에 대한 만족도에 따른 재구매율이 어떻게 변하는지를 알 수 있다.","주로 온라인 쇼핑몰에서 사용자의 상품평에 대한 분석이 대표적 사례다.","온라인에서 사용자 간 친분의 정도를 분석하기 위하여 사용한다.","'좋아요' 버튼 클릭과 같이 사용자의 행동을 분석하다.",,,"B","감정분석의 분석 대상은 사용자가 작성한 댓글과 같이 비정형 데이터의 일종인 텍스트다."
+      10,"다음 중 최적화 문제를 해결하기 위한 기법의 하나로 자연 세계의 진화 과정에 기초한 모델로서 1975년에 존 홀랜드에 의해 개발된 기법으로 선택, 변이 교차, 대치 등의 연산을 보유한 기법은 무엇인가?","기계학습","강화학습","유전 알고리즘","감정분석",,,"C","유전 알고리즘은 선택, 변이 교차, 대치의 연산을 통해 최적화 문제를 해결하기 위해 고안되었다."
+      11,"다음 중 데이터 분석에 기초한 가치 창출에 대한 설명 중 가장 부적절한 것은?","단순한 분석으로는 복잡한 사회 및 기업 구조에서 가치를 창출하기에 부족하다.","분석 모형의 최적화 능력과 통찰력이 발휘될 때 최고 수준의 가치를 창출할 수 있다.","뛰어난 통찰력이 있다면 복잡한 분석 능력 없이도 충분히 활용가치를 찾을 수 있다.","현재를 정확하게 해석할 수 있는 데이터 분석은 기업의 의사결정을 돕는 도구일 뿐이지 절대적인 기준이 될 수 없다.",,,"A","단순한 분석 기법으로도 통찰력이 있다면 기업의 발전에 도움이 되는 가치를 찾을 수 있다."
+      12,"다음 중 데이터 사이언스에 대한 설명으로 가장 부적절한 것은?","분석 결과를 전달할 수 있는 스토리텔링이 가장 중요한 핵심 능력이다.","기존 '통계학'과는 총체적 접근법을 사용한다는 점에서 다르다.","분석 영역, IT 영역, 비즈니스 컨설팅 영역에서의 능력이 요구된다.","하드 스킬과 소프트 스킬 중 무엇이 더 중요하다고 말할 수 없다.",,,"A","강력한 호기심을 핵심 구성 요소로 스토리텔링, 커뮤니케이션, 창의력이 추가적으로 요구된다."
+      13,"다음 중 데이터 사이언티스트의 요구 역량으로 가장 부적절한 것은?","분석 기술에 대한 능력 및 숙련도","분석 결과에 대한 설득력 있는 전달","다분야 간 협력을 위한 커뮤니케이션","데이터의 중요도 여부를 판단하고 폐기하는 능력",,,"D","데이터의 중요도 여부는 현재 시점에서 판단하기 어려우며, 데이터의 폐기 여부는 데이터의 생명주기 관리방안 수립을 통해 이루어진다."
+      14,"다음 설명 중 틀린 것은 무엇인가?","데이터 사이언티스트의 중요한 핵심 요소로는 강력한 호기심을 들 수 있다.","시간에 흐름에 따라 단순 세계화에서 복잡 세계화로 변화하였다.","분석을 수행하는 데 있어 인간의 주관적인 의사는 개입해서는 안 된다.","비정형 데이터들이 현대에 들어서 분석 난이도가 낮아졌다.",,,"C","과학적 분석 과정에서는 가정과 인간의 해석의 개입이 필수적이다."
+      15,"다음 중 데이터화(datafication)와 밀접한 관련이 있는 기술은 무엇인가?","메타버스","블록체인","사물인터넷","3D 프린팅",,,"C","데이터화(datafication)와 가장 밀접한 관련이 있는 기술은 사물인터넷(IoT)이다. 데이터화가 가능했기에 사물인터넷이 가능했으며, 사물인터넷을 추구하고자 데이터화 방안을 모색한다."
+		`;
+    </script>
+    <script src="../main2.js" defer></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  </body>
+</html>

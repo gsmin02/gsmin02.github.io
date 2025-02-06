@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ADsP Chapter1_1</title>
+    <link
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" type="text/css" href="../main.css" />
+  </head>
+  <body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+      <button
+        class="navbar-toggler"
+        type="button"
+        data-toggle="collapse"
+        data-target="#navbarNav"
+        aria-controls="navbarNav"
+        aria-expanded="false"
+        aria-label="Toggle navigation"
+      >
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav">
+          <li class="nav-item active">
+            <a class="nav-link" href="Chapter1_1.html">1과목 1장</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="Chapter1_2.html">1과목 2장</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="Chapter1_P.html">1과목 기출</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="Chapter1_E.html">1과목 예상</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="Chapter2.html">2과목</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="Chapter3.html">3과목</a>
+          </li>
+        </ul>
+      </div>
+    </nav>
+    <br />
+    <div class="container">
+      <h1 class="text-center">1과목 1장 문제집</h1>
+      <div id="progress" class="text-center progress-text"></div>
+
+      <div id="question-container"></div>
+
+      <div class="text-center mt-4">
+        <button
+          id="prev-btn"
+          class="btn btn-secondary"
+          onclick="prevQuestion()"
+          style="display: none"
+        >
+          이전 문제
+        </button>
+        <button id="next-btn" class="btn btn-custom" onclick="nextQuestion()">
+          다음 문제
+        </button>
+      </div>
+      <div class="text-center mt-4">
+        <input
+          type="number"
+          id="questionInput"
+          onkeydown="selectQuestion(event);"
+          placeholder="바로이동"
+        />
+      </div>
+    </div>
+    <br /><br /><br />
+
+    <script>
+      const data = `
+			index,question,A,B,C,D,E,F,answer,explanation
+			1,"다음 중 객관적인 사실을 의미하는 데이터로부터 얻을 수 없는 것은?","지혜","정보","지식","도형",,,"D","데이터로부터 정보와 지식, 지혜를 도출할 수 있다."
+			2,"개인이 보유한 경험을 다른 사람이 쉽게 접근할 수 있도록 문서나 매체로 변환하는 과정은 무엇인가?","표출화","공통화","내면화","연결화",,,"A","내재된 지식을 외부로 표출하는 작업은 표출화다."
+      3,"다음은 데이터베이스의 구성 요소들을 설명한 것이다. A, B를 올바르게 짝 지은 것은 무엇인가? 『데이터의 일종으로 다른 데이터를 설명해주는 데이터는 (A)이다. (B)는 데이터베이스에 저장된 데이터를 빠른 정렬 및 탐색이 가능하게 한다.』","A ― 메타데이터, B ― 인덱스","A ― 데이터 모델, B ― 트리거","A ― 백업 데이터, B ― 데이터 마트","A ― 스키마 구조, B ― 저장된 절차",,,"A","메타데이터는 데이터를 설명하는 데이터이며, 인덱스는 각 데이터를 가리키는 내부 이름으로서 데이터의 탐색과 정렬을 빠르게 처리할 수 있도록 도와준다."
+      4,"다음 중 데이터베이스의 일반적인 특징에 대한 설명으로 가장 부적절한 것은?","다수의 사용자가 이용하는 공용 데이터다.","동일한 내용의 데이터가 중복되어 있지 않은 통합된 데이터다.","컴퓨터가 접근할 수 있는 매체에 저장된 데이터다.","고정된 형식이 있는 정형 데이터다.",,,"D","4번은 통합된 데이터, 공용 데이터, 저장된 데이터, 변화하는 데이터 중 어느 하나도 아니다."
+      5,"아래 구문에 대한 설명 중 올바른 것은? 『SELECT PRICE, ITEM FROM SHOP WHERE PRICE <= 10000;』 PRICE는 품목의 가격, ITEM은 품목의 이름이다.","SELECT는 대표적인 데이터 정의 언어(DDL)이다.","여러 개의 테이블에서 정보를 불러온다.","가격이 10000 이하인 결과만 조회한다.","2개의 결과 행이 나타난다.",,,"C","해설 참조(23p)"
+      6,"아래 구문에 대한 설명으로 부적절한 것은? 『SELECT CUSTOMER_ID, SUM(PRICE) AS TOTAL_PRICE FROM SHOP GROUP BY CUSTOMER_ID HAVING CUSTOMER_ID < 10000』 CUSTOMER_ID는 고객 ID, PRICE는 구매 상품의 금액이다.","HAVING을 WHERE로 바꿔도 같은 결과를 출력한다.","조건이 CUSTOMER_ID < 10000에 대해서만 그룹화를 수행한다.","고객벽 구매금액의 합계를 조회한다.","AS는 생략 가능하다.",,,"A","해설 참조(23p)"
+      7,"다음 중 NoSQL 데이터베이스가 아닌 것은?","HBase","Cassandra","Elasticsearch","MySQL",,,"D","MySQL은 관계형 데이터베이스 관리 시스템이다."
+      8,"다음 중 CRM에 대한 설명으로 적절한 것은?","조직 내 프로젝트 사례 및 직원 역량의 통합","기업의 고객 관리 및 신규 고객 발굴을 목적","외부와의 정보시스템 통합으로 시간 및 비용의 절감","위성으로부터 신호를 수신받아 위치를 결정",,,"B","CRM은 내 외부 고객 모두를 대상으로 한 정보시스템이며, 단순한 고객 정보 수집에서 그치지 않고 고객정보 분석까지 나아간다."
+      9,"다음은 데이터베이스를 기반으로 기업 내 구축되는 주요 정보시스템 중 하나를 설명한 것이다. 보기에서 가장 적합한 것을 고르시오. 『기업이 보유한 자원의 효과적 이용을 목적으로 경영의 효율화를 위한 데이터의 통합 및 관리』","ERP","CRM","SCM","GPS",,,"A","경영자원 통합 관리를 의미하는 ERP(Enterprise Resource Planning)다."
+		`;
+    </script>
+    <script src="../main2.js" defer></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  </body>
+</html>
