@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ADsP Chapter2_2</title>
+    <link
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" type="text/css" href="../main.css" />
+  </head>
+  <body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+      <button
+        class="navbar-toggler"
+        type="button"
+        data-toggle="collapse"
+        data-target="#navbarNav"
+        aria-controls="navbarNav"
+        aria-expanded="false"
+        aria-label="Toggle navigation"
+      >
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav">
+          <li class="nav-item">
+            <a class="nav-link" href="Chapter1.html">1과목</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="Chapter2_1.html">2과목 1장</a>
+          </li>
+          <li class="nav-item active">
+            <a class="nav-link" href="Chapter2_2.html">2과목 2장</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="Chapter2_P.html">2과목 기출</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="Chapter2_E.html">2과목 예상</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="Chapter3.html">3과목</a>
+          </li>
+        </ul>
+      </div>
+    </nav>
+    <br />
+    <div class="container">
+      <h1 class="text-center">2과목 2장 문제집</h1>
+      <div id="progress" class="text-center progress-text"></div>
+
+      <div id="question-container"></div>
+
+      <div class="text-center mt-4">
+        <button
+          id="prev-btn"
+          class="btn btn-secondary"
+          onclick="prevQuestion()"
+          style="display: none"
+        >
+          이전 문제
+        </button>
+        <button id="next-btn" class="btn btn-custom" onclick="nextQuestion()">
+          다음 문제
+        </button>
+      </div>
+      <div class="text-center mt-4">
+        <input
+          type="number"
+          id="questionInput"
+          onkeydown="selectQuestion(event);"
+          placeholder="바로이동"
+        />
+      </div>
+    </div>
+    <br /><br /><br />
+
+    <script>
+      const data = `
+			index,question,A,B,C,D,E,F,answer,explanation
+			1,"다음 중 빅데이터의 4V를 고려할 때 Return of Investment에서 비즈니스 효과에 해당하는 것은?","Volume","Variety","Velocity","Value",,,"D",""
+      2,"다음 중 난이도와 시급성을 고려하였을 때 우선적으로 추진해야 하는 분석 과제로 적절한 것은?","난이도: 쉬움, 시급성: 미래","난이도: 어려움, 시급성: 현재","난이도: 쉬움, 시급성: 현재","난이도: 어려움, 시급성: 미래",,,"C",""
+      3,"다음 중 분석 마스터플랜 수립에서 과제 우선순위 결정과 관련한 내용으로 부적절한 것은?","난이도 요소의 3V와 비즈니스 요소의 1V가 있다.","분석 과제 우선순위 결정에 고려할 사항에는 전략적 중요도, ROI, 실행 용이성이 있다.","적용 기술의 안전성 검증요소는 투자 용이성의 평가 요소다.","전략적 중요도는 전략적 필요성과 시급성의 두 가지 요소로 선별한다.",,,"C",""
+      4,"아래 보기가 설명하는 것은 무엇인가?『정보기술이 발전하는 세계에서 정보시스템을 전략적으로 활용하여 기업의 경쟁을 발전시키기 위해 (　　　)를 수행한다. (　　　)를 수행하기 위해서는 조직의 내 외부 환경을 분석하고 기회나 문제점을 도출하여 사용자의 요구사항을 분 석하는 등 기업의 장기적인 계획을 수립한다.』","단답형","단답형","단답형","단답형",,,"해설 참조","ISP(정보전략계획)"
+      5,"다음 중 분석 준비도의 구성 요소 중 하나인 분석 업무 파악을 진단하기 위한 항목이 아닌 것은?","예측 분석 업무","최적화 분석 업무","업무별 적합한 분석 기법 사용","분석 업무의 정기적 개선",,,"C",""
+      6,"다음 중 분석 성숙도가 활용 단계에 머물러 있는 기업이 현재 수행하고 있는 업무로 적절한 것은 무엇인가?","비즈니스 부문에서 미래 결과를 예측","비즈니스 부문에서 실적 분석을 위한 통계 기법 사용,"IT 부문에서 빅데이터 분석을 수행","IT 부문에서 분석 전용 서버를 구축",,,"A",""
+      7,"데이터 분석의 지속적인 적용 및 확산을 위한 분석 거버넌스 체계의 구성 요소가 아닌 것은 무엇인가?","분석 관련 시스템","데이터","분석 과제 기획","분석으로 얻는 가치",,,"D",""
+      8,"다음 중 데이터 거버넌스 체계에서 데이터 표준 용어 설정, 명명 규칙 수립, 메타데이터 구축, 데이터 사전 구축 등의 업무로 구성된 항목은 무엇인가?","데이터 단순화","데이터 표준화","데이터 정규화","데이터 정형화",,,"B",""
+      9,"다음 중 분석 지원 인프라 구성에 대한 설명 중 부적절한 것은 무엇인가?","플랫폼 구조는 플랫폼을 활용하여 여러 시스템으로부터의 데이터 관리가 용이하다.","플랫폼 구조는 기존 시스템에 공동으로 이용해야 하는 플랫폼이 증가하기에 인터페이스가 복잡해진다.","개별 시스템을 구축하는 경우 시스템 간 독립적이다.","n개의 시스템을 개별 구축하는 경우 최대 n X (n-1) /2개의 인터페이스가 필요할 수 있다.",,,"B",""
+      10,"다음 설명은 어느 조직 구조에 대한 설명이다. 아래에서 설명하는 조직 구조는 무엇인가? 『별도의 분석 전담 조직이 구성되어 있으며 전략적 중요도에 따라 분석 조직이 직접 우선순위를 정해서 진행 가능하다는 장점이 있다. 그러나 현업 업무부서와 분석업무의 이중화, 이원화의 가능성이 높은 분석 조직 구조다.』","분산형 조직 구조","피라미드 조직 구조","기능 중심 조직 구조","집중형 조직 구조",,,"D",""
+      11,"다음 중 분석 과제 관리 프로세스에 대한 설명 중 부적절한 것은 무엇인가?","분석 과제 관리 프로세스는 과제 발굴의 3단계와 과제 수행의 4단계로 구성된다.","과제 발굴에서 가장 중요한 단계는 인력을 구성하는 팀 구성의 단계다.","분석 과제가 종료되어도 지속적인 모니터링 작업은 필요하다.","분석 과제 관리 프로세스를 진행하는 이유는 지속적인 분석 니즈를 파악하고 분석을 수행함으로써 기업 내 분석 문화가 내재화되기 위함이다.",,,"B",""
+      12,"다음 중 분석 교육에 관한 설명으로 가장 부적절한 것은 무엇인가?","분석 역량 확보를 위해 R, Python 같은 언어 교육은 필수다.","기업 내 모든 구성원에게 분석 기반의 업무를 정착시키는 것이 목적이다.","분석 기획자는 분석의 효율적인 설계를 위한 큐레이션 교육이 요구된다.","분석 실무자에게는 직접적인 데이터 분석 및 도구의 교육이 요구된다.",,,"A",""
+		`;
+    </script>
+    <script src="../main2.js" defer></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  </body>
+</html>
