@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ADsP Chapter2_P</title>
+    <link
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" type="text/css" href="../main.css" />
+  </head>
+  <body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+      <button
+        class="navbar-toggler"
+        type="button"
+        data-toggle="collapse"
+        data-target="#navbarNav"
+        aria-controls="navbarNav"
+        aria-expanded="false"
+        aria-label="Toggle navigation"
+      >
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav">
+          <li class="nav-item">
+            <a class="nav-link" href="Chapter1.html">1과목</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="Chapter2_1.html">2과목 1장</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="Chapter2_2.html">2과목 2장</a>
+          </li>
+          <li class="nav-item active">
+            <a class="nav-link" href="Chapter2_P.html">2과목 기출</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="Chapter2_E.html">2과목 예상</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="Chapter3.html">3과목</a>
+          </li>
+        </ul>
+      </div>
+    </nav>
+    <br />
+    <div class="container">
+      <h1 class="text-center">2과목 기출 문제집</h1>
+      <div id="progress" class="text-center progress-text"></div>
+
+      <div id="question-container"></div>
+
+      <div class="text-center mt-4">
+        <button
+          id="prev-btn"
+          class="btn btn-secondary"
+          onclick="prevQuestion()"
+          style="display: none"
+        >
+          이전 문제
+        </button>
+        <button id="next-btn" class="btn btn-custom" onclick="nextQuestion()">
+          다음 문제
+        </button>
+      </div>
+      <div class="text-center mt-4">
+        <input
+          type="number"
+          id="questionInput"
+          onkeydown="selectQuestion(event);"
+          placeholder="바로이동"
+        />
+      </div>
+    </div>
+    <br /><br /><br />
+
+    <script>
+      const data = `
+			index,question,A,B,C,D,E,F,answer,explanation
+			1,"비즈니스 모델 캔버스의 채널에 대한 기능으로 부적절한 것은?","고객에게 value proposition을 전달한다.","기업이 전달하는 value proposition을 고객들이 평가할 수 있게 해준다.","고객에게 에프터서비스(A/S)를 제공한다.","고객에게 유통채널을 제공한다.",,,"D",""
+      2,"경쟁자 확대 관점의 분석기회 발굴 영역이 아닌 것은?","경쟁자","경쟁채널","대체상품","신규진입자",,,"B",""
+      3,"포트폴리오 사분면에서 우선순위를 시급성에 두었을 때 결정해야 할 우선순위는 무엇인가? 『Ⅰ : 난이도―어려움, 시급성―현재 Ⅱ : 난이도―어려움, 시급성―미래  Ⅲ : 난이도―쉬움, 시급성―현재 Ⅳ : 난이도―쉬움, 시급성―미래』","Ⅲ → Ⅳ → Ⅱ","Ⅲ → Ⅱ → Ⅳ","Ⅰ → Ⅱ → Ⅲ","Ⅱ → Ⅳ → Ⅰ",,,"A",""
+      4,"분석 기회 발굴의 범위 확장 방법에 대한 설명으로 부적절한 것은?","역량의 재해석 관점에서는 현재 해당 조직 및 기업이 보유한 역량뿐만 아니라 해당 조직의 비즈니스에 영향을 끼치는 파 트너 네트워크의 역량을 포함해 폭넓은 분석 기회를 탐색한다.","시장의 니즈 탐색 관점에서는 현재 수행하는 사업에서의 직접 고객뿐만 아니라 고객과 접촉하는 역할을 수행하는 채널 및 고객의 의사결정에 영향을 미치는 영향자들에 대한 폭넓은 관점을 바탕으로 분석 기회를 탐색한다.","거시적 관점에서는 현재의 조직 및 해당 산업에 폭넓게 영향을 미치는 사회, 경제적 요인을 사회, 기술, 경제, 환경, 정치 영 역으로 나누어 기회 탐색을 수행한다.","경쟁자 관점에서는 현재 수행하고 있는 사업 영역의 제품. 서비스에 대해서만 분석 기회 발굴의 폭을 넓혀서 탐색한다.",,,"D",""
+      5,"빅데이터 분석 방법론의 분석 기획 단계의 태스크가 아닌 것은?","비즈니스 이해 및 범위 설정","프로젝트 정의 및 계획 수립","필요 데이터 정의","프로젝트 위험 계획 수립",,,"C",""
+      6,"마스터플랜 수립 시 적용 범위 및 방식의 고려사항이 아닌 것은?","투입 비용 수준","업무 내재화 적용 수준","분석 데이터 적용 수준","기술 적용 수준",,,"A",""
+      7,"다음에서 설명하는 데이터 거버넌스 체계 항목은 무엇인가? 『표준 용어 설정, 명명 규칙 수립, 메타데이터 구축, 데이터 사전 구축 등의 업무로 구성된다.』","데이터 표준화","표준화 활동","데이터 관리 체계","데이터 저장소 관리",,,"A",""
+      8,"하향식 접근법의 문제 탐색 단계에 대한 설명 중 부적절한 것은?","기업 내·외부를 포괄하는 비즈니스 모델을 기반으로 문제를 탐색한다.","유스케이스 활용보다는 새로운 이슈탐색을 우선한다.","거시적 관점 등의 외부적인 요소를 통해 새로운 유형의 기회를 발굴한다.","유사·동종 업계에서 기존에 수행한 문제 탐색 및 분석 과제 등을 활용한다.",,,"B",""
+      9,"비즈니스 모델 캔버스의 5가지 구성 요소로 부적절한 것은?","규제","제품","지원 인프라","경쟁자",,,"D",""
+      10,"분석 준비도에서 분석업무 파악의 항목으로 부적절한 것은?","예측 분석업무","분석 기법 라이브러리","최적화 분석업무","시뮬레이션 분석업무",,,"B",""
+      11,"분석 조직 구조에 대한 설명으로 부적절한 것은?","집중구조는 업무부서의 분석업무와 이원화될 가능성이 높다.","분산구조는 분석이 집중되지 못하고 분산되어 신속한 실무 적용이 어렵다.","기능구조는 별도 분석조직 없이 해당 업무부서에서 분석을 수행한다.","분산구조는 분석조직의 인력들을 현업부서에 직접 배치한다.",,,"B",""
+      12,"분석 주제의 4가지 유형 중 분석 방법은 알지만 분석 대상은 명확하지 않은 것으로 적절한 것은?","통찰","최적화","솔루션","발견",,,"A",""
+      13,"분석 준비도 및 성숙도 진단 결과를 4분면으로 그려서 분석했을 때, 분석업무 · 기법 등은 부족하지만 준비도가 높은 기업의 형태로 적절한 것은?","도입형","정착형","확산형","준비형",,,"A",""
+      14,"빅데이터 4V를 고려한 RO 분석에서 비즈니스 효과에 해당하는 것은?","Volume","Variety","Velocity","Value",,,"D",""
+      15,"프로토타이핑에 대한 설명으로 적절한 것은?","신속하게 해결책이나 모형을 제시함으로써 이를 바탕으로 문제를 좀 더 명확하게 인식하고 필요한 데이터를 구체화할 수 있게 하는 상향식 접근 방법이다.","문제가 정형화되어 있고, 데이터가 완벽하게 존재하는 경우 효과적이다.","문제 정의가 불명확한 경우 적용하기 어렵다.","문제에 대한 해결 방안을 찾기 위한 각 과정이 체계적이고 단계적으로 수행된다.",,,"A",""
+      16,"다음 중 하향식 접근법의 각 단계에 대한 설명으로 잘못 연결된 것은 무엇인가?","문제 탐색: 비즈니스 모델 캔버스 및 분석 기회 발굴 범위를 확장하여 문제를 발굴하는 단계로 유스케이스를 기피해야 한다.","문제 정의: 식별된 비즈니스 문제를 데이터 문제로 변환하여 정의하는 단계이다.","해결 방안 탐색: 기존 시스템 활용 가능 여부, 분석 역량 여부에 따라 대표적인 4가지의 해결 방안 중 한 가지를 선정해야 하는 단계이다.","타당성 검토: 경제적 타당성 및 기술적 타당성 두 가지 측면에서 검토하는 단계이다.",,,"A",""
+      17,"다음 중 시스템 엔지니어링, 프로젝트 관리, 인수 및 서비스 등을 포함한 광범위한 분야를 포괄하여 개인 또는 조직의 프로세스별 수준을 5가지 단계로 나타낸 소프트웨어와 시스템 공학의 역량 성숙도를 평가하는 모델은 무엇인가?","CMM","CMMI","SPICE","ISO-9000",,,"B",""
+      18,"데이터 거버넌스는 크게 데이터 표준화, 데이터 관리 체계, 데이터 저장소 관리, 표준화 활동의 4개 단계로 나눌 수 있 다. 다음 중 데이터 저장소 관리에서 수행하기에 적절한 업무는 무엇인가?","데이터 생명주기 관리 방안","모니터링","데이터 사전 구축","사전 영향 평가",,,"C",""
+      19,"다음 중 지속적인 반복 과정을 통해 점차 완성도를 높여나가는 개발 방법으로, 프로젝트 수행 중 발생할 수 있는 위험 요소를 사전에 제거하는 것이 주요 목적이며 새로운 프로젝트에 적용이 유리하다는 장점이 있으나, 관리 체계를 갖추지 못한 경우 복잡도가 상승해 프로젝트 진행이 어려울 수 있는 모델은 무엇인가?","폭포수 모델","프로토타입 모델","계층적 프로세스 모델","나선형 모델",,,"D",""
+      20,"다음 중 CRISP―DM에서 노이즈와 결측치를 식별하고 제거한 뒤 데이터셋을 선택하는 업무를 수행하는 단계는 무엇인가?","업무 이해","데이터 이해","데이터 준비","모델링",,,"C",""
+		`;
+    </script>
+    <script src="../main2.js" defer></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  </body>
+</html>
