@@ -20,6 +20,7 @@
         <nav class="navbar-brand">gsmin02</nav>
     </nav>
 
+<!--
     <div class="container">
         <h1 class="text-center">값 입력</h1>
         <div class="text-center mt-4">
@@ -27,6 +28,16 @@
         </div>
         <div class="text-center mt-4">
             <button class="btn btn-primary" onclick="goToFolder()">Enter</button>
+        </div>
+    </div>
+-->
+
+    <div class="container">
+        <h1 class="text-center">퀴즈 선택</h1>
+        <div class="text-center mt-4">
+            <button class="btn btn-primary" onclick="selFolder('quiz')">AWS 1-7</button>
+            <button class="btn btn-primary" onclick="selFolder('quiz2')">AWS 8-12</button>
+            <button class="btn btn-primary" onclick="selFolder('adsp')">ADSP</button>
         </div>
     </div>
 
@@ -38,6 +49,15 @@
                 window.location.href = folderPath;
             } else {
                 alert('값을 입력하세요');
+            }
+        }
+        function selFolder(locate) {
+            const folderPath = locate
+
+            if(folderPath) {
+                window.location.href = folderPath;
+            } else {
+                alert('현재 지원되지 않는 경로입니다')
             }
         }
     </script>
