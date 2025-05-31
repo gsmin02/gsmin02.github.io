@@ -57,9 +57,9 @@
             }
         }
         function selFolder(locate) {
-            const folderPath = locate
+            const folderPath = locate + "/index.html"
 
-            if(folderPath) {
+            if(locate) {
                 window.location.href = folderPath;
             } else {
                 alert('현재 지원되지 않는 경로입니다')
