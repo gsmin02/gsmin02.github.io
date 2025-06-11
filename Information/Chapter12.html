@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Information Chapter12</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" type="text/css" href="../main.css" />
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" href="Chapter9.html">9주차</a>
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link" href="Chapter10.html">10주차</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="Chapter11.html">11주차</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="Chapter12.html">12주차</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="Chapter13.html">13주차</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="Chapter14.html">14주차</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    <br />
+    <div class="container">
+        <h1 class="text-center">12주차 문제집</h1>
+        <div id="progress" class="text-center progress-text"></div>
+
+        <div id="question-container"></div>
+
+        <div class="text-center mt-4">
+            <button id="prev-btn" class="btn btn-secondary" onclick="prevQuestion()" style="display: none">
+                이전 문제
+            </button>
+            <button id="next-btn" class="btn btn-custom" onclick="nextQuestion()">
+                다음 문제
+            </button>
+        </div>
+        <div class="text-center mt-4">
+            <input type="number" id="questionInput" onkeydown="selectQuestion(event);" placeholder="바로이동" />
+        </div>
+    </div>
+    <br /><br /><br />
+
+    <script>
+        const data = `
+			index,question,answer,explanation,image
+            1,"평문을 암호문으로 바꾸는 과정은?","암호화","","./img/Chapter12/1.png",
+            2,"암호문을 복호화 키(Decryption Key)를 이용하여 평문으로 바꾸는 과정은?","복호화화","","./img/Chapter12/1.png",
+            3,"전치법(Transposition) 알고리즘을 이용해 BC400년 스파르타에서 군사용으로 사용하던 암호화 방식은?","스키테일 암호","","./img/Chapter12/2.png",
+            4,"단일 치환(Mono-Alphabetic Substitution) 알고리즘을 이용해 BC100년경에 로마의 줄리어스 시저가 군사적인 목적으로 사용한 암호화 방식은?","시저 암호","","./img/Chapter12/3.png",
+            5,"알파벳 26글자를 각각 다른 알파벳에 대응시키는 방식으로 암호화 방식은?","단일 치환, 모노 알파베틱 암호","","./img/Chapter12/4.png",
+            6,"한 글자가 암호화 키와의 매핑에 따라 여러 가지 글자로 대체되어 암호화되는 방식은?","다중 치환","","./img/Chapter12/5.png",
+            7,"암호화 키와 복호화 키가 같은 암호화 방식은?","대칭키 암호화 방식","","",
+            8,"64비트 평문을 64비트 암호문으로 암호화하는 방식의 약어는?","DES","","",
+            9,"DES의 대안으로 제시된 DES의 비도(암호화 강도)를 강화한 대칭키 암호 방식은?","Triple DES","","./img/Chapter12/6.png",
+            10,"1997년 미국 NIST의 암호 공모에서 새로운 대칭 암호의 표준으로 채택된 대칭키 암호 방식의 약어는?","AES","","",
+            11,"블록 암호 모드에서 블록의 남은 부분에 데이터를 채워 넣는 것을?","패딩","","./img/Chapter12/7.png",
+            12,"대칭 암호화 방식의 보완책이 필요한 문제는?","키 배포","","./img/Chapter12/8.png",
+            13,"(그림 참고) 암호화된 메시지는 밥의 개인키로만 복호화 가능하여 생기는 특징은?","기밀성 보장","","./img/Chapter12/9.png",
+            14,"(그림 참고) 앨리스의 공개키로만 복호화 가능하여 생기는 특징은?","부인 방지 보장","","./img/Chapter12/10.png",
+            15,"(정답 없음) 암호화 방식 비교: 대칭 암호화 방식 vs 비대칭 암호화 방식","정답 없음","","./img/Chapter12/11.png",
+            16,"원본 메시지에 대한 해시 값을 서명자의 개인키로 암호화하는 것은?","전자서명","","./img/Chapter12/12.png",
+            17,"사용자의 공개키에 사용자의 식별 정보를 추가하여 만든 일종의 전자 신분증이란?","공개키 인증서","","",
+        `;
+    </script>
+    <script src="../Information_js.js" defer></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+
+</html>
