@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Information Chapter9</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" type="text/css" href="../main.css" />
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" href="Chapter9.html">9주차</a>
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link" href="Chapter10.html">10주차</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="Chapter11.html">11주차</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="Chapter12.html">12주차</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="Chapter13.html">13주차</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="Chapter14.html">14주차</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    <br />
+    <div class="container">
+        <h1 class="text-center">9주차 문제집</h1>
+        <div id="progress" class="text-center progress-text"></div>
+
+        <div id="question-container"></div>
+
+        <div class="text-center mt-4">
+            <button id="prev-btn" class="btn btn-secondary" onclick="prevQuestion()" style="display: none">
+                이전 문제
+            </button>
+            <button id="next-btn" class="btn btn-custom" onclick="nextQuestion()">
+                다음 문제
+            </button>
+        </div>
+        <div class="text-center mt-4">
+            <input type="number" id="questionInput" onkeydown="selectQuestion(event);" placeholder="바로이동" />
+        </div>
+    </div>
+    <br /><br /><br />
+
+    <script>
+        const data = `
+			index,question,answer,explanation,image
+            1,"귀도 반 로썸(Guido van Rossum, 네덜란드)이 1991년 창시하고 비전공자 중심으로 인기인 프로그래밍 언어는? (한글)","파이썬","","",
+            2,"파이썬의 스크립트 언어 방식은? (한글)","인터프리터 방식","","",
+            3,"파이썬 활용 사례 중 오픈 소스 웹 프레임워크(Django)를 서버측 언어로 사용하는 기업의 이름은? (한글)","인스타그램","","",
+            4,"파이썬 활용 사례 중 귀도 반 로썸(파이썬 창시자)은 2012년부터 2019년까지 개발자로 재직한 기업의 이름은? (한글)","드롭박스","","",
+            5,"파이썬이 활발한 생태계를 가지는 이유는?","수많은 표준 라이브러리",,,
+            6,"(정답 없음) 파이썬 라이브러리","정답 없음","","./img/Chapter9/1.png",
+            7,"(정답 없음) 파이썬 프레임워크","정답 없음","","./img/Chapter9/2.png",
+        `;
+    </script>
+    <script src="../Information_js.js" defer></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+
+</html>
