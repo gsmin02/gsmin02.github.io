@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Information Chapter14</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" type="text/css" href="../main.css" />
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" href="Chapter9.html">9주차</a>
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link" href="Chapter10.html">10주차</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="Chapter11.html">11주차</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="Chapter12.html">12주차</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="Chapter13.html">13주차</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="Chapter14.html">14주차</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    <br />
+    <div class="container">
+        <h1 class="text-center">14주차 문제집</h1>
+        <div id="progress" class="text-center progress-text"></div>
+
+        <div id="question-container"></div>
+
+        <div class="text-center mt-4">
+            <button id="prev-btn" class="btn btn-secondary" onclick="prevQuestion()" style="display: none">
+                이전 문제
+            </button>
+            <button id="next-btn" class="btn btn-custom" onclick="nextQuestion()">
+                다음 문제
+            </button>
+        </div>
+        <div class="text-center mt-4">
+            <input type="number" id="questionInput" onkeydown="selectQuestion(event);" placeholder="바로이동" />
+        </div>
+    </div>
+    <br /><br /><br />
+
+    <script>
+        const data = `
+			index,question,answer,explanation,image
+            1,"화재가 일어났을 때 불길이 건물의 다른 곳으로 번지는 것을 차단하는 것은?","방화벽","","",
+            2,"외부 네트워크에서 내부 네트워크로 유입되는 침입을 막는 솔루션","방화벽","","",
+            3,"방화벽의 주요 기능으로서 외부에서 내부로 유입되는 메시지의 차단 또는 허용을 관리하는 특징은?","접근 제어","","",
+            4,"방화벽 규칙의 구성인 3가지는?","출발지, 도착지, 정책","","",
+            5,"보안의 기본 원칙으로 오류가 발생하여 시스템이 정상적으로 작동하지 않을 때 사용자나 시스템에 피해를 입히지 않는 상태로 남아 있어야 한다는 특징은?","페일 세이프","","./img/Chapter14/1.png",
+            6,"실패가 일어난 경우에도 안전해야 함을 의미하며 실패가 발생하더라도 실패의 영향을 최소화(백업 시스템으로 전환)하며 안전한 방식으로 실패한다는 이것은?","세이프 페일러","","./img/Chapter14/1.png",
+            7,"윈도우 방화벽에서 외부 네트워크에서 내부 네트워크로 들어오는 메시지에 대한 규칙을 뜻하는 이것은?","인 바운드","","",
+            8,"윈도우 방화벽에서 내부 네트워크에서 외부 네트워크로 나가는 메시지에 대한 규칙을 뜻하는 이것은?","아웃 바운드","","",
+            9,"내부 시스템에서 악의적인 공격을 발견하고 이를 보고하는 보안 솔루션은?","침입 탐지 시스템","","",
+            10,"(그림 참고) 단순히 IP 주소와 포트 번호 등의 속성으로 차단 결정하는 것은?","방화벽","","./img/Chapter14/2.png",
+            11,"(그림 참고) 전달되는 메시지 내용을 분석하여 차단 결정하는 것은?","침입 탐지 시스템","","./img/Chapter14/2.png",
+            12,"분석과 탐지에서 미리 정의된 침입에 대한 패턴이 있고, 정제된 데이터에서 침입 패턴을 찾는 방법은?","오용 탐지 기법","","",
+            13,"분석과 탐지에서 발생할 확률이 매우 낮은 일이 발생했을 때 침입이라고 판단하는 기법은?","이상 탐지 기법","","",
+            14,"상대적으로 낮은 오탐률을 갖지만, 기존에 패턴이 없는 새로운 침입 유형에 대한 탐지가 불가능한 이것은?","시그니처 기반 오용 탐지 기법","","",
+            15,"취약점이 공표 혹은 발견된 날, 공격이 행해진 시점에서 이 취약점을 해결할 시간이 하루도 되지 않았음을 뜻하는 용어는?","제로 데이","","",
+            16,"대표적인 오픈 소스 네트워크 기반 침입 탐지 시스템으로 sniffer and more에서 유래된 이것은? (한글)","스노트","","",
+            17,"(그림 참고) 네트워크 기반 침입 탐지 시스템에서 매우 높은 보안 수준을 요구하는 설치 위치는?","방화벽 내부","","./img/Chapter14/3.png",
+            18,"시스템이나 네트워크에 대한 다양한 불법 침입 행위를 실시간 탐지, 분석하여 비정상적인 패킷인 경우 자동으로 차단하는 시스템은?","침입 방지 시스템","","./img/Chapter14/4.png",
+            19,"(정답 없음)침입 방지 시스템과 침입 탐지 시스템과의 차이점","정답 없음","","./img/Chapter14/5.png",
+            20,"정보 유출 방지 솔루션으로 조직 내의 중요 자료가 외부로 빠져나가는 것을 탐지하여 이를 차단하는 뜻의 영여 약자는? (3글자)","DLP","","./img/Chapter14/6.png",
+            21,"네트워크를 통하여 정보가 유출되는 것을 감시(Monitor)하고 정책에 따라서 통제하는 솔루션은?","네트워크 DLP","","",
+            22,"네트워크 DLP에서 미러링(Mirroring) 방식 사용하는 이것은?","모니터","","./img/Chapter14/7.png",
+
+            `;
+    </script>
+    <script src="../Information_js.js" defer></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+
+</html>
