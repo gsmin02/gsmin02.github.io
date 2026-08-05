@@ -1,0 +1,29 @@
+---
+import MobileNav from '../components/MobileNav.astro';
+import SideNav from '../components/SideNav.astro';
+import SiteHeader from '../components/SiteHeader.astro';
+import type { NavKey } from '../lib/nav';
+import Base from './Base.astro';
+
+interface Props {
+  title: string;
+  description?: string;
+  active: NavKey;
+  activeItem?: string;
+  breadcrumb: string;
+}
+const { title, description, active, activeItem, breadcrumb } = Astro.props;
+---
+
+<Base title={title} description={description}>
+  <div data-shell class="flex min-h-svh bg-background">
+    <SideNav active={active} activeItem={activeItem} />
+    <div class="flex min-w-0 flex-1 flex-col">
+      <MobileNav active={active} activeItem={activeItem} />
+      <SiteHeader breadcrumb={breadcrumb} />
+      <main class="flex-1">
+        <slot />
+      </main>
+    </div>
+  </div>
+</Base>

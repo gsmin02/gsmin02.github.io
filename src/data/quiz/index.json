@@ -1,0 +1,182 @@
+[
+  {
+    "id": "aws-1-7",
+    "label": "AWS 1-7장",
+    "desc": "클라우드 개념부터 모니터링까지",
+    "category": "AWS",
+    "type": "multiple-choice",
+    "total": 200,
+    "chapters": [
+      {
+        "slug": "1",
+        "title": "1장 문제집",
+        "count": 20
+      },
+      {
+        "slug": "2",
+        "title": "2장 문제집",
+        "count": 15
+      },
+      {
+        "slug": "3",
+        "title": "3장 문제집",
+        "count": 20
+      },
+      {
+        "slug": "4",
+        "title": "4장 문제집",
+        "count": 20
+      },
+      {
+        "slug": "5",
+        "title": "5장 문제집",
+        "count": 20
+      },
+      {
+        "slug": "6",
+        "title": "6장 문제집",
+        "count": 20
+      },
+      {
+        "slug": "7",
+        "title": "7장 문제집",
+        "count": 20
+      },
+      {
+        "slug": "practice",
+        "title": "Practice장 문제집",
+        "count": 65
+      }
+    ]
+  },
+  {
+    "id": "aws-8-12",
+    "label": "AWS 8-12장",
+    "desc": "고급 서비스와 시험 대비",
+    "category": "AWS",
+    "type": "multiple-choice",
+    "total": 155,
+    "chapters": [
+      {
+        "slug": "8",
+        "title": "8장 문제집",
+        "count": 20
+      },
+      {
+        "slug": "9",
+        "title": "9장 문제집",
+        "count": 20
+      },
+      {
+        "slug": "10",
+        "title": "10장 문제집",
+        "count": 20
+      },
+      {
+        "slug": "11",
+        "title": "11장 문제집",
+        "count": 15
+      },
+      {
+        "slug": "12",
+        "title": "12장 문제집",
+        "count": 15
+      },
+      {
+        "slug": "practice2",
+        "title": "ChapterPractice2장 문제집",
+        "count": 65
+      }
+    ]
+  },
+  {
+    "id": "adsp",
+    "label": "ADsP 자격증",
+    "desc": "데이터 분석 준전문가 3과목",
+    "category": "ADsP",
+    "type": "multiple-choice",
+    "total": 150,
+    "chapters": [
+      {
+        "slug": "1-1",
+        "title": "1과목 1장 문제집",
+        "count": 9
+      },
+      {
+        "slug": "1-2",
+        "title": "1과목 2장 문제집",
+        "count": 15
+      },
+      {
+        "slug": "1-e",
+        "title": "1과목 예상 문제집",
+        "count": 30
+      },
+      {
+        "slug": "1-p",
+        "title": "1과목 기출 문제집",
+        "count": 20
+      },
+      {
+        "slug": "2-1",
+        "title": "2과목 1장 문제집",
+        "count": 18
+      },
+      {
+        "slug": "2-2",
+        "title": "2과목 2장 문제집",
+        "count": 12
+      },
+      {
+        "slug": "2-e",
+        "title": "2과목 예상 문제집",
+        "count": 26
+      },
+      {
+        "slug": "2-p",
+        "title": "2과목 기출 문제집",
+        "count": 20
+      }
+    ]
+  },
+  {
+    "id": "information",
+    "label": "Information",
+    "desc": "파이썬·데이터 기초 9~14주차",
+    "category": "정보",
+    "type": "subjective",
+    "total": 96,
+    "chapters": [
+      {
+        "slug": "9",
+        "title": "9주차 문제집",
+        "count": 7
+      },
+      {
+        "slug": "10",
+        "title": "10주차 문제집",
+        "count": 15
+      },
+      {
+        "slug": "11",
+        "title": "11주차 문제집",
+        "count": 4
+      },
+      {
+        "slug": "12",
+        "title": "12주차 문제집",
+        "count": 17
+      },
+      {
+        "slug": "13",
+        "title": "13주차 문제집",
+        "count": 26
+      },
+      {
+        "slug": "14",
+        "title": "14주차 문제집",
+        "count": 27
+      }
+    ]
+  }
+]

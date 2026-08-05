@@ -1,0 +1,82 @@
+---
+import { navGroups, type NavKey } from '../lib/nav';
+import { chevronDown, chevronRight, moon, sun } from './icons';
+
+interface Props {
+  active: NavKey;
+  activeItem?: string;
+}
+const { active, activeItem } = Astro.props;
+---
+
+<div class="md:hidden">
+  <div
+    class="sticky top-0 z-20 flex h-14 items-center justify-between border-b border-sidebar-border bg-sidebar px-4"
+  >
+    <a href="/" class="text-sm font-bold text-sidebar-foreground">gsmin02</a>
+    <div class="flex items-center gap-1">
+      <button
+        type="button"
+        data-theme-toggle
+        aria-label="테마 전환"
+        class="inline-flex size-8 items-center justify-center rounded-md text-muted-foreground"
+      >
+        <span class="dark:hidden" set:html={sun} />
+        <span class="hidden dark:block" set:html={moon} />
+      </button>
+      <button
+        type="button"
+        data-mobile-trigger
+        aria-expanded="false"
+        aria-label="메뉴 열기"
+        class="inline-flex size-8 items-center justify-center rounded-md text-muted-foreground"
+      >
+        <span data-mobile-chevron set:html={chevronDown} />
+      </button>
+    </div>
+  </div>
+
+  <nav data-mobile-panel hidden class="border-b border-sidebar-border bg-sidebar p-2">
+    {
+      navGroups.map((group) => {
+        const isActive = group.key === active;
+        return (
+          <div class="flex flex-col gap-1">
+            <a
+              href={group.href}
+              class:list={[
+                'flex h-9 items-center justify-between rounded-md px-2 text-sm',
+                isActive
+                  ? 'bg-sidebar-accent font-medium text-sidebar-accent-foreground'
+                  : 'text-sidebar-foreground',
+              ]}
+            >
+              <span>{group.label}</span>
+              <span
+                class="text-muted-foreground-subtle"
+                set:html={isActive ? chevronDown : chevronRight}
+              />
+            </a>
+            {isActive && group.items.length > 0 && (
+              <div class="mb-1 ml-3.5 flex flex-col gap-0.5 border-l border-sidebar-border py-0.5 pl-2.5">
+                {group.items.map((item) => (
+                  <a
+                    href={item.href}
+                    class:list={[
+                      'flex h-8 items-center rounded-md px-2 text-sm',
+                      item.label === activeItem
+                        ? 'bg-sidebar-accent font-medium text-sidebar-accent-foreground'
+                        : 'text-muted-foreground',
+                    ]}
+                  >
+                    {item.label}
+                  </a>
+                ))}
+              </div>
+            )}
+          </div>
+        );
+      })
+    }
+  </nav>
+</div>

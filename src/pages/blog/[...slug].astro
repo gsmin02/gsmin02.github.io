@@ -1,0 +1,78 @@
+---
+import type { GetStaticPaths } from 'astro';
+import { getCollection, render } from 'astro:content';
+import Badge from '../../components/ui/Badge.astro';
+import AppShell from '../../layouts/AppShell.astro';
+
+export const getStaticPaths = (async () => {
+  const posts = (await getCollection('blog')).sort(
+    (a, b) => b.data.date.valueOf() - a.data.date.valueOf()
+  );
+  return posts.map((post, i) => ({
+    params: { slug: post.id },
+    props: {
+      post,
+      prev: posts[i + 1] ?? null,
+      next: posts[i - 1] ?? null,
+    },
+  }));
+}) satisfies GetStaticPaths;
+
+const { post, prev, next } = Astro.props;
+const { Content } = await render(post);
+
+const d = post.data.date;
+const dateLabel = `${d.getFullYear()}. ${String(d.getMonth() + 1).padStart(2, '0')}. ${String(d.getDate()).padStart(2, '0')}`;
+---
+
+<AppShell
+  title={`${post.data.title} · 기록`}
+  description={post.data.summary}
+  active="blog"
+  activeItem={post.data.tag}
+  breadcrumb={`블로그 / ${post.data.tag}`}
+>
+  <article class="mx-auto w-full max-w-3xl px-6 py-12 md:py-20">
+    <header class="flex flex-col gap-3">
+      <div class="flex items-center gap-3">
+        <Badge variant="accent">{post.data.tag}</Badge>
+        <span class="text-xs text-muted-foreground-subtle">
+          {dateLabel} · {post.data.readingMinutes}분 읽기
+        </span>
+      </div>
+      <h1 class="text-4xl font-bold">{post.data.title}</h1>
+      <p class="text-base text-muted-foreground">{post.data.summary}</p>
+    </header>
+
+    <div class="prose mt-10">
+      <Content />
+    </div>
+
+    <nav class="mt-14 grid gap-3 sm:grid-cols-2">
+      {
+        prev ? (
+          <a
+            href={`/blog/${prev.id}`}
+            class="flex flex-col gap-1 rounded-md border border-border bg-card p-5 transition-colors hover:bg-accent"
+          >
+            <span class="text-xs text-muted-foreground-subtle">← 이전 글</span>
+            <span class="text-sm font-medium">{prev.data.title}</span>
+          </a>
+        ) : (
+          <span />
+        )
+      }
+      {
+        next && (
+          <a
+            href={`/blog/${next.id}`}
+            class="flex flex-col gap-1 rounded-md border border-border bg-card p-5 transition-colors hover:bg-accent"
+          >
+            <span class="text-xs text-muted-foreground-subtle">다음 글 →</span>
+            <span class="text-sm font-medium">{next.data.title}</span>
+          </a>
+        )
+      }
+    </nav>
+  </article>
+</AppShell>

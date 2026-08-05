@@ -1,0 +1,9 @@
+{
+  "extends": "astro/tsconfigs/strict",
+  "include": [".astro/types.d.ts", "**/*"],
+  "exclude": ["dist", "node_modules", "quiz", "quiz2", "adsp", "Information"],
+  "compilerOptions": {
+    "resolveJsonModule": true,
+    "allowJs": true
+  }
+}

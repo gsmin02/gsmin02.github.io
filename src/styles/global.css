@@ -1,0 +1,256 @@
+@import 'tailwindcss';
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* Figma "Color" collection — Light mode. Names match the shadcn CSS variables 1:1. */
+:root {
+  --radius: 0.625rem;
+
+  --background: #ffffff;
+  --foreground: #15171c;
+  --card: #ffffff;
+  --card-foreground: #15171c;
+  --popover: #fafbfc;
+  --popover-foreground: #15171c;
+  --primary: #4263eb;
+  --primary-foreground: #ffffff;
+  --secondary: #e9ecef;
+  --secondary-foreground: #15171c;
+  --muted: #f6f7f9;
+  --muted-foreground: #575d6a;
+  --accent: #edf2ff;
+  --accent-foreground: #364fc7;
+  --destructive: #e03131;
+  --border: #e6e8eb;
+  --input: #cfd4da;
+  --ring: #4263eb;
+
+  --sidebar: #fcfcfd;
+  --sidebar-foreground: #15171c;
+  --sidebar-primary: #4263eb;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #e9ecef;
+  --sidebar-accent-foreground: #15171c;
+  --sidebar-border: #e6e8eb;
+  --sidebar-ring: #4263eb;
+
+  /* extensions — not part of the shadcn defaults */
+  --primary-hover: #364fc7;
+  --muted-foreground-subtle: #868d9b;
+  --accent-border: #bac8ff;
+  --destructive-foreground: #c92a2a;
+  --destructive-muted: #fff5f5;
+  --destructive-border: #ffa8a8;
+  --success: #2f9e44;
+  --success-foreground: #2b8a3e;
+  --success-muted: #ebfbee;
+  --success-border: #8ce99a;
+  --code: #f5f6f8;
+  --code-foreground: #364fc7;
+}
+
+/* Dark mode — IBM Carbon G90 base with weakened borders */
+.dark {
+  --background: #262626;
+  --foreground: #f4f4f4;
+  --card: #393939;
+  --card-foreground: #f4f4f4;
+  --popover: #1f1f1f;
+  --popover-foreground: #f4f4f4;
+  --primary: #4589ff;
+  --primary-foreground: #161616;
+  --secondary: #434343;
+  --secondary-foreground: #f4f4f4;
+  --muted: #434343;
+  --muted-foreground: #c6c6c6;
+  --accent: #3e4e6e;
+  --accent-foreground: #a8c7ff;
+  --destructive: #fa4d56;
+  --border: #474747;
+  --input: #4d4d4d;
+  --ring: #4589ff;
+
+  --sidebar: #393939;
+  --sidebar-foreground: #f4f4f4;
+  --sidebar-primary: #4589ff;
+  --sidebar-primary-foreground: #161616;
+  --sidebar-accent: #4d4d4d;
+  --sidebar-accent-foreground: #f4f4f4;
+  --sidebar-border: #474747;
+  --sidebar-ring: #4589ff;
+
+  --primary-hover: #78a9ff;
+  --muted-foreground-subtle: #b3b3b3;
+  --accent-border: #5a6e96;
+  --destructive-foreground: #ffa8ac;
+  --destructive-muted: #6b393c;
+  --destructive-border: #96565a;
+  --success: #42be65;
+  --success-foreground: #8ce0a0;
+  --success-muted: #2c5638;
+  --success-border: #4a7f5a;
+  --code: #2f2f2f;
+  --code-foreground: #a8c7ff;
+}
+
+@theme inline {
+  --font-sans: 'Noto Sans KR', ui-sans-serif, system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+
+  --color-primary-hover: var(--primary-hover);
+  --color-muted-foreground-subtle: var(--muted-foreground-subtle);
+  --color-accent-border: var(--accent-border);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-destructive-muted: var(--destructive-muted);
+  --color-destructive-border: var(--destructive-border);
+  --color-success: var(--success);
+  --color-success-foreground: var(--success-foreground);
+  --color-success-muted: var(--success-muted);
+  --color-success-border: var(--success-border);
+  --color-code: var(--code);
+  --color-code-foreground: var(--code-foreground);
+
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground font-sans;
+    /* Hangul needs more leading than the Tailwind defaults */
+    line-height: 1.65;
+  }
+  h1,
+  h2,
+  h3 {
+    line-height: 1.35;
+    letter-spacing: -0.01em;
+  }
+}
+
+/* Sidebar sizing. Width is a variable so the rail can drag it. Collapsing hides
+   the panel entirely — reopen with the trigger in the site header.
+   Resizing is desktop-only; below md the sidebar is hidden regardless. */
+/* State lives on <html> so the inline head script can restore it before the
+   first paint — otherwise every navigation renders at the default width and
+   then jumps to the saved one. */
+@layer base {
+  :root {
+    --sidebar-width: 16rem;
+  }
+}
+
+@media (min-width: 768px) {
+  [data-sidebar-panel] {
+    width: var(--sidebar-width);
+    /* only animate on toggle, never while the pointer is dragging */
+    transition: width 150ms ease;
+  }
+  html[data-sidebar='collapsed'] [data-sidebar-panel] {
+    width: 0;
+    border-right-width: 0;
+    overflow: hidden;
+  }
+  html[data-sidebar='collapsed'] [data-sidebar-rail] {
+    display: none;
+  }
+  html[data-sidebar-resizing] [data-sidebar-panel] {
+    transition: none;
+  }
+  html[data-sidebar-resizing] {
+    cursor: col-resize;
+    user-select: none;
+  }
+}
+
+/* Markdown body for blog posts */
+@layer components {
+  .prose {
+    @apply text-base text-foreground;
+  }
+  .prose > * + * {
+    @apply mt-6;
+  }
+  .prose h2 {
+    @apply mt-12 text-2xl font-bold;
+  }
+  .prose h3 {
+    @apply mt-10 text-lg font-bold;
+  }
+  .prose p {
+    @apply leading-[1.85];
+  }
+  .prose a {
+    @apply text-primary underline underline-offset-4;
+  }
+  .prose strong {
+    @apply font-medium;
+  }
+  .prose ul {
+    @apply list-disc pl-5;
+  }
+  .prose ol {
+    @apply list-decimal pl-5;
+  }
+  .prose li + li {
+    @apply mt-2;
+  }
+  .prose :not(pre) > code {
+    @apply rounded bg-code px-1.5 py-0.5 font-mono text-sm text-code-foreground;
+  }
+  .prose pre {
+    @apply overflow-x-auto rounded-md border border-border bg-code p-5 font-mono text-sm;
+  }
+  .prose pre code {
+    @apply bg-transparent p-0;
+  }
+  .prose blockquote {
+    @apply border-l-[3px] border-primary bg-accent px-5 py-4;
+  }
+  .prose blockquote > * + * {
+    @apply mt-1;
+  }
+  .prose table {
+    @apply w-full border-collapse text-sm;
+  }
+  .prose th,
+  .prose td {
+    @apply border-b border-border px-3 py-2.5 text-left;
+  }
+  .prose th {
+    @apply font-medium text-muted-foreground;
+  }
+}

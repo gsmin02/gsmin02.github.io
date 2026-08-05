@@ -1,0 +1,171 @@
+---
+import '../styles/global.css';
+
+interface Props {
+  title: string;
+  description?: string;
+}
+const { title, description = 'AWS와 데이터 분석을 공부하며 남기는 기록. 601문항의 문제집도 함께 정리합니다.' } =
+  Astro.props;
+---
+
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&family=JetBrains+Mono&display=swap"
+      rel="stylesheet"
+    />
+    <script is:inline>
+      // Runs before paint so neither the theme nor the sidebar width flashes.
+      (() => {
+        const root = document.documentElement;
+
+        const saved = localStorage.getItem('theme');
+        const dark = saved ? saved === 'dark' : window.matchMedia('(prefers-color-scheme: dark)').matches;
+        root.classList.toggle('dark', dark);
+
+        const width = Number(localStorage.getItem('sidebarWidth'));
+        if (Number.isFinite(width) && width >= 208 && width <= 400) {
+          root.style.setProperty('--sidebar-width', width + 'px');
+        }
+        if (localStorage.getItem('sidebar') === 'collapsed') {
+          root.dataset.sidebar = 'collapsed';
+        }
+      })();
+    </script>
+  </head>
+  <body>
+    <slot />
+
+    <script>
+      const root = document.documentElement;
+
+      // Theme toggle — desktop header and mobile bar share the same hook
+      document.querySelectorAll('[data-theme-toggle]').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const dark = root.classList.toggle('dark');
+          localStorage.setItem('theme', dark ? 'dark' : 'light');
+        });
+      });
+
+      // Sidebar: collapse toggle + drag-to-resize rail (desktop only)
+      const shell = document.querySelector('[data-shell]') as HTMLElement | null;
+      if (shell) {
+        const MIN_WIDTH = 208; // 13rem — narrowest usable expanded width
+        const MAX_WIDTH = 400; // 25rem
+        const COLLAPSE_AT = 168; // drag below this and the sidebar folds to the icon rail
+        const DRAG_SLOP = 3; // px of movement before a press counts as a drag
+
+        // state lives on <html>; the inline head script already restored it
+        const isCollapsed = () => root.dataset.sidebar === 'collapsed';
+        const setCollapsed = (collapsed: boolean) => {
+          root.dataset.sidebar = collapsed ? 'collapsed' : 'expanded';
+          localStorage.setItem('sidebar', root.dataset.sidebar);
+        };
+        const setWidth = (px: number) => {
+          const clamped = Math.min(MAX_WIDTH, Math.max(MIN_WIDTH, Math.round(px)));
+          root.style.setProperty('--sidebar-width', `${clamped}px`);
+          return clamped;
+        };
+
+        document.querySelectorAll('[data-sidebar-trigger]').forEach((btn) => {
+          btn.addEventListener('click', () => setCollapsed(!isCollapsed()));
+        });
+
+        const rail = document.querySelector('[data-sidebar-rail]') as HTMLElement | null;
+        if (rail && window.matchMedia('(min-width: 768px)').matches) {
+          let pointerId: number | null = null;
+          let startX = 0;
+          let dragged = false;
+
+          rail.addEventListener('pointerdown', (e) => {
+            const ev = e as PointerEvent;
+            pointerId = ev.pointerId;
+            startX = ev.clientX;
+            dragged = false;
+            try {
+              rail.setPointerCapture(ev.pointerId);
+            } catch {
+              /* capture is a nicety; dragging still works without it */
+            }
+            root.setAttribute('data-sidebar-resizing', '');
+            ev.preventDefault();
+          });
+
+          rail.addEventListener('pointermove', (e) => {
+            const ev = e as PointerEvent;
+            if (pointerId === null || ev.pointerId !== pointerId) return;
+            if (!dragged && Math.abs(ev.clientX - startX) < DRAG_SLOP) return;
+            dragged = true;
+
+            const x = ev.clientX - shell.getBoundingClientRect().left;
+            if (x < COLLAPSE_AT) {
+              root.dataset.sidebar = 'collapsed';
+            } else {
+              root.dataset.sidebar = 'expanded';
+              setWidth(x);
+            }
+          });
+
+          const finish = (e: Event) => {
+            const ev = e as PointerEvent;
+            if (pointerId === null) return;
+            try {
+              rail.releasePointerCapture(pointerId);
+            } catch {
+              /* nothing to release */
+            }
+            pointerId = null;
+            root.removeAttribute('data-sidebar-resizing');
+
+            // a press without movement acts as the collapse toggle
+            if (!dragged) setCollapsed(!isCollapsed());
+            else localStorage.setItem('sidebar', root.dataset.sidebar || 'expanded');
+
+            const current = parseInt(root.style.getPropertyValue('--sidebar-width'), 10);
+            if (Number.isFinite(current)) localStorage.setItem('sidebarWidth', String(current));
+          };
+          rail.addEventListener('pointerup', finish);
+          rail.addEventListener('pointercancel', finish);
+
+          // keyboard: arrows resize, Enter/Space toggles
+          rail.addEventListener('keydown', (e) => {
+            const ev = e as KeyboardEvent;
+            const step = ev.shiftKey ? 32 : 8;
+            if (ev.key === 'ArrowLeft' || ev.key === 'ArrowRight') {
+              ev.preventDefault();
+              if (isCollapsed()) {
+                if (ev.key === 'ArrowRight') setCollapsed(false);
+                return;
+              }
+              const now = parseInt(getComputedStyle(root).getPropertyValue('--sidebar-width'), 10) || 256;
+              const next = ev.key === 'ArrowLeft' ? now - step : now + step;
+              if (next < COLLAPSE_AT) setCollapsed(true);
+              else localStorage.setItem('sidebarWidth', String(setWidth(next)));
+            }
+          });
+        }
+      }
+
+      // Mobile menu
+      const trigger = document.querySelector('[data-mobile-trigger]');
+      const panel = document.querySelector('[data-mobile-panel]') as HTMLElement | null;
+      const chevron = document.querySelector('[data-mobile-chevron]');
+      if (trigger && panel) {
+        trigger.addEventListener('click', () => {
+          const open = panel.hidden;
+          panel.hidden = !open;
+          trigger.setAttribute('aria-expanded', String(open));
+          if (chevron) chevron.classList.toggle('rotate-180', open);
+        });
+      }
+    </script>
+  </body>
+</html>
