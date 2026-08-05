@@ -40,7 +40,10 @@ export const navGroups: NavGroup[] = [
     key: 'quiz',
     label: '퀴즈',
     href: '/quiz',
-    items: courses.map((c) => ({ label: c.label, href: `/quiz/${c.id}` })),
+    items: courses.map((c) => ({
+      label: c.label,
+      href: `/quiz/${c.id}/${c.chapters[0].slug}`,
+    })),
   },
 ];
 

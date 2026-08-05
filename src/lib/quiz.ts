@@ -16,6 +16,7 @@ export interface SubjectiveQuestion {
   no: number;
   question: string;
   answer: string;
+  acceptedAnswers?: string[];
   explanation: string;
   image: string | null;
 }

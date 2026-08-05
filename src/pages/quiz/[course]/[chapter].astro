@@ -156,6 +156,7 @@ const { course, chapter, prev, next } = Astro.props as {
       no: number;
       question: string;
       answer: string;
+      acceptedAnswers?: string[];
       explanation: string;
       image: string | null;
     };
@@ -181,7 +182,11 @@ const { course, chapter, prev, next } = Astro.props as {
 
       try {
         const saved = JSON.parse(sessionStorage.getItem(storeKey) || 'null');
-        if (Array.isArray(saved) && saved.length === qs.length) results = saved;
+        if (Array.isArray(saved) && saved.length === qs.length) {
+          results = saved.map((result) =>
+            result && typeof result.correct === 'boolean' ? result : null
+          );
+        }
       } catch {
         /* ignore malformed session state */
       }
@@ -227,8 +232,8 @@ const { course, chapter, prev, next } = Astro.props as {
       const persist = () => sessionStorage.setItem(storeKey, JSON.stringify(results));
 
       function renderStats() {
-        const correct = results.filter((r) => r && r.correct).length;
-        const wrong = results.filter((r) => r && !r.correct).length;
+        const correct = results.filter((r) => r?.correct === true).length;
+        const wrong = results.filter((r) => r?.correct === false).length;
         const answered = correct + wrong;
         const pct = Math.round((answered / qs.length) * 100);
         (document.querySelector('[data-progress-label]') as HTMLElement).textContent =
@@ -245,8 +250,9 @@ const { course, chapter, prev, next } = Astro.props as {
         grid.replaceChildren();
         qs.forEach((q, i) => {
           const r = results[i];
-          const state =
-            i === index ? 'current' : r ? (r.correct ? 'correct' : 'incorrect') : 'unanswered';
+          let state: keyof typeof CHIP_STATE = 'unanswered';
+          if (i === index) state = 'current';
+          else if (r) state = r.correct ? 'correct' : 'incorrect';
           const chip = make('button', `${CHIP_BASE} ${CHIP_STATE[state]}`, String(q.no));
           chip.setAttribute('type', 'button');
           chip.addEventListener('click', () => {
@@ -384,13 +390,20 @@ const { course, chapter, prev, next } = Astro.props as {
         const grade = () => {
           const value = input.value.trim();
           if (!value) return;
-          results[index] = { picked: [value], correct: value === q.answer.trim() };
+          const correct = q.acceptedAnswers
+            ? q.acceptedAnswers.some(
+                (answer) =>
+                  value.replace(/\s+/g, '').toLowerCase() ===
+                  answer.replace(/\s+/g, '').toLowerCase()
+              )
+            : value === q.answer.trim();
+          results[index] = { picked: [value], correct };
           persist();
           render();
         };
         submit.addEventListener('click', grade);
         input.addEventListener('keydown', (e) => {
-          if ((e as KeyboardEvent).key === 'Enter') grade();
+          if (e.key === 'Enter' && !e.isComposing) grade();
         });
 
         if (answered) {
@@ -419,7 +432,7 @@ const { course, chapter, prev, next } = Astro.props as {
       function render() {
         card.replaceChildren();
         const q = qs[index];
-        if (data.type === 'subjective') renderSubjectiveQuestion(q as Subjective);
+        if (data.type === 'subjective' || 'answer' in q) renderSubjectiveQuestion(q as Subjective);
         else renderChoiceQuestion(q as Choice);
 
         prevBtn.disabled = index === 0;
@@ -442,6 +455,7 @@ const { course, chapter, prev, next } = Astro.props as {
       });
       resetBtn.addEventListener('click', () => {
         results = qs.map(() => null);
+        Object.keys(pending).forEach((key) => delete pending[Number(key)]);
         index = 0;
         persist();
         render();

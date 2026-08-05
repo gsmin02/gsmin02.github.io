@@ -20,7 +20,7 @@ const total = courses.reduce((a, c) => a + c.total, 0);
         {
           courses.map((course) => (
             <a
-              href={`/quiz/${course.id}`}
+              href={`/quiz/${course.id}/${course.chapters[0].slug}`}
               class="flex flex-col gap-4 rounded-md border border-border p-5 transition-colors hover:bg-accent/40"
             >
               <div class="flex flex-col gap-1">

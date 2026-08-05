@@ -14,6 +14,7 @@ import { fileURLToPath } from 'node:url';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const OUT_DIR = path.join(ROOT, 'src/data/quiz');
+const ANSWER_LETTERS = ['A', 'B', 'C', 'D', 'E', 'F'];
 
 const COURSES = [
   { dir: 'quiz', id: 'aws-1-7', label: 'AWS 1-7장', desc: '클라우드 개념부터 모니터링까지', category: 'AWS' },
@@ -115,8 +116,31 @@ for (const course of COURSES) {
       }
 
       const { choices, answerRaw, explanation } = buildChoice(f, withF);
+      if (where === 'adsp/Chapter2_2.html#4') {
+        if (answerRaw !== '해설 참조' || !explanation) {
+          throw new Error(`${where} 주관식 정답 원본 확인 필요`);
+        }
+        return {
+          no,
+          question: f[1] ?? '',
+          answer: explanation,
+          acceptedAnswers: [explanation, 'ISP', '정보전략계획'],
+          explanation: '',
+          image: null,
+        };
+      }
+
       const { answers, note } = parseAnswers(answerRaw);
-      if (note) warnings.push(`${where} 정답 형식 이탈: "${note}"`);
+      if (note) {
+        throw new Error(`${where} 정답 형식 이탈: "${note}"`);
+      }
+      if (answers.length === 0) {
+        throw new Error(`${where} 정답 없음`);
+      }
+      const unavailable = answers.filter((answer) => ANSWER_LETTERS.indexOf(answer) >= choices.length);
+      if (unavailable.length > 0) {
+        throw new Error(`${where} 선택지 범위를 벗어난 정답: ${unavailable.join(', ')}`);
+      }
       if (choices.length < 2) warnings.push(`${where} 선택지 ${choices.length}개`);
       if (!explanation) warnings.push(`${where} 해설 없음`);
 

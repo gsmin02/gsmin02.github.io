@@ -9,9 +9,9 @@ interface Props {
 const { active, activeItem } = Astro.props;
 ---
 
-<div class="md:hidden">
+<div data-mobile-nav class="sticky top-0 z-20 md:hidden">
   <div
-    class="sticky top-0 z-20 flex h-14 items-center justify-between border-b border-sidebar-border bg-sidebar px-4"
+    class="flex h-14 items-center justify-between border-b border-sidebar-border bg-sidebar px-4"
   >
     <a href="/" class="text-sm font-bold text-sidebar-foreground">gsmin02</a>
     <div class="flex items-center gap-1">
@@ -62,8 +62,10 @@ const { active, activeItem } = Astro.props;
                 {group.items.map((item) => (
                   <a
                     href={item.href}
+                    data-nav-section={item.href.includes('#') ? item.href.split('#')[1] : undefined}
+                    aria-current={item.label === activeItem ? 'location' : undefined}
                     class:list={[
-                      'flex h-8 items-center rounded-md px-2 text-sm',
+                      'flex h-8 items-center rounded-md px-2 text-sm hover:bg-sidebar-accent',
                       item.label === activeItem
                         ? 'bg-sidebar-accent font-medium text-sidebar-accent-foreground'
                         : 'text-muted-foreground',

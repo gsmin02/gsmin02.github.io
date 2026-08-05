@@ -52,7 +52,7 @@ const stats = [
       </p>
     </header>
 
-    <section id="profile" class="mt-16">
+    <section id="profile" class="mt-16 scroll-mt-20">
       <h2 class="border-b border-input pb-3 text-lg font-bold">{sections[0].title}</h2>
       <dl class="flex flex-col">
         {
@@ -92,7 +92,7 @@ const stats = [
 
     {
       sections.slice(1).map((section) => (
-        <section id={section.id} class="mt-16">
+        <section id={section.id} class="mt-16 scroll-mt-20">
           <h2 class="border-b border-input pb-3 text-lg font-bold">{section.title}</h2>
           <dl class="flex flex-col">
             {section.rows.map(([k, v], i) => (
@@ -111,4 +111,62 @@ const stats = [
       ))
     }
   </div>
+
+  <script>
+    const sectionLinks = Array.from(
+      document.querySelectorAll<HTMLAnchorElement>('[data-nav-section]')
+    );
+    const sections = ['profile', 'tools', 'contact']
+      .map((id) => document.getElementById(id))
+      .filter((section): section is HTMLElement => section !== null);
+    const ratios = new Map<string, number>();
+    let lockUntil = 0;
+
+    const setActiveSection = (id: string) => {
+      sectionLinks.forEach((link) => {
+        const active = link.dataset.navSection === id;
+        link.classList.toggle('bg-sidebar-accent', active);
+        link.classList.toggle('font-medium', active);
+        link.classList.toggle('text-sidebar-accent-foreground', active);
+        link.classList.toggle('text-muted-foreground', !active);
+        if (active) link.setAttribute('aria-current', 'location');
+        else link.removeAttribute('aria-current');
+      });
+    };
+
+    const selectSection = (id: string) => {
+      if (!sections.some((section) => section.id === id)) return;
+      lockUntil = performance.now() + 300;
+      setActiveSection(id);
+    };
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => ratios.set(entry.target.id, entry.intersectionRatio));
+        if (performance.now() < lockUntil || sections.length === 0) return;
+
+        const current =
+          window.scrollY + window.innerHeight >= document.documentElement.scrollHeight - 2
+            ? sections.at(-1)
+            : sections.reduce((best, section) =>
+                (ratios.get(section.id) ?? 0) > (ratios.get(best.id) ?? 0) ? section : best
+              );
+        if (current) setActiveSection(current.id);
+      },
+      { rootMargin: '-56px 0px 0px', threshold: [0, 0.25, 0.5, 0.75, 1] }
+    );
+
+    sections.forEach((section) => observer.observe(section));
+    sectionLinks.forEach((link) => {
+      link.addEventListener('click', () => selectSection(link.dataset.navSection ?? ''));
+    });
+    window.addEventListener('hashchange', () => selectSection(window.location.hash.slice(1)));
+
+    const initialSection = window.location.hash.slice(1);
+    if (initialSection) {
+      selectSection(initialSection);
+    } else if (sections[0]) {
+      setActiveSection(sections[0].id);
+    }
+  </script>
 </AppShell>

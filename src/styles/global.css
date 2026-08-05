@@ -36,13 +36,13 @@
 
   /* extensions — not part of the shadcn defaults */
   --primary-hover: #364fc7;
-  --muted-foreground-subtle: #868d9b;
+  --muted-foreground-subtle: #6b7280;
   --accent-border: #bac8ff;
   --destructive-foreground: #c92a2a;
   --destructive-muted: #fff5f5;
   --destructive-border: #ffa8a8;
-  --success: #2f9e44;
-  --success-foreground: #2b8a3e;
+  --success: #237a36;
+  --success-foreground: #237a36;
   --success-muted: #ebfbee;
   --success-border: #8ce99a;
   --code: #f5f6f8;

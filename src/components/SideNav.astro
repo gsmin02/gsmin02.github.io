@@ -1,6 +1,6 @@
 ---
 import { navGroups, type NavKey } from '../lib/nav';
-import { chevronDown, chevronRight } from './icons';
+import { chevronDown } from './icons';
 
 interface Props {
   active: NavKey;
@@ -22,34 +22,54 @@ const { active, activeItem } = Astro.props;
       {
         navGroups.map((group) => {
           const isActive = group.key === active;
+          const itemsId = `side-nav-${group.key}`;
           return (
             <div class="flex flex-col gap-1">
-              <a
-                href={group.href}
+              <div
                 class:list={[
-                  'flex h-8 items-center justify-between rounded-md px-2 text-sm transition-colors',
+                  'flex h-8 items-center rounded-md text-sm transition-colors',
                   isActive
                     ? 'bg-sidebar-accent font-medium text-sidebar-accent-foreground'
                     : 'text-sidebar-foreground hover:bg-sidebar-accent',
                 ]}
               >
-                <span class="truncate">{group.label}</span>
-                <span
-                  class="shrink-0 text-muted-foreground-subtle"
-                  set:html={isActive ? chevronDown : chevronRight}
-                />
-              </a>
+                <a href={group.href} class="flex min-w-0 flex-1 items-center self-stretch px-2">
+                  <span class="truncate">{group.label}</span>
+                </a>
+                {group.items.length > 0 && (
+                  <button
+                    type="button"
+                    data-nav-group-toggle
+                    aria-controls={itemsId}
+                    aria-expanded={String(isActive)}
+                    aria-label={`${group.label} 하위 메뉴`}
+                    class="group inline-flex size-8 shrink-0 items-center justify-center rounded-md text-muted-foreground-subtle transition-colors hover:text-sidebar-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sidebar-ring"
+                  >
+                    <span
+                      class="-rotate-90 transition-transform group-aria-expanded:rotate-0"
+                      set:html={chevronDown}
+                    />
+                  </button>
+                )}
+              </div>
 
-              {isActive && group.items.length > 0 && (
-                <div class="ml-3.5 flex flex-col gap-0.5 border-l border-sidebar-border py-0.5 pl-2.5">
+              {group.items.length > 0 && (
+                <div
+                  id={itemsId}
+                  data-nav-group-items
+                  hidden={!isActive}
+                  class="ml-3.5 flex flex-col gap-0.5 border-l border-sidebar-border py-0.5 pl-2.5"
+                >
                   {group.items.map((item) => (
                     <a
                       href={item.href}
+                      data-nav-section={item.href.includes('#') ? item.href.split('#')[1] : undefined}
+                      aria-current={item.label === activeItem ? 'location' : undefined}
                       class:list={[
-                        'flex h-7 items-center rounded-md px-2 text-sm transition-colors',
+                        'flex h-7 items-center rounded-md px-2 text-sm transition-colors hover:bg-sidebar-accent',
                         item.label === activeItem
                           ? 'bg-sidebar-accent font-medium text-sidebar-accent-foreground'
-                          : 'text-muted-foreground hover:bg-sidebar-accent',
+                          : 'text-muted-foreground',
                       ]}
                     >
                       <span class="truncate">{item.label}</span>
@@ -77,3 +97,17 @@ const { active, activeItem } = Astro.props;
     ></span>
   </button>
 </aside>
+
+<script>
+  document.querySelectorAll<HTMLButtonElement>('[data-nav-group-toggle]').forEach((toggle) => {
+    const itemsId = toggle.getAttribute('aria-controls');
+    const items = itemsId ? document.getElementById(itemsId) : null;
+    if (!items) return;
+
+    toggle.addEventListener('click', () => {
+      const expanded = toggle.getAttribute('aria-expanded') !== 'true';
+      toggle.setAttribute('aria-expanded', String(expanded));
+      items.hidden = !expanded;
+    });
+  });
+</script>

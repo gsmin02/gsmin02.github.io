@@ -10,5 +10,20 @@ export const getStaticPaths = (async () =>
 
 const { course } = Astro.params;
 const { first } = Astro.props;
-return Astro.redirect(`/quiz/${course}/${first}`);
+const target = `/quiz/${course}/${first}`;
+const canonical = new URL(target, Astro.site);
 ---
+
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="robots" content="noindex" />
+    <meta http-equiv="refresh" content={`0;url=${target}`} />
+    <link rel="canonical" href={canonical} />
+    <title>페이지 이동</title>
+  </head>
+  <body>
+    <p>첫 문제로 이동합니다. <a href={target}>직접 이동</a></p>
+  </body>
+</html>
