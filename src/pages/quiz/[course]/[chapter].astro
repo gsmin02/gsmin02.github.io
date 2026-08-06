@@ -1,0 +1,438 @@
+---
+import type { GetStaticPaths } from 'astro';
+import AppShell from '../../../layouts/AppShell.astro';
+import { getCourses, type Chapter, type Course } from '../../../lib/quiz';
+
+export const getStaticPaths = (async () => {
+  const courses = await getCourses();
+  return courses.flatMap((course) =>
+    course.chapters.map((chapter) => ({
+      params: { course: course.id, chapter: chapter.slug },
+      props: { course, chapter },
+    }))
+  );
+}) satisfies GetStaticPaths;
+
+const { course, chapter } = Astro.props as {
+  course: Course;
+  chapter: Chapter;
+};
+const quizData = JSON.stringify({
+  courseId: course.id,
+  chapterSlug: chapter.slug,
+  questions: chapter.questions,
+}).replace(/</g, '\\u003c');
+---
+
+<AppShell
+  title={`${chapter.title} · ${course.label}`}
+  active="quiz"
+  breadcrumb={`퀴즈 / ${course.label} / ${chapter.title}`}
+>
+  <div class="mx-auto flex w-full max-w-7xl flex-col gap-8 px-4 py-8 md:px-6 md:py-10 lg:flex-row">
+    <!-- main column -->
+    <div class="flex min-w-0 flex-1 flex-col gap-6">
+      <h1 class="sr-only">{course.label} {chapter.title}</h1>
+
+      <!-- progress -->
+      <section class="rounded-xl border border-border bg-card p-6">
+        <div class="flex items-center justify-between">
+          <span class="text-sm font-medium" data-progress-label>문제 1 / {chapter.count}</span>
+          <span class="text-xs text-muted-foreground-subtle" data-progress-percent>0% 완료</span>
+        </div>
+        <div class="mt-3 h-1.5 w-full overflow-hidden rounded-full bg-muted">
+          <div class="h-full w-0 rounded-full bg-primary transition-all" data-progress-bar></div>
+        </div>
+        <div class="mt-3 flex flex-wrap gap-4 text-xs">
+          <span class="font-medium text-success-foreground" data-stat-correct>맞힘 0</span>
+          <span class="font-medium text-destructive-foreground" data-stat-wrong>틀림 0</span>
+          <span class="text-muted-foreground-subtle" data-stat-left>남은 문제 {chapter.count}</span>
+        </div>
+      </section>
+
+      <!-- question -->
+      <section class="rounded-xl border border-border bg-card p-6" data-question-card></section>
+
+      <!-- nav -->
+      <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <button
+          type="button"
+          data-prev
+          class="inline-flex h-9 w-full items-center justify-center rounded-md border border-border bg-background px-4 text-sm font-medium whitespace-nowrap transition-colors hover:bg-accent disabled:pointer-events-none disabled:opacity-40 sm:w-auto"
+        >
+          ← 이전 문제
+        </button>
+        <div class="flex items-center gap-2">
+          <button
+            type="button"
+            data-reset
+            class="inline-flex h-9 flex-1 items-center justify-center rounded-md px-4 text-sm font-medium whitespace-nowrap text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground sm:flex-none"
+          >
+            처음부터 다시
+          </button>
+          <button
+            type="button"
+            data-next
+            class="inline-flex h-9 flex-1 items-center justify-center rounded-md bg-primary px-4 text-sm font-medium whitespace-nowrap text-primary-foreground transition-colors hover:bg-primary-hover disabled:pointer-events-none disabled:opacity-40 sm:flex-none"
+          >
+            다음 문제 →
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- sidebar -->
+    <aside class="flex w-full shrink-0 flex-col gap-5 lg:w-80">
+      <section class="rounded-xl border border-border bg-card p-5">
+        <div class="flex items-center justify-between">
+          <span class="text-sm font-medium">문제 목록</span>
+          <span class="text-xs text-muted-foreground-subtle">{chapter.count}문항</span>
+        </div>
+        <div class="mt-4 flex flex-wrap gap-2" data-chip-grid></div>
+        <div class="mt-4 flex flex-wrap gap-3 text-xs text-muted-foreground-subtle">
+          <span class="flex items-center gap-1.5">
+            <span class="size-2 rounded-full bg-success"></span>맞힘
+          </span>
+          <span class="flex items-center gap-1.5">
+            <span class="size-2 rounded-full bg-destructive"></span>틀림
+          </span>
+          <span class="flex items-center gap-1.5">
+            <span class="size-2 rounded-full bg-input"></span>안 푼 문제
+          </span>
+        </div>
+      </section>
+    </aside>
+  </div>
+
+  <script type="application/json" data-quiz set:html={quizData} />
+
+  <script>
+    type Choice = {
+      no: number;
+      question: string;
+      choices: string[];
+      answers: string[];
+      explanation: string;
+    };
+    type Subjective = {
+      no: number;
+      question: string;
+      answer: string;
+      acceptedAnswers?: string[];
+      explanation: string;
+      image: string | null;
+    };
+    type Data = {
+      courseId: string;
+      chapterSlug: string;
+      questions: (Choice | Subjective)[];
+    };
+
+    const el = document.querySelector('[data-quiz]');
+    if (el) {
+      const data: Data = JSON.parse(el.textContent || '{}');
+      const qs = data.questions;
+      const LETTERS = ['A', 'B', 'C', 'D', 'E', 'F'];
+      const storeKey = `quiz:${data.courseId}:${data.chapterSlug}`;
+
+      type Result = { picked: string[]; correct: boolean } | null;
+      let index = 0;
+      let results: Result[] = qs.map(() => null);
+      // in-progress selections for multi-answer questions, kept across re-renders
+      const pending: Record<number, string[]> = {};
+
+      try {
+        const saved = JSON.parse(sessionStorage.getItem(storeKey) || 'null');
+        if (Array.isArray(saved) && saved.length === qs.length) {
+          results = saved.map((result) => {
+            const valid =
+              result &&
+              typeof result.correct === 'boolean' &&
+              Array.isArray(result.picked) &&
+              result.picked.every((picked: unknown) => typeof picked === 'string');
+            return valid ? { picked: result.picked, correct: result.correct } : null;
+          });
+        }
+      } catch {
+        /* ignore unavailable or malformed session state */
+      }
+
+      const card = document.querySelector('[data-question-card]') as HTMLElement;
+      const grid = document.querySelector('[data-chip-grid]') as HTMLElement;
+      const prevBtn = document.querySelector('[data-prev]') as HTMLButtonElement;
+      const nextBtn = document.querySelector('[data-next]') as HTMLButtonElement;
+      const resetBtn = document.querySelector('[data-reset]') as HTMLButtonElement;
+
+      const CHOICE_BASE =
+        'flex w-full items-center gap-3 rounded-md border px-4 py-3 text-left text-sm transition-colors';
+      const CHOICE_STATE = {
+        idle: 'border-input bg-card hover:bg-accent',
+        picked: 'border-primary bg-accent',
+        correct: 'border-success bg-success-muted',
+        wrong: 'border-destructive bg-destructive-muted',
+      };
+      const BADGE_BASE =
+        'flex size-6 shrink-0 items-center justify-center rounded-full text-xs font-medium';
+      const BADGE_STATE = {
+        idle: 'bg-secondary text-secondary-foreground',
+        picked: 'bg-primary text-primary-foreground',
+        correct: 'bg-success text-primary-foreground',
+        wrong: 'bg-destructive text-primary-foreground',
+      };
+      const CHIP_BASE =
+        'flex size-8 items-center justify-center rounded-md border text-xs font-medium transition-colors';
+      const CHIP_STATE = {
+        unanswered: 'border-transparent bg-secondary text-secondary-foreground',
+        current: 'border-transparent bg-primary text-primary-foreground',
+        correct: 'border-success-border bg-success-muted text-success-foreground',
+        incorrect: 'border-destructive-border bg-destructive-muted text-destructive-foreground',
+      };
+
+      const make = (tag: string, cls: string, text?: string) => {
+        const n = document.createElement(tag);
+        n.className = cls;
+        if (text !== undefined) n.textContent = text;
+        return n;
+      };
+
+      const normalizeAnswer = (value: string) => value.replace(/\s+/g, '').toLowerCase();
+
+      const persist = () => {
+        try {
+          sessionStorage.setItem(storeKey, JSON.stringify(results));
+        } catch {
+          /* keep the in-memory quiz usable when storage is unavailable */
+        }
+      };
+
+      function renderStats() {
+        const correct = results.filter((r) => r?.correct === true).length;
+        const wrong = results.filter((r) => r?.correct === false).length;
+        const answered = correct + wrong;
+        const pct = Math.round((answered / qs.length) * 100);
+        (document.querySelector('[data-progress-label]') as HTMLElement).textContent =
+          `문제 ${index + 1} / ${qs.length}`;
+        (document.querySelector('[data-progress-percent]') as HTMLElement).textContent = `${pct}% 완료`;
+        (document.querySelector('[data-progress-bar]') as HTMLElement).style.width = `${pct}%`;
+        (document.querySelector('[data-stat-correct]') as HTMLElement).textContent = `맞힘 ${correct}`;
+        (document.querySelector('[data-stat-wrong]') as HTMLElement).textContent = `틀림 ${wrong}`;
+        (document.querySelector('[data-stat-left]') as HTMLElement).textContent =
+          `남은 문제 ${qs.length - answered}`;
+      }
+
+      function renderChips() {
+        grid.replaceChildren();
+        qs.forEach((q, i) => {
+          const r = results[i];
+          let state: keyof typeof CHIP_STATE = 'unanswered';
+          if (i === index) state = 'current';
+          else if (r) state = r.correct ? 'correct' : 'incorrect';
+          const chip = make('button', `${CHIP_BASE} ${CHIP_STATE[state]}`, String(q.no));
+          chip.setAttribute('type', 'button');
+          chip.addEventListener('click', () => {
+            index = i;
+            render();
+          });
+          grid.appendChild(chip);
+        });
+      }
+
+      function renderChoiceQuestion(q: Choice) {
+        const result = results[index];
+        const answered = result !== null;
+        const multi = q.answers.length > 1;
+
+        const head = make('div', 'flex items-center justify-between');
+        if (multi) {
+          head.appendChild(
+            make(
+              'span',
+              'inline-flex items-center rounded-full border border-transparent bg-accent px-2 py-0.5 text-xs font-medium text-accent-foreground',
+              `${q.answers.length}개 선택`
+            )
+          );
+        } else {
+          head.appendChild(make('span', ''));
+        }
+        head.appendChild(make('span', 'text-xs text-muted-foreground-subtle', `Q${q.no}`));
+        card.appendChild(head);
+
+        card.appendChild(make('h2', 'mt-6 text-lg font-bold', q.question));
+
+        const list = make('div', 'mt-6 flex flex-col gap-3');
+        let picked: string[] = result ? [...result.picked] : [...(pending[index] ?? [])];
+
+        q.choices.forEach((text, i) => {
+          const letter = LETTERS[i];
+          const btn = make('button', '') as HTMLButtonElement;
+          btn.type = 'button';
+          const badge = make('span', '', letter);
+          const label = make('span', 'flex-1', text);
+          btn.append(badge, label);
+
+          const paint = () => {
+            let state: keyof typeof CHOICE_STATE = 'idle';
+            if (answered) {
+              if (q.answers.includes(letter)) state = 'correct';
+              else if (picked.includes(letter)) state = 'wrong';
+            } else if (picked.includes(letter)) {
+              state = 'picked';
+            }
+            btn.className = `${CHOICE_BASE} ${CHOICE_STATE[state]}`;
+            badge.className = `${BADGE_BASE} ${BADGE_STATE[state === 'idle' ? 'idle' : state]}`;
+            if (answered) btn.disabled = true;
+          };
+          paint();
+
+          btn.addEventListener('click', () => {
+            if (results[index]) return;
+            if (picked.includes(letter)) picked = picked.filter((l) => l !== letter);
+            else picked.push(letter);
+
+            pending[index] = picked;
+            if (picked.length >= q.answers.length && q.answers.length > 0) {
+              const correct =
+                picked.length === q.answers.length &&
+                q.answers.every((a) => picked.includes(a));
+              results[index] = { picked, correct };
+              delete pending[index];
+              persist();
+            }
+            render();
+          });
+          list.appendChild(btn);
+        });
+        card.appendChild(list);
+
+        if (answered) {
+          const box = make('div', 'mt-6 rounded-md bg-muted px-5 py-4');
+          const row = make('div', 'flex items-center justify-between');
+          row.appendChild(make('span', 'text-sm font-medium', '해설'));
+          row.appendChild(
+            make(
+              'span',
+              'text-sm font-medium text-success-foreground',
+              `정답 ${q.answers.join(', ')}`
+            )
+          );
+          box.appendChild(row);
+          box.appendChild(
+            make(
+              'p',
+              'mt-1 text-sm text-muted-foreground',
+              q.explanation || '이 문항에는 해설이 없습니다.'
+            )
+          );
+          card.appendChild(box);
+        }
+      }
+
+      function renderSubjectiveQuestion(q: Subjective) {
+        const result = results[index];
+        const answered = result !== null;
+
+        card.appendChild(make('span', 'text-xs text-muted-foreground-subtle', `Q${q.no}`));
+        card.appendChild(make('h2', 'mt-2 text-lg font-bold', q.question));
+
+        if (q.image) {
+          const img = document.createElement('img');
+          img.src = q.image;
+          img.alt = '문제 이미지';
+          img.className = 'mt-6 w-full rounded-md border border-border';
+          img.loading = 'lazy';
+          card.appendChild(img);
+        }
+
+        const form = make('div', 'mt-6 flex flex-col gap-3 sm:flex-row');
+        const input = document.createElement('input');
+        input.type = 'text';
+        input.placeholder = '정답 입력';
+        input.value = result ? result.picked[0] ?? '' : '';
+        input.disabled = answered;
+        input.className =
+          'h-9 flex-1 rounded-md border border-input bg-background px-3 text-sm outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:opacity-60';
+        const submit = make(
+          'button',
+          'inline-flex h-9 items-center justify-center rounded-md bg-primary px-4 text-sm font-medium text-primary-foreground hover:bg-primary-hover',
+          answered ? '확인함' : '제출'
+        ) as HTMLButtonElement;
+        submit.type = 'button';
+        submit.disabled = answered;
+        form.append(input, submit);
+        card.appendChild(form);
+
+        const grade = () => {
+          const value = input.value.trim();
+          if (!value) return;
+          const acceptedAnswers = q.acceptedAnswers ?? [q.answer];
+          const correct = acceptedAnswers.some(
+            (answer) => normalizeAnswer(value) === normalizeAnswer(answer)
+          );
+          results[index] = { picked: [value], correct };
+          persist();
+          render();
+        };
+        submit.addEventListener('click', grade);
+        input.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter' && !e.isComposing) grade();
+        });
+
+        if (answered) {
+          const box = make('div', 'mt-6 rounded-md bg-muted px-5 py-4');
+          const row = make('div', 'flex items-center justify-between');
+          row.appendChild(
+            make(
+              'span',
+              result.correct
+                ? 'text-sm font-medium text-success-foreground'
+                : 'text-sm font-medium text-destructive-foreground',
+              result.correct ? '정답' : '오답'
+            )
+          );
+          if (!result.correct) {
+            row.appendChild(make('span', 'text-sm font-medium', `정답 ${q.answer}`));
+          }
+          box.appendChild(row);
+          if (q.explanation) {
+            box.appendChild(make('p', 'mt-1 text-sm text-muted-foreground', q.explanation));
+          }
+          card.appendChild(box);
+        }
+      }
+
+      function render() {
+        card.replaceChildren();
+        const q = qs[index];
+        if ('answer' in q) renderSubjectiveQuestion(q);
+        else renderChoiceQuestion(q);
+
+        prevBtn.disabled = index === 0;
+        nextBtn.disabled = index === qs.length - 1;
+        renderStats();
+        renderChips();
+      }
+
+      prevBtn.addEventListener('click', () => {
+        if (index > 0) {
+          index -= 1;
+          render();
+        }
+      });
+      nextBtn.addEventListener('click', () => {
+        if (index < qs.length - 1) {
+          index += 1;
+          render();
+        }
+      });
+      resetBtn.addEventListener('click', () => {
+        results = qs.map(() => null);
+        Object.keys(pending).forEach((key) => delete pending[Number(key)]);
+        index = 0;
+        persist();
+        render();
+      });
+
+      render();
+    }
+  </script>
+</AppShell>

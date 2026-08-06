@@ -1,0 +1,34 @@
+---
+import { moon, panelLeft, sun } from './icons';
+
+interface Props {
+  breadcrumb: string;
+}
+const { breadcrumb } = Astro.props;
+---
+
+<header
+  class="sticky top-0 z-20 hidden h-14 shrink-0 items-center justify-between border-b border-border bg-background px-4 md:flex"
+>
+  <div class="flex min-w-0 items-center gap-2">
+    <button
+      type="button"
+      data-sidebar-trigger
+      aria-label="사이드바 접기"
+      class="hidden size-8 shrink-0 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground md:inline-flex"
+      set:html={panelLeft}
+    />
+    <span class="hidden h-4 w-px shrink-0 bg-border md:block"></span>
+    <span class="truncate text-sm font-medium text-foreground">{breadcrumb}</span>
+  </div>
+
+  <button
+    type="button"
+    data-theme-toggle
+    aria-label="테마 전환"
+    class="inline-flex size-8 shrink-0 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground"
+  >
+    <span class="dark:hidden" set:html={sun} />
+    <span class="hidden dark:block" set:html={moon} />
+  </button>
+</header>

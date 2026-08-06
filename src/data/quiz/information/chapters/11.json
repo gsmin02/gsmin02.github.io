@@ -1,0 +1,34 @@
+{
+  "order": 3,
+  "title": "11주차 문제집",
+  "questions": [
+    {
+      "no": 1,
+      "question": "사용자가 키보드로 입력한 메시지를 서버로 보내는 역할을 하는 쓰레드는?",
+      "answer": "송신 쓰레드",
+      "explanation": "",
+      "image": null
+    },
+    {
+      "no": 2,
+      "question": "서버로부터 오는 메시지를 받아서 화면에 표시하는 역할을 하는 쓰레드는?",
+      "answer": "수신 쓰레드",
+      "explanation": "",
+      "image": null
+    },
+    {
+      "no": 3,
+      "question": "다중 클라이언트, 쓰레드 활용에서 공유자원 접근 시 락(Lock) 사용하는 것을?",
+      "answer": "쓰레드 동기화",
+      "explanation": "",
+      "image": null
+    },
+    {
+      "no": 4,
+      "question": "다중 클라이언트, 쓰레드 활용에서 네트워크 오류, 클라이언트 비정상 종료 등을 처리하는 것을?",
+      "answer": "예외처리",
+      "explanation": "",
+      "image": null
+    }
+  ]
+}

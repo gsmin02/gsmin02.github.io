@@ -1,0 +1,195 @@
+{
+  "order": 6,
+  "title": "14주차 문제집",
+  "questions": [
+    {
+      "no": 1,
+      "question": "화재가 일어났을 때 불길이 건물의 다른 곳으로 번지는 것을 차단하는 것은?",
+      "answer": "방화벽",
+      "explanation": "",
+      "image": null
+    },
+    {
+      "no": 2,
+      "question": "외부 네트워크에서 내부 네트워크로 유입되는 침입을 막는 솔루션",
+      "answer": "방화벽",
+      "explanation": "",
+      "image": null
+    },
+    {
+      "no": 3,
+      "question": "방화벽의 주요 기능으로서 외부에서 내부로 유입되는 메시지의 차단 또는 허용을 관리하는 특징은?",
+      "answer": "접근 제어",
+      "explanation": "",
+      "image": null
+    },
+    {
+      "no": 4,
+      "question": "방화벽 규칙의 구성인 3가지는?",
+      "answer": "출발지, 도착지, 정책",
+      "explanation": "",
+      "image": null
+    },
+    {
+      "no": 5,
+      "question": "보안의 기본 원칙으로 오류가 발생하여 시스템이 정상적으로 작동하지 않을 때 사용자나 시스템에 피해를 입히지 않는 상태로 남아 있어야 한다는 특징은?",
+      "answer": "페일 세이프",
+      "explanation": "",
+      "image": "/img/information/Chapter14/1.png"
+    },
+    {
+      "no": 6,
+      "question": "실패가 일어난 경우에도 안전해야 함을 의미하며 실패가 발생하더라도 실패의 영향을 최소화(백업 시스템으로 전환)하며 안전한 방식으로 실패한다는 이것은?",
+      "answer": "세이프 페일러",
+      "explanation": "",
+      "image": "/img/information/Chapter14/1.png"
+    },
+    {
+      "no": 7,
+      "question": "윈도우 방화벽에서 외부 네트워크에서 내부 네트워크로 들어오는 메시지에 대한 규칙을 뜻하는 이것은?",
+      "answer": "인 바운드",
+      "explanation": "",
+      "image": null
+    },
+    {
+      "no": 8,
+      "question": "윈도우 방화벽에서 내부 네트워크에서 외부 네트워크로 나가는 메시지에 대한 규칙을 뜻하는 이것은?",
+      "answer": "아웃 바운드",
+      "explanation": "",
+      "image": null
+    },
+    {
+      "no": 9,
+      "question": "내부 시스템에서 악의적인 공격을 발견하고 이를 보고하는 보안 솔루션은?",
+      "answer": "침입 탐지 시스템",
+      "explanation": "",
+      "image": null
+    },
+    {
+      "no": 10,
+      "question": "(그림 참고) 단순히 IP 주소와 포트 번호 등의 속성으로 차단 결정하는 것은?",
+      "answer": "방화벽",
+      "explanation": "",
+      "image": "/img/information/Chapter14/2.png"
+    },
+    {
+      "no": 11,
+      "question": "(그림 참고) 전달되는 메시지 내용을 분석하여 차단 결정하는 것은?",
+      "answer": "침입 탐지 시스템",
+      "explanation": "",
+      "image": "/img/information/Chapter14/2.png"
+    },
+    {
+      "no": 12,
+      "question": "분석과 탐지에서 미리 정의된 침입에 대한 패턴이 있고, 정제된 데이터에서 침입 패턴을 찾는 방법은?",
+      "answer": "오용 탐지 기법",
+      "explanation": "",
+      "image": null
+    },
+    {
+      "no": 13,
+      "question": "분석과 탐지에서 발생할 확률이 매우 낮은 일이 발생했을 때 침입이라고 판단하는 기법은?",
+      "answer": "이상 탐지 기법",
+      "explanation": "",
+      "image": null
+    },
+    {
+      "no": 14,
+      "question": "상대적으로 낮은 오탐률을 갖지만, 기존에 패턴이 없는 새로운 침입 유형에 대한 탐지가 불가능한 이것은?",
+      "answer": "시그니처 기반 오용 탐지 기법",
+      "explanation": "",
+      "image": null
+    },
+    {
+      "no": 15,
+      "question": "취약점이 공표 혹은 발견된 날, 공격이 행해진 시점에서 이 취약점을 해결할 시간이 하루도 되지 않았음을 뜻하는 용어는?",
+      "answer": "제로 데이",
+      "explanation": "",
+      "image": null
+    },
+    {
+      "no": 16,
+      "question": "대표적인 오픈 소스 네트워크 기반 침입 탐지 시스템으로 sniffer and more에서 유래된 이것은? (한글)",
+      "answer": "스노트",
+      "explanation": "",
+      "image": null
+    },
+    {
+      "no": 17,
+      "question": "(그림 참고) 네트워크 기반 침입 탐지 시스템에서 매우 높은 보안 수준을 요구하는 설치 위치는?",
+      "answer": "방화벽 내부",
+      "explanation": "",
+      "image": "/img/information/Chapter14/3.png"
+    },
+    {
+      "no": 18,
+      "question": "시스템이나 네트워크에 대한 다양한 불법 침입 행위를 실시간 탐지, 분석하여 비정상적인 패킷인 경우 자동으로 차단하는 시스템은?",
+      "answer": "침입 방지 시스템",
+      "explanation": "",
+      "image": "/img/information/Chapter14/4.png"
+    },
+    {
+      "no": 19,
+      "question": "(정답 없음)침입 방지 시스템과 침입 탐지 시스템과의 차이점",
+      "answer": "정답 없음",
+      "explanation": "",
+      "image": "/img/information/Chapter14/5.png"
+    },
+    {
+      "no": 20,
+      "question": "정보 유출 방지 솔루션으로 조직 내의 중요 자료가 외부로 빠져나가는 것을 탐지하여 이를 차단하는 뜻의 영여 약자는? (3글자)",
+      "answer": "DLP",
+      "explanation": "",
+      "image": "/img/information/Chapter14/6.png"
+    },
+    {
+      "no": 21,
+      "question": "네트워크를 통하여 정보가 유출되는 것을 감시(Monitor)하고 정책에 따라서 통제하는 솔루션은?",
+      "answer": "네트워크 DLP",
+      "explanation": "",
+      "image": null
+    },
+    {
+      "no": 22,
+      "question": "네트워크 DLP에서 미러링(Mirroring) 방식 사용하는 이것은?",
+      "answer": "모니터",
+      "explanation": "",
+      "image": "/img/information/Chapter14/7.png"
+    },
+    {
+      "no": 23,
+      "question": "네트워크 DLP에서 외부로 전송되는 데이터를 분석하여 만약 전송 데이터가 개인 정보와 같이 조직의 중요 자산이라고 판단되었을 때는 실시간으로 데이터의 전송을 차단하는 것은?",
+      "answer": "프리벤트",
+      "explanation": "",
+      "image": "/img/information/Chapter14/8.png"
+    },
+    {
+      "no": 24,
+      "question": "엔드포인트 DLP에서 통제 대상이 되는 단말기를 통제하기 위해 설치되어야 하는 것은?",
+      "answer": "DLP 에이전트",
+      "explanation": "",
+      "image": null
+    },
+    {
+      "no": 25,
+      "question": "디지털 권리 관리의 약자로 초기에는 MP3 등과 같은 디지털 저작물에 대한 보호와 관리를 위해 제안된 보안 제품에 대한 보안 솔루션은?",
+      "answer": "DRM",
+      "explanation": "",
+      "image": null
+    },
+    {
+      "no": 26,
+      "question": "정보 보안에서 사용되는 DRM은?",
+      "answer": "문서 보안 솔루션",
+      "explanation": "",
+      "image": null
+    },
+    {
+      "no": 27,
+      "question": "엔드포인트(Endpoint) 단말기가 회사의 내부 네트워크에 접속을 시도할 때 이를 제어하고 통제하는 것은?",
+      "answer": "NAC",
+      "explanation": "",
+      "image": "/img/information/Chapter14/9.png"
+    }
+  ]
+}

@@ -1,0 +1,47 @@
+---
+import type { GetStaticPaths } from 'astro';
+import { getCollection } from 'astro:content';
+import PostList from '../../components/PostList.astro';
+import Badge from '../../components/ui/Badge.astro';
+import AppShell from '../../layouts/AppShell.astro';
+import { BLOG_TAGS } from '../../lib/nav';
+
+export const getStaticPaths = (async () => {
+  const posts = await getCollection('blog');
+  return BLOG_TAGS.map((tag) => ({
+    params: { tag },
+    props: {
+      tag,
+      posts: posts
+        .filter((p) => p.data.tag === tag)
+        .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf()),
+    },
+  }));
+}) satisfies GetStaticPaths;
+
+const { tag, posts } = Astro.props;
+---
+
+<AppShell title={`${tag} · 기록`} active="blog" activeItem={tag} breadcrumb={`블로그 / ${tag}`}>
+  <div class="mx-auto w-full max-w-3xl px-6 py-12 md:py-20">
+    <header class="flex flex-col gap-3">
+      <h1 class="text-4xl font-bold">{tag}</h1>
+      <p class="text-base text-muted-foreground">{posts.length}편의 글</p>
+    </header>
+
+    <div class="mt-12 flex flex-wrap gap-2">
+      <a href="/"><Badge variant="secondary">전체</Badge></a>
+      {
+        BLOG_TAGS.map((t) => (
+          <a href={`/tag/${encodeURIComponent(t)}`}>
+            <Badge variant={t === tag ? 'accent' : 'secondary'}>{t}</Badge>
+          </a>
+        ))
+      }
+    </div>
+
+    <div class="mt-4">
+      <PostList posts={posts} />
+    </div>
+  </div>
+</AppShell>

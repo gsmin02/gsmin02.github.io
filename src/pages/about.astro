@@ -1,0 +1,171 @@
+---
+import AppShell from '../layouts/AppShell.astro';
+import { getCourses, getQuizStats } from '../lib/quiz';
+
+const quizStats = getQuizStats(await getCourses());
+
+const sections = [
+  {
+    id: 'profile',
+    title: '프로필',
+    rows: [
+      ['이름', '구승민'],
+      ['하는 일', '클라우드와 데이터 분석 공부'],
+      ['지금', 'AWS 자격증과 ADsP 준비'],
+      ['쓰는 것', 'Python, SQL, AWS'],
+    ],
+  },
+  {
+    id: 'tools',
+    title: '사용하는 도구',
+    rows: [
+      ['사이트', 'Astro · GitHub Pages'],
+      ['디자인', 'Figma'],
+      ['글쓰기', 'Markdown'],
+      ['에디터', 'VS Code'],
+    ],
+  },
+  {
+    id: 'contact',
+    title: '연락처',
+    rows: [
+      ['GitHub', 'github.com/gsmin02'],
+      ['사이트', 'gsmin02.github.io'],
+    ],
+  },
+];
+
+const stats = [
+  [String(quizStats.questions), '문항'],
+  [String(quizStats.courses), '개 과정'],
+  [String(quizStats.chapters), '개 챕터'],
+];
+---
+
+<AppShell title="소개 · gsmin02" active="about" activeItem="프로필" breadcrumb="소개">
+  <div class="mx-auto w-full max-w-3xl px-6 py-12 md:py-20">
+    <header class="flex flex-col gap-3">
+      <h1 class="text-4xl font-bold">소개</h1>
+      <p class="text-base text-muted-foreground">
+        클라우드와 데이터 분석을 공부하고 있습니다. 배운 것을 글로 남기고, 문제로 정리합니다.
+      </p>
+    </header>
+
+    <section id="profile" class="mt-16 scroll-mt-20">
+      <h2 class="border-b border-input pb-3 text-lg font-bold">{sections[0].title}</h2>
+      <dl class="flex flex-col">
+        {
+          sections[0].rows.map(([k, v], i) => (
+            <div
+              class:list={[
+                'flex flex-col gap-1 py-4 sm:flex-row sm:gap-6',
+                i < sections[0].rows.length - 1 && 'border-b border-border',
+              ]}
+            >
+              <dt class="w-40 shrink-0 text-sm text-muted-foreground-subtle">{k}</dt>
+              <dd class="text-sm">{v}</dd>
+            </div>
+          ))
+        }
+      </dl>
+    </section>
+
+    <section class="mt-16">
+      <h2 class="border-b border-input pb-3 text-lg font-bold">이 사이트</h2>
+      <div class="mt-5 grid grid-cols-3 overflow-hidden rounded-md border border-border">
+        {
+          stats.map(([value, label], i) => (
+            <div
+              class:list={[
+                'flex flex-col items-center gap-1 py-6',
+                i < stats.length - 1 && 'border-r border-border',
+              ]}
+            >
+              <span class="text-3xl font-bold">{value}</span>
+              <span class="text-xs text-muted-foreground-subtle">{label}</span>
+            </div>
+          ))
+        }
+      </div>
+    </section>
+
+    {
+      sections.slice(1).map((section) => (
+        <section id={section.id} class="mt-16 scroll-mt-20">
+          <h2 class="border-b border-input pb-3 text-lg font-bold">{section.title}</h2>
+          <dl class="flex flex-col">
+            {section.rows.map(([k, v], i) => (
+              <div
+                class:list={[
+                  'flex flex-col gap-1 py-4 sm:flex-row sm:gap-6',
+                  i < section.rows.length - 1 && 'border-b border-border',
+                ]}
+              >
+                <dt class="w-40 shrink-0 text-sm text-muted-foreground-subtle">{k}</dt>
+                <dd class="text-sm">{v}</dd>
+              </div>
+            ))}
+          </dl>
+        </section>
+      ))
+    }
+  </div>
+
+  <script>
+    const sectionLinks = Array.from(
+      document.querySelectorAll<HTMLAnchorElement>('[data-nav-section]')
+    );
+    const sections = ['profile', 'tools', 'contact']
+      .map((id) => document.getElementById(id))
+      .filter((section): section is HTMLElement => section !== null);
+    const ratios = new Map<string, number>();
+    let lockUntil = 0;
+
+    const setActiveSection = (id: string) => {
+      sectionLinks.forEach((link) => {
+        const active = link.dataset.navSection === id;
+        link.classList.toggle('bg-sidebar-accent', active);
+        link.classList.toggle('font-medium', active);
+        link.classList.toggle('text-sidebar-accent-foreground', active);
+        link.classList.toggle('text-muted-foreground', !active);
+        if (active) link.setAttribute('aria-current', 'location');
+        else link.removeAttribute('aria-current');
+      });
+    };
+
+    const selectSection = (id: string) => {
+      if (!sections.some((section) => section.id === id)) return;
+      lockUntil = performance.now() + 300;
+      setActiveSection(id);
+    };
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => ratios.set(entry.target.id, entry.intersectionRatio));
+        if (performance.now() < lockUntil || sections.length === 0) return;
+
+        const current =
+          window.scrollY + window.innerHeight >= document.documentElement.scrollHeight - 2
+            ? sections.at(-1)
+            : sections.reduce((best, section) =>
+                (ratios.get(section.id) ?? 0) > (ratios.get(best.id) ?? 0) ? section : best
+              );
+        if (current) setActiveSection(current.id);
+      },
+      { rootMargin: '-56px 0px 0px', threshold: [0, 0.25, 0.5, 0.75, 1] }
+    );
+
+    sections.forEach((section) => observer.observe(section));
+    sectionLinks.forEach((link) => {
+      link.addEventListener('click', () => selectSection(link.dataset.navSection ?? ''));
+    });
+    window.addEventListener('hashchange', () => selectSection(window.location.hash.slice(1)));
+
+    const initialSection = window.location.hash.slice(1);
+    if (initialSection) {
+      selectSection(initialSection);
+    } else if (sections[0]) {
+      setActiveSection(sections[0].id);
+    }
+  </script>
+</AppShell>

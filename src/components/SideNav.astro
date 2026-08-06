@@ -1,0 +1,105 @@
+---
+import type { NavGroup, NavKey } from '../lib/nav';
+import { chevronDown } from './icons';
+import NavItems from './NavItems.astro';
+
+interface Props {
+  active: NavKey;
+  activeItem?: string;
+  groups: NavGroup[];
+}
+const { active, activeItem, groups } = Astro.props;
+---
+
+<aside
+  data-sidebar-panel
+  class="relative hidden shrink-0 border-r border-sidebar-border bg-sidebar md:block"
+>
+  <div class="sticky top-0 flex h-svh flex-col p-2">
+    <div class="flex h-10 items-center px-2">
+      <a href="/" class="truncate text-sm font-bold text-sidebar-foreground">gsmin02</a>
+    </div>
+
+    <nav class="mt-2 flex min-h-0 flex-1 flex-col gap-1 overflow-y-auto pr-1">
+      {
+        groups.map((group) => {
+          const isActive = group.key === active;
+          const itemsId = `side-nav-${group.key}`;
+          return (
+            <div class="flex flex-col gap-1">
+              <div
+                class:list={[
+                  'flex h-8 items-center rounded-md text-sm transition-colors',
+                  isActive
+                    ? 'bg-sidebar-accent font-medium text-sidebar-accent-foreground'
+                    : 'text-sidebar-foreground hover:bg-sidebar-accent',
+                ]}
+              >
+                <a href={group.href} class="flex min-w-0 flex-1 items-center self-stretch px-2">
+                  <span class="truncate">{group.label}</span>
+                </a>
+                {group.items.length > 0 && (
+                  <button
+                    type="button"
+                    data-nav-group-toggle
+                    aria-controls={itemsId}
+                    aria-expanded={String(isActive)}
+                    aria-label={`${group.label} 하위 메뉴`}
+                    class="group inline-flex size-8 shrink-0 items-center justify-center rounded-md text-muted-foreground-subtle transition-colors hover:text-sidebar-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sidebar-ring"
+                  >
+                    <span
+                      class="-rotate-90 transition-transform group-aria-expanded:rotate-0"
+                      set:html={chevronDown}
+                    />
+                  </button>
+                )}
+              </div>
+
+              {group.items.length > 0 && (
+                <div
+                  id={itemsId}
+                  data-nav-group-items
+                  hidden={!isActive}
+                  class="ml-3.5 flex flex-col gap-0.5 border-l border-sidebar-border py-0.5 pl-2.5"
+                >
+                  <NavItems
+                    items={group.items}
+                    idPrefix={`side-nav-${group.key}`}
+                    activeItem={activeItem}
+                  />
+                </div>
+              )}
+            </div>
+          );
+        })
+      }
+    </nav>
+  </div>
+
+  <!-- drag to resize, click to close. Hidden on mobile with the whole aside. -->
+  <button
+    type="button"
+    data-sidebar-rail
+    aria-label="사이드바 너비 조절"
+    title="드래그해 너비 조절 · 클릭해 닫기"
+    class="group/rail absolute inset-y-0 -right-1 z-20 w-2 cursor-col-resize touch-none"
+  >
+    <span
+      class="absolute inset-y-0 left-1/2 w-0.5 -translate-x-1/2 bg-transparent transition-colors group-hover/rail:bg-ring/60"
+    ></span>
+  </button>
+</aside>
+
+<script>
+  document.querySelectorAll<HTMLButtonElement>('[data-nav-group-toggle]').forEach((toggle) => {
+    const itemsId = toggle.getAttribute('aria-controls');
+    const items = itemsId ? document.getElementById(itemsId) : null;
+    if (!items) return;
+
+    toggle.addEventListener('click', () => {
+      const expanded = toggle.getAttribute('aria-expanded') !== 'true';
+      toggle.setAttribute('aria-expanded', String(expanded));
+      items.hidden = !expanded;
+    });
+  });
+</script>

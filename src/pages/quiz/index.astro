@@ -1,0 +1,32 @@
+---
+import AppShell from '../../layouts/AppShell.astro';
+import { getCourses } from '../../lib/quiz';
+
+const courses = await getCourses();
+---
+
+<AppShell title="퀴즈 · gsmin02" active="quiz" breadcrumb="퀴즈">
+  <div class="mx-auto w-full max-w-6xl px-6 py-8 md:py-10">
+    <h1 class="sr-only">퀴즈</h1>
+    <section aria-label="퀴즈 과정">
+      <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+        {
+          courses.map((course) => (
+            <a
+              href={`/quiz/${course.id}/${course.chapters[0].slug}`}
+              class="flex flex-col gap-4 rounded-md border border-border p-5 transition-colors hover:bg-accent/40"
+            >
+              <span class="text-lg font-bold">{course.label}</span>
+              <div class="flex items-center justify-between border-t border-border pt-3">
+                <span class="text-xs font-medium text-muted-foreground">{course.total}문항</span>
+                <span class="text-xs text-muted-foreground-subtle">
+                  {course.chapters.length}개 챕터
+                </span>
+              </div>
+            </a>
+          ))
+        }
+      </div>
+    </section>
+  </div>
+</AppShell>

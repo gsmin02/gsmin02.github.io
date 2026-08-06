@@ -1,0 +1,55 @@
+{
+  "order": 1,
+  "title": "9주차 문제집",
+  "questions": [
+    {
+      "no": 1,
+      "question": "귀도 반 로썸(Guido van Rossum, 네덜란드)이 1991년 창시하고 비전공자 중심으로 인기인 프로그래밍 언어는? (한글)",
+      "answer": "파이썬",
+      "explanation": "",
+      "image": null
+    },
+    {
+      "no": 2,
+      "question": "파이썬의 스크립트 언어 방식은? (한글)",
+      "answer": "인터프리터 방식",
+      "explanation": "",
+      "image": null
+    },
+    {
+      "no": 3,
+      "question": "파이썬 활용 사례 중 오픈 소스 웹 프레임워크(Django)를 서버측 언어로 사용하는 기업의 이름은? (한글)",
+      "answer": "인스타그램",
+      "explanation": "",
+      "image": null
+    },
+    {
+      "no": 4,
+      "question": "파이썬 활용 사례 중 귀도 반 로썸(파이썬 창시자)은 2012년부터 2019년까지 개발자로 재직한 기업의 이름은? (한글)",
+      "answer": "드롭박스",
+      "explanation": "",
+      "image": null
+    },
+    {
+      "no": 5,
+      "question": "파이썬이 활발한 생태계를 가지는 이유는?",
+      "answer": "수많은 표준 라이브러리",
+      "explanation": "",
+      "image": null
+    },
+    {
+      "no": 6,
+      "question": "(정답 없음) 파이썬 라이브러리",
+      "answer": "정답 없음",
+      "explanation": "",
+      "image": "/img/information/Chapter9/1.png"
+    },
+    {
+      "no": 7,
+      "question": "(정답 없음) 파이썬 프레임워크",
+      "answer": "정답 없음",
+      "explanation": "",
+      "image": "/img/information/Chapter9/2.png"
+    }
+  ]
+}
