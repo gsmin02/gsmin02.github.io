@@ -189,6 +189,8 @@ const { course, chapter } = Astro.props as {
         return n;
       };
 
+      const normalizeAnswer = (value: string) => value.replace(/\s+/g, '').toLowerCase();
+
       const persist = () => sessionStorage.setItem(storeKey, JSON.stringify(results));
 
       function renderStats() {
@@ -350,13 +352,10 @@ const { course, chapter } = Astro.props as {
         const grade = () => {
           const value = input.value.trim();
           if (!value) return;
-          const correct = q.acceptedAnswers
-            ? q.acceptedAnswers.some(
-                (answer) =>
-                  value.replace(/\s+/g, '').toLowerCase() ===
-                  answer.replace(/\s+/g, '').toLowerCase()
-              )
-            : value === q.answer.trim();
+          const acceptedAnswers = q.acceptedAnswers ?? [q.answer];
+          const correct = acceptedAnswers.some(
+            (answer) => normalizeAnswer(value) === normalizeAnswer(answer)
+          );
           results[index] = { picked: [value], correct };
           persist();
           render();

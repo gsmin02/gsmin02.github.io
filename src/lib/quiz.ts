@@ -22,6 +22,14 @@ const assertUnique = (values: (string | number)[], label: string) => {
   }
 };
 
+const assertSequential = (values: number[], label: string) => {
+  const sorted = [...values].sort((a, b) => a - b);
+  const invalidIndex = sorted.findIndex((value, index) => value !== index + 1);
+  if (invalidIndex !== -1) {
+    throw new Error(`${label} 값은 1부터 빠짐없이 이어져야 합니다.`);
+  }
+};
+
 const getCourseId = (entryId: string) => entryId.split('/')[0];
 
 export const getCourses = async (): Promise<Course[]> => {
@@ -42,20 +50,20 @@ export const getCourses = async (): Promise<Course[]> => {
     .map(({ id, data: course }) => {
       const courseId = getCourseId(id);
       const courseChapters = chapterEntries.filter(({ id }) => getCourseId(id) === courseId);
+      const chapterOrders = courseChapters.map(({ data }) => data.order);
+
+      if (courseChapters.length === 0) throw new Error(`${courseId} 과정에 챕터가 없습니다.`);
+      assertUnique(chapterOrders, `${courseId} 챕터 순서`);
+      assertSequential(chapterOrders, `${courseId} 챕터 순서`);
+
       const chapters = courseChapters
         .sort((a, b) => a.data.order - b.data.order)
-        .map(({ id, data }) => ({
-          slug: id.slice(id.lastIndexOf('/') + 1),
+        .map(({ data }) => ({
+          slug: String(data.order),
           title: data.title,
           count: data.questions.length,
           questions: data.questions,
         }));
-
-      if (chapters.length === 0) throw new Error(`${courseId} 과정에 챕터가 없습니다.`);
-      assertUnique(
-        courseChapters.map(({ data }) => data.order),
-        `${courseId} 챕터 순서`
-      );
 
       return {
         id: courseId,
