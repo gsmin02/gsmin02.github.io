@@ -144,9 +144,14 @@ const quizData = JSON.stringify({
       try {
         const saved = JSON.parse(sessionStorage.getItem(storeKey) || 'null');
         if (Array.isArray(saved) && saved.length === qs.length) {
-          results = saved.map((result) =>
-            result && typeof result.correct === 'boolean' ? result : null
-          );
+          results = saved.map((result) => {
+            const valid =
+              result &&
+              typeof result.correct === 'boolean' &&
+              Array.isArray(result.picked) &&
+              result.picked.every((picked: unknown) => typeof picked === 'string');
+            return valid ? { picked: result.picked, correct: result.correct } : null;
+          });
         }
       } catch {
         /* ignore unavailable or malformed session state */
