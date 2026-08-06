@@ -149,7 +149,7 @@ const quizData = JSON.stringify({
           );
         }
       } catch {
-        /* ignore malformed session state */
+        /* ignore unavailable or malformed session state */
       }
 
       const card = document.querySelector('[data-question-card]') as HTMLElement;
@@ -192,7 +192,13 @@ const quizData = JSON.stringify({
 
       const normalizeAnswer = (value: string) => value.replace(/\s+/g, '').toLowerCase();
 
-      const persist = () => sessionStorage.setItem(storeKey, JSON.stringify(results));
+      const persist = () => {
+        try {
+          sessionStorage.setItem(storeKey, JSON.stringify(results));
+        } catch {
+          /* keep the in-memory quiz usable when storage is unavailable */
+        }
+      };
 
       function renderStats() {
         const correct = results.filter((r) => r?.correct === true).length;
