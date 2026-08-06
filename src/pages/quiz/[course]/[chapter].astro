@@ -17,6 +17,11 @@ const { course, chapter } = Astro.props as {
   course: Course;
   chapter: Chapter;
 };
+const quizData = JSON.stringify({
+  courseId: course.id,
+  chapterSlug: chapter.slug,
+  questions: chapter.questions,
+}).replace(/</g, '\\u003c');
 ---
 
 <AppShell
@@ -99,11 +104,7 @@ const { course, chapter } = Astro.props as {
     </aside>
   </div>
 
-  <script type="application/json" data-quiz set:html={JSON.stringify({
-    courseId: course.id,
-    chapterSlug: chapter.slug,
-    questions: chapter.questions,
-  })} />
+  <script type="application/json" data-quiz set:html={quizData} />
 
   <script>
     type Choice = {
