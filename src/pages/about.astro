@@ -1,9 +1,8 @@
 ---
 import AppShell from '../layouts/AppShell.astro';
-import { courses } from '../lib/nav';
+import { getCourses, getQuizStats } from '../lib/quiz';
 
-const totalQuestions = courses.reduce((a, c) => a + c.total, 0);
-const totalChapters = courses.reduce((a, c) => a + c.chapters.length, 0);
+const quizStats = getQuizStats(await getCourses());
 
 const sections = [
   {
@@ -37,9 +36,9 @@ const sections = [
 ];
 
 const stats = [
-  [String(totalQuestions), '문항'],
-  [String(courses.length), '개 과정'],
-  [String(totalChapters), '개 챕터'],
+  [String(quizStats.questions), '문항'],
+  [String(quizStats.courses), '개 과정'],
+  [String(quizStats.chapters), '개 챕터'],
 ];
 ---
 

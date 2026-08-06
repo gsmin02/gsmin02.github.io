@@ -1,12 +1,14 @@
 ---
-import { navGroups, type NavKey } from '../lib/nav';
+import type { NavGroup, NavKey } from '../lib/nav';
 import { chevronDown } from './icons';
+import NavItems from './NavItems.astro';
 
 interface Props {
   active: NavKey;
   activeItem?: string;
+  groups: NavGroup[];
 }
-const { active, activeItem } = Astro.props;
+const { active, activeItem, groups } = Astro.props;
 ---
 
 <aside
@@ -18,9 +20,9 @@ const { active, activeItem } = Astro.props;
       <a href="/" class="truncate text-sm font-bold text-sidebar-foreground">gsmin02</a>
     </div>
 
-    <nav class="mt-2 flex flex-col gap-1">
+    <nav class="mt-2 flex min-h-0 flex-1 flex-col gap-1 overflow-y-auto pr-1">
       {
-        navGroups.map((group) => {
+        groups.map((group) => {
           const isActive = group.key === active;
           const itemsId = `side-nav-${group.key}`;
           return (
@@ -60,21 +62,11 @@ const { active, activeItem } = Astro.props;
                   hidden={!isActive}
                   class="ml-3.5 flex flex-col gap-0.5 border-l border-sidebar-border py-0.5 pl-2.5"
                 >
-                  {group.items.map((item) => (
-                    <a
-                      href={item.href}
-                      data-nav-section={item.href.includes('#') ? item.href.split('#')[1] : undefined}
-                      aria-current={item.label === activeItem ? 'location' : undefined}
-                      class:list={[
-                        'flex h-7 items-center rounded-md px-2 text-sm transition-colors hover:bg-sidebar-accent',
-                        item.label === activeItem
-                          ? 'bg-sidebar-accent font-medium text-sidebar-accent-foreground'
-                          : 'text-muted-foreground',
-                      ]}
-                    >
-                      <span class="truncate">{item.label}</span>
-                    </a>
-                  ))}
+                  <NavItems
+                    items={group.items}
+                    idPrefix={`side-nav-${group.key}`}
+                    activeItem={activeItem}
+                  />
                 </div>
               )}
             </div>

@@ -1,46 +1,33 @@
 ---
 import type { GetStaticPaths } from 'astro';
-import Badge from '../../../components/ui/Badge.astro';
 import AppShell from '../../../layouts/AppShell.astro';
-import { allCourses, type Chapter, type Course } from '../../../lib/quiz';
+import { getCourses, type Chapter, type Course } from '../../../lib/quiz';
 
-export const getStaticPaths = (async () =>
-  allCourses.flatMap((course) =>
-    course.chapters.map((chapter, i) => ({
+export const getStaticPaths = (async () => {
+  const courses = await getCourses();
+  return courses.flatMap((course) =>
+    course.chapters.map((chapter) => ({
       params: { course: course.id, chapter: chapter.slug },
-      props: {
-        course,
-        chapter,
-        prev: course.chapters[i - 1] ?? null,
-        next: course.chapters[i + 1] ?? null,
-      },
+      props: { course, chapter },
     }))
-  )) satisfies GetStaticPaths;
+  );
+}) satisfies GetStaticPaths;
 
-const { course, chapter, prev, next } = Astro.props as {
+const { course, chapter } = Astro.props as {
   course: Course;
   chapter: Chapter;
-  prev: Chapter | null;
-  next: Chapter | null;
 };
 ---
 
 <AppShell
   title={`${chapter.title} · ${course.label}`}
   active="quiz"
-  activeItem={course.label}
   breadcrumb={`퀴즈 / ${course.label} / ${chapter.title}`}
 >
   <div class="mx-auto flex w-full max-w-7xl flex-col gap-8 px-4 py-8 md:px-6 md:py-10 lg:flex-row">
     <!-- main column -->
     <div class="flex min-w-0 flex-1 flex-col gap-6">
-      <div class="flex flex-col gap-2">
-        <div class="flex flex-wrap items-center gap-2">
-          <Badge variant="accent">{course.label}</Badge>
-          <Badge variant="secondary">{chapter.title}</Badge>
-        </div>
-        <h1 class="text-2xl font-bold">{chapter.title}</h1>
-      </div>
+      <h1 class="sr-only">{course.label} {chapter.title}</h1>
 
       <!-- progress -->
       <section class="rounded-xl border border-border bg-card p-6">
@@ -109,37 +96,12 @@ const { course, chapter, prev, next } = Astro.props as {
           </span>
         </div>
       </section>
-
-      <section class="rounded-xl border border-border bg-card p-5">
-        <span class="text-sm font-medium">{course.label}</span>
-        <nav class="mt-3 flex flex-col gap-0.5">
-          {
-            course.chapters.map((c) => (
-              <a
-                href={`/quiz/${course.id}/${c.slug}`}
-                class:list={[
-                  'flex items-center justify-between rounded-md px-3 py-2 text-sm transition-colors',
-                  c.slug === chapter.slug
-                    ? 'border-l-2 border-primary font-medium text-accent-foreground'
-                    : 'text-muted-foreground hover:bg-accent',
-                ]}
-              >
-                <span class="truncate">{c.title}</span>
-                <span class="shrink-0 text-xs text-muted-foreground-subtle">{c.count}문항</span>
-              </a>
-            ))
-          }
-        </nav>
-      </section>
     </aside>
   </div>
 
   <script type="application/json" data-quiz set:html={JSON.stringify({
-    type: course.type,
     courseId: course.id,
     chapterSlug: chapter.slug,
-    prev: prev ? { slug: prev.slug, title: prev.title } : null,
-    next: next ? { slug: next.slug, title: next.title } : null,
     questions: chapter.questions,
   })} />
 
@@ -149,7 +111,6 @@ const { course, chapter, prev, next } = Astro.props as {
       question: string;
       choices: string[];
       answers: string[];
-      answerNote: string | null;
       explanation: string;
     };
     type Subjective = {
@@ -161,7 +122,6 @@ const { course, chapter, prev, next } = Astro.props as {
       image: string | null;
     };
     type Data = {
-      type: 'multiple-choice' | 'subjective';
       courseId: string;
       chapterSlug: string;
       questions: (Choice | Subjective)[];
@@ -338,7 +298,7 @@ const { course, chapter, prev, next } = Astro.props as {
             make(
               'span',
               'text-sm font-medium text-success-foreground',
-              `정답 ${q.answers.join(', ') || q.answerNote || '-'}`
+              `정답 ${q.answers.join(', ')}`
             )
           );
           box.appendChild(row);
@@ -432,8 +392,8 @@ const { course, chapter, prev, next } = Astro.props as {
       function render() {
         card.replaceChildren();
         const q = qs[index];
-        if (data.type === 'subjective' || 'answer' in q) renderSubjectiveQuestion(q as Subjective);
-        else renderChoiceQuestion(q as Choice);
+        if ('answer' in q) renderSubjectiveQuestion(q);
+        else renderChoiceQuestion(q);
 
         prevBtn.disabled = index === 0;
         nextBtn.disabled = index === qs.length - 1;

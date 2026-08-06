@@ -4,10 +4,12 @@ import PostList from '../components/PostList.astro';
 import Badge from '../components/ui/Badge.astro';
 import AppShell from '../layouts/AppShell.astro';
 import { BLOG_TAGS } from '../lib/nav';
+import { getCourses, getQuizStats } from '../lib/quiz';
 
 const posts = (await getCollection('blog')).sort(
   (a, b) => b.data.date.valueOf() - a.data.date.valueOf()
 );
+const quizStats = getQuizStats(await getCourses());
 ---
 
 <AppShell title="기록 · gsmin02" active="blog" activeItem="전체 글" breadcrumb="블로그">
@@ -15,7 +17,7 @@ const posts = (await getCollection('blog')).sort(
     <header class="flex flex-col gap-3">
       <h1 class="text-4xl font-bold">기록</h1>
       <p class="text-base text-muted-foreground">
-        AWS와 데이터 분석을 공부하며 남기는 글. 601문항의 퀴즈도 함께 정리하고 있습니다.
+        AWS와 데이터 분석을 공부하며 남기는 글. {quizStats.questions}문항의 퀴즈도 함께 정리하고 있습니다.
       </p>
     </header>
 

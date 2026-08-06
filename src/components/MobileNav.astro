@@ -1,12 +1,14 @@
 ---
-import { navGroups, type NavKey } from '../lib/nav';
+import type { NavGroup, NavKey } from '../lib/nav';
 import { chevronDown, chevronRight, moon, sun } from './icons';
+import NavItems from './NavItems.astro';
 
 interface Props {
   active: NavKey;
   activeItem?: string;
+  groups: NavGroup[];
 }
-const { active, activeItem } = Astro.props;
+const { active, activeItem, groups } = Astro.props;
 ---
 
 <div data-mobile-nav class="sticky top-0 z-20 md:hidden">
@@ -36,9 +38,13 @@ const { active, activeItem } = Astro.props;
     </div>
   </div>
 
-  <nav data-mobile-panel hidden class="border-b border-sidebar-border bg-sidebar p-2">
+  <nav
+    data-mobile-panel
+    hidden
+    class="max-h-[calc(100svh-3.5rem)] overflow-y-auto border-b border-sidebar-border bg-sidebar p-2"
+  >
     {
-      navGroups.map((group) => {
+      groups.map((group) => {
         const isActive = group.key === active;
         return (
           <div class="flex flex-col gap-1">
@@ -59,21 +65,11 @@ const { active, activeItem } = Astro.props;
             </a>
             {isActive && group.items.length > 0 && (
               <div class="mb-1 ml-3.5 flex flex-col gap-0.5 border-l border-sidebar-border py-0.5 pl-2.5">
-                {group.items.map((item) => (
-                  <a
-                    href={item.href}
-                    data-nav-section={item.href.includes('#') ? item.href.split('#')[1] : undefined}
-                    aria-current={item.label === activeItem ? 'location' : undefined}
-                    class:list={[
-                      'flex h-8 items-center rounded-md px-2 text-sm hover:bg-sidebar-accent',
-                      item.label === activeItem
-                        ? 'bg-sidebar-accent font-medium text-sidebar-accent-foreground'
-                        : 'text-muted-foreground',
-                    ]}
-                  >
-                    {item.label}
-                  </a>
-                ))}
+                <NavItems
+                  items={group.items}
+                  idPrefix={`mobile-nav-${group.key}`}
+                  activeItem={activeItem}
+                />
               </div>
             )}
           </div>

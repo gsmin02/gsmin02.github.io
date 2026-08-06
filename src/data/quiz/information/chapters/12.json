@@ -1,0 +1,125 @@
+{
+  "order": 4,
+  "title": "12주차 문제집",
+  "questions": [
+    {
+      "no": 1,
+      "question": "평문을 암호문으로 바꾸는 과정은?",
+      "answer": "암호화",
+      "explanation": "",
+      "image": "/img/information/Chapter12/1.png"
+    },
+    {
+      "no": 2,
+      "question": "암호문을 복호화 키(Decryption Key)를 이용하여 평문으로 바꾸는 과정은?",
+      "answer": "복호화",
+      "explanation": "",
+      "image": "/img/information/Chapter12/1.png"
+    },
+    {
+      "no": 3,
+      "question": "전치법(Transposition) 알고리즘을 이용해 BC400년 스파르타에서 군사용으로 사용하던 암호화 방식은?",
+      "answer": "스키테일 암호",
+      "explanation": "",
+      "image": "/img/information/Chapter12/2.png"
+    },
+    {
+      "no": 4,
+      "question": "단일 치환(Mono-Alphabetic Substitution) 알고리즘을 이용해 BC100년경에 로마의 줄리어스 시저가 군사적인 목적으로 사용한 암호화 방식은?",
+      "answer": "시저 암호",
+      "explanation": "",
+      "image": "/img/information/Chapter12/3.png"
+    },
+    {
+      "no": 5,
+      "question": "알파벳 26글자를 각각 다른 알파벳에 대응시키는 방식으로 암호화 방식은?",
+      "answer": "단일 치환, 모노 알파베틱 암호",
+      "explanation": "",
+      "image": "/img/information/Chapter12/4.png"
+    },
+    {
+      "no": 6,
+      "question": "한 글자가 암호화 키와의 매핑에 따라 여러 가지 글자로 대체되어 암호화되는 방식은?",
+      "answer": "다중 치환",
+      "explanation": "",
+      "image": "/img/information/Chapter12/5.png"
+    },
+    {
+      "no": 7,
+      "question": "암호화 키와 복호화 키가 같은 암호화 방식은?",
+      "answer": "대칭키 암호화 방식",
+      "explanation": "",
+      "image": null
+    },
+    {
+      "no": 8,
+      "question": "64비트 평문을 64비트 암호문으로 암호화하는 방식의 약어는?",
+      "answer": "DES",
+      "explanation": "",
+      "image": null
+    },
+    {
+      "no": 9,
+      "question": "DES의 대안으로 제시된 DES의 비도(암호화 강도)를 강화한 대칭키 암호 방식은?",
+      "answer": "Triple DES",
+      "explanation": "",
+      "image": "/img/information/Chapter12/6.png"
+    },
+    {
+      "no": 10,
+      "question": "1997년 미국 NIST의 암호 공모에서 새로운 대칭 암호의 표준으로 채택된 대칭키 암호 방식의 약어는?",
+      "answer": "AES",
+      "explanation": "",
+      "image": null
+    },
+    {
+      "no": 11,
+      "question": "블록 암호 모드에서 블록의 남은 부분에 데이터를 채워 넣는 것을?",
+      "answer": "패딩",
+      "explanation": "",
+      "image": "/img/information/Chapter12/7.png"
+    },
+    {
+      "no": 12,
+      "question": "대칭 암호화 방식의 보완책이 필요한 문제는?",
+      "answer": "키 배포",
+      "explanation": "",
+      "image": "/img/information/Chapter12/8.png"
+    },
+    {
+      "no": 13,
+      "question": "(그림 참고) 암호화된 메시지는 밥의 개인키로만 복호화 가능하여 생기는 특징은?",
+      "answer": "기밀성 보장",
+      "explanation": "",
+      "image": "/img/information/Chapter12/9.png"
+    },
+    {
+      "no": 14,
+      "question": "(그림 참고) 앨리스의 공개키로만 복호화 가능하여 생기는 특징은?",
+      "answer": "부인 방지 보장",
+      "explanation": "",
+      "image": "/img/information/Chapter12/10.png"
+    },
+    {
+      "no": 15,
+      "question": "(정답 없음) 암호화 방식 비교: 대칭 암호화 방식 vs 비대칭 암호화 방식",
+      "answer": "정답 없음",
+      "explanation": "",
+      "image": "/img/information/Chapter12/11.png"
+    },
+    {
+      "no": 16,
+      "question": "원본 메시지에 대한 해시 값을 서명자의 개인키로 암호화하는 것은?",
+      "answer": "전자서명",
+      "explanation": "",
+      "image": "/img/information/Chapter12/12.png"
+    },
+    {
+      "no": 17,
+      "question": "사용자의 공개키에 사용자의 식별 정보를 추가하여 만든 일종의 전자 신분증이란?",
+      "answer": "공개키 인증서",
+      "explanation": "",
+      "image": null
+    }
+  ]
+}

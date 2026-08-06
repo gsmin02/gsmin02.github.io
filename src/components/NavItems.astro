@@ -1,0 +1,102 @@
+---
+import type { NavItem } from '../lib/nav';
+import { chevronDown } from './icons';
+
+interface Props {
+  activeItem?: string;
+  idPrefix: string;
+  items: NavItem[];
+}
+
+const { activeItem, idPrefix, items } = Astro.props;
+const currentPath = Astro.url.pathname.replace(/\/$/, '') || '/';
+---
+
+{
+  items.map((item, index) => {
+    const children = item.children ?? [];
+    const isActive =
+      children.length > 0
+        ? children.some((child) => child.href === currentPath)
+        : item.label === activeItem;
+    const childrenId = `${idPrefix}-${index}`;
+
+    return children.length > 0 ? (
+      <div class="flex flex-col gap-0.5">
+        <div
+          class:list={[
+            'flex h-8 items-center rounded-md text-sm transition-colors',
+            isActive
+              ? 'bg-sidebar-accent font-medium text-sidebar-accent-foreground'
+              : 'text-muted-foreground hover:bg-sidebar-accent',
+          ]}
+        >
+          <a href={item.href} class="flex min-w-0 flex-1 items-center self-stretch px-2">
+            <span class="truncate">{item.label}</span>
+          </a>
+          <button
+            type="button"
+            data-nav-group-toggle
+            aria-controls={childrenId}
+            aria-expanded={String(isActive)}
+            aria-label={`${item.label} 장 목록`}
+            class="group inline-flex size-8 shrink-0 items-center justify-center rounded-md text-muted-foreground-subtle transition-colors hover:text-sidebar-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sidebar-ring"
+          >
+            <span
+              class="-rotate-90 transition-transform group-aria-expanded:rotate-0"
+              set:html={chevronDown}
+            />
+          </button>
+        </div>
+
+        <div
+          id={childrenId}
+          data-nav-group-items
+          hidden={!isActive}
+          class="ml-4 flex flex-col gap-0.5 border-l border-sidebar-border py-0.5 pl-2"
+        >
+          {children.map((child) => {
+            const isChildActive = child.href === currentPath;
+            return (
+              <a
+                href={child.href}
+                aria-current={isChildActive ? 'page' : undefined}
+                class:list={[
+                  'group/child flex min-h-7 items-center gap-2 rounded-sm px-1.5 py-1 text-xs leading-tight transition-colors hover:bg-sidebar-accent/60 hover:text-sidebar-foreground',
+                  isChildActive
+                    ? 'font-medium text-sidebar-accent-foreground'
+                    : 'text-muted-foreground-subtle',
+                ]}
+              >
+                <span
+                  aria-hidden="true"
+                  class:list={[
+                    'size-1 shrink-0 rounded-full transition-colors',
+                    isChildActive
+                      ? 'bg-primary'
+                      : 'bg-sidebar-border group-hover/child:bg-muted-foreground-subtle',
+                  ]}
+                />
+                <span class="truncate">{child.label}</span>
+              </a>
+            );
+          })}
+        </div>
+      </div>
+    ) : (
+      <a
+        href={item.href}
+        data-nav-section={item.href.includes('#') ? item.href.split('#')[1] : undefined}
+        aria-current={isActive ? 'location' : undefined}
+        class:list={[
+          'flex h-8 items-center rounded-md px-2 text-sm transition-colors hover:bg-sidebar-accent',
+          isActive
+            ? 'bg-sidebar-accent font-medium text-sidebar-accent-foreground'
+            : 'text-muted-foreground',
+        ]}
+      >
+        <span class="truncate">{item.label}</span>
+      </a>
+    );
+  })
+}
