@@ -29,6 +29,7 @@ report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
 /.claude/
 /.codex/
 /.agents/
+/.local-quiz-sources/
 
 # Editor settings
 .vscode/
